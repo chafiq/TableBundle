@@ -1,0 +1,25 @@
+{
+    "name": "emc/table-bundle",
+    "type": "symfony-bundle",
+    "description": "For more informations https://github.com/chafiq/TableBundle/blob/master/README.md",
+    "keywords": ["table", "grid", "data grid"],
+    "license":"MIT",
+    "homepage":"https://github.com/chafiq/TableBundle",
+    "support": {
+        "issues":"https://github.com/chafiq/TableBundle/issues"
+    },
+    "minimum-stability":"dev",
+    "authors": [
+        {
+            "name": "Chafiq El Mechrafi",
+            "email": "chafiq.elmechrafi@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "autoload": {
+        "psr-0": { "EMC\\TableBundle": "" }
+    },
+    "target-dir": "EMC/TableBundle"
+}
