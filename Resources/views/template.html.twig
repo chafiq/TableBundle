@@ -1,0 +1,141 @@
+{% block empty %}
+    <tr>
+        <td colspan="{{ thead|length }}">
+    <center>Aucun élément à afficher</center>
+</td>
+</tr>
+{% endblock %}
+
+{% block thead %}
+    {% if filter > 0 %}
+        <tr>
+            <td colspan="{{ thead|length }}">
+
+                {% if caption %}
+            <span class="caption">{{ caption }}</span>
+        {% endif %}
+        <div class="input-group">
+            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+            <input type="text" class="form-control" name="_filter" placeholder="Rechercher"/>
+        </div>
+    </td>
+</tr>
+{% endif %}
+<tr>
+    {% for key, th in thead %}
+        {% if th.sort > 0 %}
+            <th class="sortable" data-sort="{{ th.sort }}">
+        <div class="dropdown">
+            {{ th.title }}
+            <span class="caret"></span>
+        </div>
+    </th>
+{% else %}
+    <th>{{ th.title }}</th>
+    {% endif %}
+{% endfor %}
+</tr>
+{% endblock %}
+
+{% block tbody %}
+    {% if tbody|length > 0 %}
+        {{ block('rows') }}
+    {% else %}
+        {{ block('empty') }}
+    {% endif %}
+{% endblock %}
+
+{% block tfoot %}
+    <tr>
+        <td colspan="{{ thead|length }}">
+            {{ block('pages') }}
+            {{ block('limit_select') }}
+        </td>
+    </tr>
+{% endblock %}
+
+{% block limit_select %}
+    {% if total > 10 %}
+        <select id="{{ id }}_limit" class="selectpicker btn-xs" data-width="70px">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="0">Tous</option>
+        </select>
+    {% endif %}
+{% endblock %}
+
+{% block table %}
+
+    <table id="{{ id }}" class="emc-table table table-hover table-condensed table-striped table-responsive">
+        <thead>
+            {{ block('thead') }}
+        </thead>
+        <tbody>
+            {{ block('tbody') }}
+        </tbody>
+        <tfoot>
+            {{ block('tfoot') }}
+        </tfoot>
+    </table>
+
+    <script type="text/javascript">
+        $(function() {
+            EMCTable.EMPTY = 'Aucun élément à afficher';
+            EMCTable.handle(document.getElementById('{{ id }}'), '{{ path(route, {'uid':uid}) }}', 10);
+        });
+    </script>
+
+{% endblock %}
+
+{% block pages %}
+    {% if limit > 0 %}
+        {% set current = page %}
+        {% set previous = max(1, page - 1) %}
+        {% set pageCount = (total/limit)|round(0,'ceil') %}
+        {% set next = min(pageCount, page + 1) %}
+        {% set maxRange = min(pageCount,max(5,page+2)) %}
+        {% set pagesInRange = range(max(1,min(page-2, maxRange-4)),maxRange) %}
+    {% endif %}
+
+    {% if limit > 0 and pageCount > 1 %}
+        <ul class="pagination pagination-sm">
+
+            {% if current > 1 %}
+                <li class="previous"><a class="hidden-xs" data-page="1">&laquo;</a></li>
+                <li class="previous"><a class="hidden-xs" data-page="{{previous}}">&lsaquo;</a></li>
+                {% else %}
+                <li class="previous"><span class="hidden-xs">&laquo;</span></li>
+                <li class="previous"><span class="hidden-xs">&lsaquo;</span></li>
+                {% endif %}
+
+            {% for page in pagesInRange %}
+                {% if page != current %}
+                    <li class="page"><a data-page="{{page}}">{{ page }}</a></li>
+                    {% else %}
+                    <li class="current active" data-page="{{page}}"><a>{{ page }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+            {% if current < pageCount %}
+                <li class="next"><a class="hidden-xs" data-page="{{next}}">&rsaquo;</a></li>
+                <li class="next"><a class="hidden-xs" data-page="{{pageCount}}">&raquo;</a></li>
+                {% else %}
+                <li class="next"><span class="hidden-xs">&rsaquo;</span></li>
+                <li class="next"><span class="hidden-xs">&raquo;</span></li>
+                {% endif %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
+
+{% block rows %}
+    {% for tr in tbody %}
+        <tr>
+            {% for idx, td in tr %}
+                <td>{{ table_cell(columns[idx], td) }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+{% endblock %}

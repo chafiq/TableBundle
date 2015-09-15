@@ -1,0 +1,3 @@
+_table:
+    path:     /_table
+    defaults: { _controller: EMCTableBundle:Table:index }

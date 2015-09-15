@@ -1,0 +1,95 @@
+table.emc-table {
+    margin: 0;
+    padding: 0;
+    border: none;
+    width: 100%;
+}
+
+table.emc-table > thead > tr {
+    height : 40px;
+}
+
+table.emc-table > thead > tr > td > .input-group {
+    width: 224px;
+    float: right;
+}
+
+table.emc-table > thead > tr > td > .input-group > span {
+    background: none repeat scroll 0 0 transparent;
+    border-radius: 15px 0 0 15px;
+    padding: 5px;
+}
+
+table.emc-table > thead > tr > td > .input-group > input {
+    display: inline;
+    width: 200px;
+    height: 30px;
+    line-height: 30px;
+    padding: 5px;
+    border-radius: 15px;
+    border-left: medium none;
+    z-index: 1;
+}
+
+table.emc-table > thead > tr > th.sortable {
+    cursor: pointer;
+}
+
+table.emc-table > thead > tr > th.sortable > div.dropdown > span.caret {
+    color: #CCCCCC;
+}
+
+table.emc-table > thead > tr > th.sortable.sort > div.dropdown > span.caret {
+    color: #000000;
+}
+
+table.emc-table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+table.emc-table > tbody > tr > td.actions {
+    text-align: right;
+}
+
+table.emc-table > tfoot > tr {
+    height : 30px;
+}
+
+table.emc-table > tfoot > tr > td {
+    background: transparent;
+    text-align: center;
+}
+
+table.emc-table > tfoot > tr > td > div {
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+    display: inline;
+}
+
+table.emc-table > tfoot > tr > td > button.btn-default {
+    float: left;
+}
+
+table.emc-table > tfoot > tr > td > .bootstrap-select {
+    float: right !important;
+}
+
+table.emc-table > tfoot > tr > td > .bootstrap-select > button {
+    height : 28px;
+}
+
+table.emc-table > tfoot > tr > td > ul.pagination {
+    margin: 0;
+}
+
+table.emc-table > tfoot > tr > td > ul.pagination > li > a {
+    cursor: pointer;
+}
+
+table.emc-table > tfoot > tr > td > ul.pagination > li.previous > span,
+table.emc-table > tfoot > tr > td > ul.pagination > li.next > span {
+    background-color: #EEEEEE;
+    color: #AAAAAA;
+    cursor: not-allowed;
+}

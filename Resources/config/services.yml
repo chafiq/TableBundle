@@ -1,0 +1,10 @@
+services:
+    table.factory:
+        class: EMC\TableBundle\Table\TableFactory
+        arguments: [@doctrine.orm.entity_manager, @session]
+    
+    table.extension:
+        class: EMC\TableBundle\Twig\TableExtension
+        arguments: ['EMCTableBundle::template.html.twig', 'EMCTableBundle::extensions.html.twig']
+        tags:
+            -  { name: twig.extension }

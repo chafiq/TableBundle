@@ -1,0 +1,28 @@
+{% block text %}
+    <span class="{{ class }}">{{ text }}</span>
+{% endblock %}
+
+{% block anchor %}
+    <a class="{{ class }}" href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+{% endblock %}
+
+{% block button %}
+    <button class="{{ class }} btn btn-default" title="{{ title }}">
+        {% if icon %}
+            <i class="fa fa-{{ icon }}"></i>
+        {% endif %}
+        {{ text }}
+    </button>
+{% endblock %}
+
+{% block icon %}
+    <i class="{{ class }} fa fa-{{ icon }}"></i>
+{% endblock %}
+
+{% block action %}
+    <div class="{{ class }}">
+    {% for column in columns %}
+        {{ table_cell(column, data) }}
+    {% endfor %}
+    </div>
+{% endblock %}
