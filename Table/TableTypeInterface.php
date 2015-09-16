@@ -6,8 +6,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface TableTypeInterface {
     public function buildTable(TableBuilderInterface $builder, array $options);

@@ -6,8 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use EMC\TableBundle\Column\ColumnInterface;
 
 /**
- *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface TableBuilderInterface {
     public function addColumn(ColumnInterface $column);

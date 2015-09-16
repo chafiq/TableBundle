@@ -3,8 +3,7 @@
 namespace EMC\TableBundle\Table;
 
 /**
- *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface TableInterface {
     public function getId();

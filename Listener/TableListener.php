@@ -5,10 +5,13 @@ namespace EMC\TableBundle\Listener;
 use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
 use EMC\TableBundle\Session\TableSessionInterface;
+
 /**
- * Description of TableListener
+ * TableListener
+ * 
+ * This class store the meta-data of tables while "table.pre_set_data" event is trigged
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableListener {
     

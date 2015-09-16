@@ -6,9 +6,9 @@ use Symfony\Component\EventDispatcher\Event;
 use EMC\TableBundle\Table\TableTypeInterface;
 
 /**
- * Description of TablePreSetDataEvent
+ * TablePreSetDataEvent
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TablePreSetDataEvent extends Event {
     

@@ -3,9 +3,9 @@
 namespace EMC\TableBundle\Column;
 
 /**
- * Description of Button
+ * Anchor Column
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class Anchor extends Button implements ColumnInterface {
     

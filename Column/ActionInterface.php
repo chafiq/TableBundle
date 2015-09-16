@@ -3,7 +3,6 @@
 namespace EMC\TableBundle\Column;
 
 /**
- *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface ActionInterface {}

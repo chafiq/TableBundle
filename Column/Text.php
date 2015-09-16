@@ -3,9 +3,9 @@
 namespace EMC\TableBundle\Column;
 
 /**
- * Description of Column
+ * Text Column
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class Text extends Base implements ColumnInterface, TextInterface {
     

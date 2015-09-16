@@ -8,9 +8,9 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use EMC\TableBundle\Session\TableSession;
 
 /**
- * Description of TableFactory
+ * TableFactory
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableFactory implements TableFactoryInterface {
     

@@ -5,6 +5,11 @@ namespace EMC\TableBundle\Twig;
 use EMC\TableBundle\Table\Table;
 use EMC\TableBundle\Column\ColumnInterface;
 
+/**
+ * TableExtension
+ * 
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
+ */
 class TableExtension extends \Twig_Extension {
 
     /**

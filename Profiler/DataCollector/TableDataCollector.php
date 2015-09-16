@@ -1,18 +1,19 @@
 <?php
 
-namespace EMC\TableBundle\Profiler;
+namespace EMC\TableBundle\Profiler\DataCollector;
 
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use EMC\TableBundle\Table\TableInterface;
-use EMC\TableBundle\Table\TableTypeInterface;
 use EMC\TableBundle\Column\ActionInterface;
 
 /**
- * Description of TableDataCollector
+ * TableDataCollector
+ * 
+ * This class collect data for the WebProfiler
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableDataCollector extends DataCollector {
     public function collect(Request $request, Response $response, \Exception $exception = null) {

@@ -6,9 +6,9 @@ use Symfony\Component\EventDispatcher\Event;
 use EMC\TableBundle\Table\TableInterface;
 
 /**
- * Description of TablePostSetDataEvent
+ * TablePostSetDataEvent
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TablePostSetDataEvent extends Event {
     

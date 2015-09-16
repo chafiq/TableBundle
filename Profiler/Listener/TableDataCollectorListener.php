@@ -7,9 +7,9 @@ use EMC\TableBundle\Event\TablePostSetDataEvent;
 use EMC\TableBundle\Profiler\TableDataCollector;
 
 /**
- * Description of TableDataCollectorListener
- *
- * @author emc
+ * TableDataCollectorListener
+ * 
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableDataCollectorListener {
 
@@ -23,7 +23,6 @@ class TableDataCollectorListener {
     }
     
     public function onPreSetData(TablePreSetDataEvent $event) {
-        
     }
     
     public function onPostSetData(TablePostSetDataEvent $event) {

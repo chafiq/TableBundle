@@ -3,9 +3,9 @@
 namespace EMC\TableBundle\Column;
 
 /**
- * Description of Button
+ * Button Column
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class Button extends Text implements ColumnInterface {
     

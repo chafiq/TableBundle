@@ -10,9 +10,9 @@ use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
 
 /**
- * Description of TableBuilder
+ * TableBuilder
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableBuilder implements TableBuilderInterface {
 

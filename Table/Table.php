@@ -6,6 +6,11 @@ use EMC\TableBundle\Column\TextInterface;
 use EMC\TableBundle\Column\ActionInterface;
 use EMC\TableBundle\Column\ColumnInterface;
 
+/**
+ * Table
+ * 
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
+ */
 final class Table implements TableInterface {
 
     /**
@@ -90,18 +95,6 @@ final class Table implements TableInterface {
     }
 
     protected function getFooter() {
-        return array();
-        $footer = array();
-        foreach ($this->columns as $idx => $column) {
-            if (is_string($column['footer'])) {
-                $footer['col' . $idx] = $column['footer'];
-            } else if (is_callable($column['footer'])) {
-                $footer['col' . $idx] = call_user_func($column['footer'], $this->extract($column, $this->data));
-            } else {
-                throw new \InvalidArgumentException('$column[footer] string|function expected');
-            }
-        }
-        return $footer;
     }
 
     protected function getBody() {

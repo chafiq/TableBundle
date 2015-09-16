@@ -3,9 +3,9 @@
 namespace EMC\TableBundle\Column;
 
 /**
- * Description of Action
+ * Column Action Container
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class Action extends Base implements ColumnInterface, ActionInterface {
     

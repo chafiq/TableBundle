@@ -1,3 +1,8 @@
+
+/**
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
+ */
+
 function EMCTable(dom, route, limit) {
     if ( EMCTable.caller !== EMCTable.handle ) {
         throw new Error("This object cannot be instanciated");

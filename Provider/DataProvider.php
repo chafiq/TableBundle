@@ -6,9 +6,9 @@ use Doctrine\ORM\QueryBuilder;
 use EMC\TableBundle\Column\ColumnInterface;
 
 /**
- * Description of DataProvider
+ * DataProvider
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class DataProvider implements DataProviderInterface {
     

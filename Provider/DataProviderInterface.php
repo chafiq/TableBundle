@@ -5,8 +5,7 @@ namespace EMC\TableBundle\Provider;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface DataProviderInterface {
     public function setQueryBuilder(QueryBuilder $queryBuilder);

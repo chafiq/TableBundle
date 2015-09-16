@@ -4,10 +4,11 @@ namespace EMC\TableBundle\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use EMC\TableBundle\Table\TableTypeInterface;
+
 /**
- * Description of TableSession
+ * TableSession manage tables in the session
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableSession implements TableSessionInterface {
     

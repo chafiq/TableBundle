@@ -6,9 +6,9 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Description of TableType
+ * TableType
  *
- * @author emc
+ * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 abstract class TableType implements TableTypeInterface {
     
