@@ -4,7 +4,7 @@ namespace EMC\TableBundle\Profiler\Listener;
 
 use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
-use EMC\TableBundle\Profiler\TableDataCollector;
+use EMC\TableBundle\Profiler\DataCollector\TableDataCollector;
 
 /**
  * TableDataCollectorListener
