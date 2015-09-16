@@ -26,5 +26,4 @@ interface TableFactoryInterface {
     public function load($class, $data = null, array $options = array());
     
     public function restore($uid);
-    public function store(TableBuilderInterface $type, TableTypeInterface $type);
 }

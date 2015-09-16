@@ -56,7 +56,7 @@
 
 {% block limit_select %}
     {% if total > 10 %}
-        <select id="{{ id }}_limit" class="selectpicker btn-xs" data-width="70px">
+        <select id="{{ domId }}_limit" class="selectpicker btn-xs" data-width="70px">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -68,7 +68,7 @@
 
 {% block table %}
 
-    <table id="{{ id }}" class="emc-table table table-hover table-condensed table-striped table-responsive">
+    <table id="{{ domId }}" class="emc-table table table-hover table-condensed table-striped table-responsive">
         <thead>
             {{ block('thead') }}
         </thead>
@@ -83,7 +83,7 @@
     <script type="text/javascript">
         $(function() {
             EMCTable.EMPTY = 'Aucun élément à afficher';
-            EMCTable.handle(document.getElementById('{{ id }}'), '{{ path(route, {'uid':uid}) }}', 10);
+            EMCTable.handle(document.getElementById('{{ domId }}'), '{{ path(route, {'tid':id}) }}', 10);
         });
     </script>
 

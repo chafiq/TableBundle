@@ -2,9 +2,10 @@
 
 namespace EMC\TableBundle\Table;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use EMC\TableBundle\Session\TableSession;
 
 /**
  * Description of TableFactory
@@ -19,13 +20,19 @@ class TableFactory implements TableFactoryInterface {
     private $entityManager;
 
     /**
-     * @var SessionInterface
+     * @var EventDispatcherInterface
      */
-    private $session;
+    private $eventDispatcher;
     
-    function __construct(ObjectManager $entityManager, SessionInterface $session) {
-        $this->session      = $session;
-        $this->entityManager= $entityManager;
+    /**
+     * @var TableSession
+     */
+    private $tableSession;
+    
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSession $tableSession) {
+        $this->entityManager    = $entityManager;
+        $this->eventDispatcher  = $eventDispatcher;
+        $this->tableSession     = $tableSession;
     }
     
     public function create(TableTypeInterface $type, $data = null, array $options = array()) {
@@ -38,9 +45,7 @@ class TableFactory implements TableFactoryInterface {
         
         $options = $resolver->resolve($options);
         
-        $builder = new TableBuilder($this, $this->entityManager, $type, $data, $options);
-        
-        $builder->setUid(self::hash($type, $options));
+        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $type, self::hash($type, $options), $data, $options);
         
         $type->buildTable($builder, $builder->getOptions());
 
@@ -60,22 +65,9 @@ class TableFactory implements TableFactoryInterface {
         return $this->create($type, $data, $options);
     }
     
-    public function restore($uid) {
-        if ( !$this->session->has($uid) ) {
-            throw new \InvalidArgumentException;
-        }
-        
-        $config = $this->session->get($uid);
-        
+    public function restore($tableId) {
+        $config = $this->tableSession->restore($tableId);
         return $this->load($config['class'], $config['data'], $config['options']);
-    }
-    
-    public function store(TableBuilderInterface $builder, TableTypeInterface $type) {
-        $this->session->set($builder->getUid(), array(
-            'class'     => get_class($type),
-            'data'      => $builder->getData(),
-            'options'   => $builder->getOptions()
-        ));
     }
     
     private static function hash(TableTypeInterface $type, array $options) {

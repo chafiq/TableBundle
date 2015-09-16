@@ -1,10 +1,34 @@
 services:
     table.factory:
         class: EMC\TableBundle\Table\TableFactory
-        arguments: [@doctrine.orm.entity_manager, @session]
+        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session]
+    
+    table.session:
+        class: EMC\TableBundle\Session\TableSession
+        arguments: [@session]
+    
+    table.listener:
+        class: EMC\TableBundle\Listener\TableListener
+        arguments: [@table.session]
+        tags:
+            - { name: kernel.event_listener, event: table.pre_set_data, method: onPreSetData }
+            - { name: kernel.event_listener, event: table.post_set_data, method: onPostSetData }
     
     table.extension:
         class: EMC\TableBundle\Twig\TableExtension
         arguments: ['EMCTableBundle::template.html.twig', 'EMCTableBundle::extensions.html.twig']
         tags:
             -  { name: twig.extension }
+            
+    table.data_collector:
+        class: EMC\TableBundle\Profiler\TableDataCollector
+        tags:
+            - { name: data_collector, template: "EMCTableBundle:Profiler:layout.html.twig", id: "table"  }
+            
+    table.data_collector.listener:
+        class: EMC\TableBundle\Profiler\Listener\TableDataCollectorListener
+        arguments: [@table.data_collector]
+        tags:
+            - { name: kernel.event_listener, event: table.pre_set_data, method: onPreSetData }
+            - { name: kernel.event_listener, event: table.post_set_data, method: onPostSetData }
+

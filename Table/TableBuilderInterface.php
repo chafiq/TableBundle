@@ -15,6 +15,4 @@ interface TableBuilderInterface {
     public function getOptions();
     public function getData();
     public function getTable();
-    public function getUid();
-    public function setUid($uid);
 }

@@ -3,8 +3,11 @@
 namespace EMC\TableBundle\Table;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Column\ColumnInterface;
+use EMC\TableBundle\Event\TablePreSetDataEvent;
+use EMC\TableBundle\Event\TablePostSetDataEvent;
 
 /**
  * Description of TableBuilder
@@ -14,9 +17,14 @@ use EMC\TableBundle\Column\ColumnInterface;
 class TableBuilder implements TableBuilderInterface {
 
     /**
-     * @var TableFactoryInterface
+     * @var ObjectManager
      */
-    private $factory;
+    private $entityManager;
+    
+    /**
+     * @var EventDispatcherInterface 
+     */
+    private $eventDispatcher;
 
     /**
      * @var TableTypeInterface
@@ -45,11 +53,6 @@ class TableBuilder implements TableBuilderInterface {
     private $caption;
 
     /**
-     * @var ObjectManager
-     */
-    private $entityManager;
-
-    /**
      * @var array
      */
     private $query;
@@ -57,12 +60,13 @@ class TableBuilder implements TableBuilderInterface {
     /**
      * @var string
      */
-    private $uid;
+    private $tableId;
 
-    function __construct(TableFactoryInterface $factory, ObjectManager $entityManager, TableTypeInterface $type, array $data = null, array $options = array()) {
-        $this->factory = $factory;
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableTypeInterface $type, $tableId, array $data = null, array $options = array()) {
         $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
         $this->type = $type;
+        $this->tableId = $tableId;
         $this->data = $data;
         $this->options = $options;
 
@@ -73,14 +77,6 @@ class TableBuilder implements TableBuilderInterface {
             'limit' => $options['limit'],
             'filter' => null
         );
-    }
-
-    public function getUid() {
-        return $this->uid;
-    }
-
-    public function setUid($uid) {
-        $this->uid = $uid;
     }
     
     public function getCaption() {
@@ -125,11 +121,15 @@ class TableBuilder implements TableBuilderInterface {
         if ($this->query['limit'] > 0) {
             $total = $dataProvider->getTotal($this->query['filter']);
         }
+        
+        $event = new TablePreSetDataEvent($this->type, $this->tableId, $this->data, $this->options);
+        $this->eventDispatcher->dispatch(TablePreSetDataEvent::NAME, $event);
+        
+        $table = new Table($this->tableId, $this->type->getName(), $this->caption, $this->columns, $data, $total, $this->query);
 
-        $table = new Table($this->uid, $this->type->getName(), $this->caption, $this->columns, $data, $total, $this->query);
-
-        $this->factory->store($this, $this->type);
-
+        $event = new TablePostSetDataEvent($table, $this->data, $this->options);
+        $this->eventDispatcher->dispatch(TablePostSetDataEvent::NAME, $event);
+        
         return $table;
     }
 

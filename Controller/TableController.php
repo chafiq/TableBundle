@@ -10,12 +10,12 @@ class TableController extends Controller {
         /* @var $factory \EMC\TableBundle\Table\TableFactoryInterface */
         $factory = $this->get('table.factory');
         
-        $uid = $request->get('uid');
-        if ( !is_string($uid) || strlen($uid) === 0 ) {
+        $tableId = $request->get('tid');
+        if ( !is_string($tableId) || strlen($tableId) === 0 ) {
             return $this->createNotFoundException();
         }
         
-        $table = $factory->restore($uid);
+        $table = $factory->restore($tableId);
         $table->handleRequest($request);
         
         return $this->render('EMCTableBundle:Table:index.html.twig', array('table' => $table->getTable()));

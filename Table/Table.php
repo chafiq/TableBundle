@@ -6,12 +6,12 @@ use EMC\TableBundle\Column\TextInterface;
 use EMC\TableBundle\Column\ActionInterface;
 use EMC\TableBundle\Column\ColumnInterface;
 
-class Table {
+final class Table implements TableInterface {
 
     /**
      * @var string
      */
-    private $uid;
+    private $id;
 
     /**
      * @var string
@@ -43,8 +43,8 @@ class Table {
      */
     private $query;
 
-    function __construct($uid, $name, $caption, $columns, $data, $total, array $query) {
-        $this->uid = $uid;
+    function __construct($id, $name, $caption, $columns, $data, $total, array $query) {
+        $this->id = $id;
         $this->name = $name;
         $this->caption = $caption;
         $this->columns = $columns;
@@ -55,8 +55,8 @@ class Table {
 
     public function getView() {
         return array_merge($this->query, array(
-            'id'    => 'table_' . $this->name,
-            'uid'   => $this->uid,
+            'id'    => $this->id,
+            'domId' => 'table_' . $this->name,
             'caption'=> $this->caption,
             'columns'=> $this->columns,
             'thead' => $this->getHeader(),
@@ -139,5 +139,34 @@ class Table {
         }
         return $result;
     }
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getCaption() {
+        return $this->caption;
+    }
+
+    public function getData() {
+        return $this->data;
+    }
+
+    public function getTotal() {
+        return $this->total;
+    }
+
+    public function getColumns() {
+        return $this->columns;
+    }
+
+    public function getQuery() {
+        return $this->query;
+    }
+
 
 }
