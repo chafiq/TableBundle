@@ -10,6 +10,7 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 interface TableTypeInterface {
     public function buildTable(TableBuilderInterface $builder, array $options);
+    public function buildView(TableView $view, TableInterface $table, array $options = array());
     public function setDefaultOptions(OptionsResolverInterface $resolver);
     public function getQueryBuilder(ObjectManager $entityManager, array $options);
     public function getName();

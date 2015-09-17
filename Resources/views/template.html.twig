@@ -6,34 +6,39 @@
 </tr>
 {% endblock %}
 
+{% block filter %}
+    <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-search"></i></span>
+        <input type="text" class="form-control" name="_filter" placeholder="Rechercher"/>
+    </div>
+{% endblock %}
+
 {% block thead %}
-    {% if filter > 0 %}
+    {% if has_filter or caption %}
         <tr>
             <td colspan="{{ thead|length }}">
-
                 {% if caption %}
-            <span class="caption">{{ caption }}</span>
-        {% endif %}
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" name="_filter" placeholder="Rechercher"/>
-        </div>
-    </td>
-</tr>
-{% endif %}
-<tr>
-    {% for key, th in thead %}
-        {% if th.sort > 0 %}
-            <th class="sortable" data-sort="{{ th.sort }}">
-        <div class="dropdown">
-            {{ th.title }}
-            <span class="caret"></span>
-        </div>
-    </th>
-{% else %}
-    <th>{{ th.title }}</th>
+                    <span class="caption">{{ caption }}</span>
+                {% endif %}
+                {% if has_filter %}
+                    {{ block('filter') }}
+                {% endif %}
+            </td>
+        </tr>
     {% endif %}
-{% endfor %}
+    <tr>
+        {% for key, th in thead %}
+            {% if th.sort != 0 %}
+                <th class="sortable" data-sort="{{ th.sort }}">
+            <div class="dropdown">
+                {{ th.title }}
+                <span class="caret"></span>
+            </div>
+        </th>
+    {% else %}
+        <th>{{ th.title }}</th>
+        {% endif %}
+    {% endfor %}
 </tr>
 {% endblock %}
 
@@ -134,7 +139,7 @@
     {% for tr in tbody %}
         <tr>
             {% for idx, td in tr %}
-                <td>{{ table_cell(columns[idx], td) }}</td>
+                <td>{{ table_cell(td) }}</td>
             {% endfor %}
         </tr>
     {% endfor %}

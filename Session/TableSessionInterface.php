@@ -9,5 +9,5 @@ use EMC\TableBundle\Table\TableTypeInterface;
  */
 interface TableSessionInterface {
     public function restore($tableId);
-    public function store(TableTypeInterface $type, $tableId, $data = null, array $options = array());
+    public function store(TableTypeInterface $type, $data = null, array $options = array());
 }

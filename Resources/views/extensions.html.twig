@@ -1,28 +1,28 @@
-{% block text %}
-    <span class="{{ class }}">{{ text }}</span>
+{% block text_widget %}
+    <span class="{{ column_class }}">{{ value }}</span>
 {% endblock %}
 
-{% block anchor %}
-    <a class="{{ class }}" href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+{% block datetime_widget %}
+    <span class="{{ column_class }}">{{ value|date(date_format) }}</span>
 {% endblock %}
 
-{% block button %}
-    <button class="{{ class }} btn btn-default" title="{{ title }}">
+{% block anchor_widget %}
+    <a class="{{ column_class }}" href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+{% endblock %}
+
+{% block button_widget %}
+    <button class="{{ column_class }} btn btn-default" title="{{ title }}">
         {% if icon %}
-            <i class="fa fa-{{ icon }}"></i>
+            {{ block('icon_widget') }}
         {% endif %}
         {{ text }}
     </button>
 {% endblock %}
 
-{% block icon %}
-    <i class="{{ class }} fa fa-{{ icon }}"></i>
+{% block icon_widget %}
+    <i class="{{ column_class }} {{ icon_family }} {{ icon_family }}-{{ icon }}"></i>
 {% endblock %}
 
-{% block action %}
-    <div class="{{ class }}">
-    {% for column in columns %}
-        {{ table_cell(column, data) }}
-    {% endfor %}
-    </div>
+{% block image_widget %}
+    <img class="{{ column_class }}" src="{{ asset(asset_url) }}" alt="{{ alt }}" />
 {% endblock %}

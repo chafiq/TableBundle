@@ -2,10 +2,6 @@
 
 namespace EMC\TableBundle\Table;
 
-use EMC\TableBundle\Column\TextInterface;
-use EMC\TableBundle\Column\ActionInterface;
-use EMC\TableBundle\Column\ColumnInterface;
-
 /**
  * Table
  * 
@@ -14,20 +10,15 @@ use EMC\TableBundle\Column\ColumnInterface;
 final class Table implements TableInterface {
 
     /**
-     * @var string
+     * @var TableTypeInterface
      */
-    private $id;
+    private $type;
 
     /**
-     * @var string
+     * @var array ColumnInterface[]
      */
-    private $name;
+    private $columns;
 
-    /**
-     * @var string
-     */
-    private $caption;
-    
     /**
      * @var array
      */
@@ -41,108 +32,20 @@ final class Table implements TableInterface {
     /**
      * @var array
      */
-    private $columns;
-    
-    /**
-     * @var array
-     */
-    private $query;
+    private $options;
 
-    function __construct($id, $name, $caption, $columns, $data, $total, array $query) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->caption = $caption;
+    function __construct(TableTypeInterface $type, array $columns, $data, $total, array $options = array()) {
+        $this->type = $type;
         $this->columns = $columns;
         $this->data = $data;
         $this->total = $total;
-        $this->query = $query;
+        $this->options = $options;
     }
 
     public function getView() {
-        return array_merge($this->query, array(
-            'id'    => $this->id,
-            'domId' => 'table_' . $this->name,
-            'caption'=> $this->caption,
-            'columns'=> $this->columns,
-            'thead' => $this->getHeader(),
-            'tbody' => $this->getBody(),
-            'tfoot' => $this->getFooter(),
-            'filter'=> $this->hasFilter(),
-            'total' => $this->total
-        ));
-    }
-    
-    protected function getHeader() {
-        $header = array();
-
-        foreach ($this->columns as $idx => $column) {
-            if ($column instanceof TextInterface) {
-                $header['col' . $idx] = array(
-                    'title' => $column->getName(),
-                    'sort' => $column->isSortable() ? $idx + 1 : 0
-                );
-            }
-        }
-
-        foreach ($this->columns as $idx => $column) {
-            if ($column instanceof ActionInterface) {
-                $header['actions'] = array('title' => '', 'sort' => 0);
-                break;
-            }
-        }
-
-        return $header;
-    }
-
-    protected function getFooter() {
-    }
-
-    protected function getBody() {
-
-        $rows = array_fill(0, count($this->data), array());
-
-        foreach ($this->columns as $idx => $column) {
-            $_data = $this->extract($column);
-            foreach ($_data as $row => $__data) {
-                $rows[$row][$idx] = $__data;
-            }
-        }
-        
-        return $rows;
-    }
-
-    protected function hasFilter() {
-        foreach($this->columns as $column) {
-            if ( $column instanceof TextInterface && $column->isSearchable() ) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private function extract(ColumnInterface $column) {
-        $result = array();
-        foreach ($this->data as $_data) {
-
-            $__data = array();
-            foreach ($column->getParams() as $_column) {
-                $__data[$_column] = $_data[$_column];
-            }
-            $result[] = $__data;
-        }
-        return $result;
-    }
-
-    public function getId() {
-        return $this->id;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function getCaption() {
-        return $this->caption;
+        $view = new TableView();
+        $this->type->buildView($view, $this, $this->options);
+        return $view;
     }
 
     public function getData() {
@@ -153,13 +56,12 @@ final class Table implements TableInterface {
         return $this->total;
     }
 
+    public function getType() {
+        return $this->type;
+    }
+
     public function getColumns() {
         return $this->columns;
     }
-
-    public function getQuery() {
-        return $this->query;
-    }
-
 
 }

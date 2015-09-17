@@ -12,17 +12,28 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class EMCTableExtension extends Extension
-{
+class EMCTableExtension extends Extension {
+
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
-    {
+    public function load(array $configs, ContainerBuilder $container) {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $container->setParameter('emc_table.template', isset($config['template']) ? $config['template'] : 'EMCTableBundle::template.html.twig');
+        $extensions = array('EMCTableBundle::extensions.html.twig');
+        if ( isset($config['extensions']) ) {
+            $extensions += $config['extensions'];
+        }
+        $container->setParameter('emc_table.extensions',  $extensions);
+
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
     }
+    
+    private function loadTemplates($template, array $extensions) {
+        
+    }
+
 }

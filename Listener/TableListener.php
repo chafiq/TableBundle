@@ -25,7 +25,7 @@ class TableListener {
     }
 
     public function onPreSetData(TablePreSetDataEvent $event) {
-        $this->session->store($event->getType(), $event->getTableId(), $event->getData(), $event->getOptions());
+        $this->session->store($event->getType(), $event->getData(), $event->getOptions());
     }
     
     public function onPostSetData(TablePostSetDataEvent $event) {

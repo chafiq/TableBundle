@@ -29,10 +29,19 @@ class TableSession implements TableSessionInterface {
         return $tables[$tableId];
     }
 
-    public function store(TableTypeInterface $type, $tableId, $data = null, array $options = array()) {
+    public function store(TableTypeInterface $type, $data = null, array $options = array()) {
+        
+        if ( !isset($options['_tid']) ) {
+            throw new \RuntimeException;
+        }
+        
         $tables = $this->session->get('tables');
         
-        $tables[$tableId] = array(
+        $tid = $options['_tid'];
+        unset($options['_tid']);
+        unset($options['_query']);
+        
+        $tables[$tid] = array(
             'class'     => get_class($type),
             'data'      => $data,
             'options'   => $options

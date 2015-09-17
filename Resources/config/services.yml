@@ -1,7 +1,7 @@
 services:
     table.factory:
         class: EMC\TableBundle\Table\TableFactory
-        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session]
+        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session, @table.column.factory]
     
     table.session:
         class: EMC\TableBundle\Session\TableSession
@@ -16,9 +16,53 @@ services:
     
     table.extension:
         class: EMC\TableBundle\Twig\TableExtension
-        arguments: ['EMCTableBundle::template.html.twig', 'EMCTableBundle::extensions.html.twig']
+        arguments: [@twig, %emc_table.template%, %emc_table.extensions%]
         tags:
             -  { name: twig.extension }
+            
+    table.registry:
+        class: EMC\TableBundle\Table\TableRegistry
+        arguments: [@service_container, {}]
+
+    table.column.factory:
+        class: EMC\TableBundle\Column\ColumnFactory
+        arguments: [@table.registry]
+
+    table.column.text:
+        class: EMC\TableBundle\Column\TextType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: text }
+            
+    table.column.anchor:
+        class: EMC\TableBundle\Column\AnchorType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: anchor }
+            
+    table.column.datetime:
+        class: EMC\TableBundle\Column\DatetimeType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: datetime }
+                            
+    table.column.icon:
+        class: EMC\TableBundle\Column\IconType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: icon }
+            
+    table.column.button:
+        class: EMC\TableBundle\Column\ButtonType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: button }
+            
+    table.column.image:
+        class: EMC\TableBundle\Column\ImageType
+        arguments: []
+        tags:
+            -  { name: table.type, alias: image }
             
     table.data_collector:
         class: EMC\TableBundle\Profiler\DataCollector\TableDataCollector

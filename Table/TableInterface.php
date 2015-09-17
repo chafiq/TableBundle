@@ -6,11 +6,13 @@ namespace EMC\TableBundle\Table;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface TableInterface {
-    public function getId();
-    public function getName();
-    public function getCaption();
-    public function getColumns();
     public function getData();
     public function getTotal();
-    public function getQuery();
+    
+    public function getColumns();
+    
+    /**
+     * @return TableTypeInterface
+     */
+    public function getType();
 }

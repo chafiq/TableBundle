@@ -5,9 +5,9 @@ namespace EMC\TableBundle\Table;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use EMC\TableBundle\Column\ColumnInterface;
 use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
+use EMC\TableBundle\Column\ColumnFactoryInterface;
 
 /**
  * TableBuilder
@@ -20,11 +20,16 @@ class TableBuilder implements TableBuilderInterface {
      * @var ObjectManager
      */
     private $entityManager;
-    
+
     /**
      * @var EventDispatcherInterface 
      */
     private $eventDispatcher;
+
+    /**
+     * @var ColumnFactoryInterface
+     */
+    private $factory;
 
     /**
      * @var TableTypeInterface
@@ -45,46 +50,24 @@ class TableBuilder implements TableBuilderInterface {
      * @var array
      */
     private $columns;
-    
-    /**
-     *
-     * @var string
-     */
-    private $caption;
 
-    /**
-     * @var array
-     */
-    private $query;
-
-    /**
-     * @var string
-     */
-    private $tableId;
-
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableTypeInterface $type, $tableId, array $data = null, array $options = array()) {
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, ColumnFactoryInterface $factory, TableTypeInterface $type, array $data = null, array $options = array()) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
+        $this->factory = $factory;
         $this->type = $type;
-        $this->tableId = $tableId;
         $this->data = $data;
         $this->options = $options;
-
-        $this->query = array(
+        
+        $this->options['_query'] = array(
             'route' => $options['route'],
             'page' => 1,
             'sort' => $options['default_sorts'],
             'limit' => $options['limit'],
             'filter' => null
         );
-    }
-    
-    public function getCaption() {
-        return $this->caption;
-    }
 
-    public function setCaption($caption) {
-        $this->caption = $caption;
+        $this->columns = array();
     }
 
     public function getData() {
@@ -95,16 +78,15 @@ class TableBuilder implements TableBuilderInterface {
         return $this->options;
     }
 
-    public function addColumn(ColumnInterface $column) {
-        $this->columns[] = $column;
-        return $this;
+    public function getColumns() {
+        return $this->columns;
     }
 
     public function handleRequest(Request $request) {
-        $this->query['limit'] = (int) $request->get('_limit', $this->options['limit']);
-        $this->query['page'] = (int) $request->get('_page', 1);
-        $this->query['sort'] = (int) $request->get('_sort', $this->options['default_sorts']);
-        $this->query['filter'] = $request->get('_filter', '');
+        $this->options['_query']['limit'] = (int) $request->get('_limit', $this->options['limit']);
+        $this->options['_query']['page'] = (int) $request->get('_page', 1);
+        $this->options['_query']['sort'] = (int) $request->get('_sort', $this->options['default_sorts']);
+        $this->options['_query']['filter'] = $request->get('_filter', '');
     }
 
     public function getTable() {
@@ -115,21 +97,25 @@ class TableBuilder implements TableBuilderInterface {
         $dataProvider->setQueryBuilder($queryBuilder);
         $dataProvider->setColumns($this->columns);
 
-        $data = $dataProvider->getData($this->query['page'], $this->query['sort'], $this->query['limit'], $this->query['filter']);
+        $query = $this->options['_query'];
+        
+        $data = $dataProvider->getData($query['page'], $query['sort'], $query['limit'], $query['filter']);
         $total = 0;
 
-        if ($this->query['limit'] > 0) {
-            $total = $dataProvider->getTotal($this->query['filter']);
+        if ($query['limit'] > 0 && count($data) > 0) {
+            if (count($data) === $query['limit'] || $query['page'] > 1) {
+                $total = $dataProvider->getTotal($query['filter']);
+            }
         }
         
-        $event = new TablePreSetDataEvent($this->type, $this->tableId, $this->data, $this->options);
+        $event = new TablePreSetDataEvent($this->type, $this->data, $this->options);
         $this->eventDispatcher->dispatch(TablePreSetDataEvent::NAME, $event);
-        
-        $table = new Table($this->tableId, $this->type->getName(), $this->caption, $this->columns, $data, $total, $this->query);
+
+        $table = new Table($this->type, $this->columns, $data, $total, $this->options);
 
         $event = new TablePostSetDataEvent($table, $this->data, $this->options);
         $this->eventDispatcher->dispatch(TablePostSetDataEvent::NAME, $event);
-        
+
         return $table;
     }
 
@@ -149,4 +135,8 @@ class TableBuilder implements TableBuilderInterface {
         return $provider;
     }
 
+    public function add($name, $type, array $options = array()) {
+        $this->columns[] = $this->factory->create($name, $type, count($this->columns), $options)->getColumn();
+        return $this;
+    }
 }

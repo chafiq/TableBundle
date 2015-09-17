@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use EMC\TableBundle\Session\TableSession;
+use EMC\TableBundle\Column\ColumnFactoryInterface;
 
 /**
  * TableFactory
@@ -29,10 +30,16 @@ class TableFactory implements TableFactoryInterface {
      */
     private $tableSession;
     
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSession $tableSession) {
+    /**
+     * @var ColumnFactoryInterface
+     */
+    private $columnFactory;
+    
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSession $tableSession, ColumnFactoryInterface $columnFactory) {
         $this->entityManager    = $entityManager;
         $this->eventDispatcher  = $eventDispatcher;
         $this->tableSession     = $tableSession;
+        $this->columnFactory    = $columnFactory;
     }
     
     public function create(TableTypeInterface $type, $data = null, array $options = array()) {
@@ -43,12 +50,14 @@ class TableFactory implements TableFactoryInterface {
         $resolver = new OptionsResolver();
         $type->setDefaultOptions($resolver);
         
+        $_options = $options;
         $options = $resolver->resolve($options);
         
-        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $type, self::hash($type, $options), $data, $options);
+        $options['_tid'] = self::hash($type, $_options);
+        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $type, $data, $options);
         
         $type->buildTable($builder, $builder->getOptions());
-
+        
         return $builder;
     }
     

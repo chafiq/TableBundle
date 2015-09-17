@@ -88,12 +88,18 @@ Consider that we have two data base tables :
 ``` php
         use Symfony\Component\HttpFoundation\Request;
         use Acme\MyBundle\Table\Type\MyTableType
+
         public function indexAction(Request $request) {
             
-          /* @var $factory \EMC\TableBundle\Table\TableFactory */
-          $factory = $this->get('table.factory');
+            /* @var $factory \EMC\TableBundle\Table\TableFactory */
+            $factory = $this->get('table.factory');
           
-          $table = $factory->create(new MyTableType())->getTable();
+            $table = $factory   ->create(
+                                    new MyTableType(),
+                                    null,
+                                    array('caption' => 'My table exemple')
+                                )
+                                ->getTable();
           
           return $this->render('AcmeMyBundle:Table:index.html.twig', array('table' => $table));
         }
@@ -123,7 +129,6 @@ Consider that we have two data base tables :
 
 namespace Acme\MyBundle\Table\Type;
 
-use EMC\TableBundle\Column;
 use EMC\TableBundle\Table\TableType;
 use EMC\TableBundle\Table\TableBuilderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -131,39 +136,55 @@ use Doctrine\Common\Persistence\ObjectManager;
 class MyTableType extends TableType {
     
     public function buildTable(TableBuilderInterface $builder, array $options) {
-        $column = new Column\Anchor('#', array('cid' => 'c.id'));
-        $column->setRoute('acme_my_edit');
-        $column->setTitle('Ouvrir');
-        $builder->addColumn($column);
-                
-        $column = new Column\Text('Pays', array('s.name'));
-        $column->setSearchable(true);
-        $column->setSortable(true);
-        $builder->addColumn($column);
-        
-        $column = new Column\Text('Ville', array('c.name'));
-        $column->setSearchable(true);
-        $column->setSortable(true);
-        $builder->addColumn($column);
+        $builder->add('id', 'anchor', array(
+            'route' => 'edit_route',
+            'params' => array('id' => 'c.id'),
+            'format' => '#%s',
+            'title' => '#',
+            'allow_sort' => true
+        ));
 
-        $column = new Column\Date('date', array('c.createdAt'));
-        $column->setSortable(true);
-        $builder->addColumn($column);
-        
-        $action = new Column\Action();
-        
-        $column = new Column\Button('delete', array('c.id'));
-        $column->setIcon('trash');
-        $action->addColumn($column);
-        
-        $column = new Column\Button('edit', array('c.id'));
-        $column->setIcon('edit');
-        $column->setText('Editer');
-        $action->addColumn($column);
-        
-        $builder->addColumn($action);
-        
-        $builder->setCaption('Liste des villes');
+        $builder->add('state', 'text', array(
+            'params' => array('s.name'),
+            'format' => '%s',
+            'title' => 'State',
+            'allow_filter' => true,
+            'allow_sort' => true
+        ));
+
+        $builder->add('city', 'text', array(
+            'params' => array('c.name', 'c.id'),
+            'format' => '%s (#%d)',
+            'title' => 'City',
+            'allow_filter' => true,
+            'allow_sort' => true
+        ));
+
+        $builder->add('createdAt', 'datetime', array(
+            'params' => array('t.createdAt'),
+            'title' => 'Date',
+            'allow_sort' => true
+        ));
+
+        $builder->add('delete', 'button', array(
+            'icon' => 'remove',
+            'text' => 'Delete',
+            'column_class' => 'btn-xs'
+        ));
+
+        $builder->add('add', 'button', array(
+            'icon' => 'plus',
+            'column_class' => 'btn-xs'
+        ));
+
+        $builder->add('status', 'icon', array(
+            'params' => array('c.id'),
+            'format' => function($id) { return $id % 2 ? 'star' : 'star-o'; }
+        ));
+
+        $builder->add('pdf', 'image', array(
+            'asset_url' => 'bundles/acmesandbox/images/pdf.jpg'
+        ));
     }
 
     public function getName() {

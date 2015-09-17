@@ -20,13 +20,18 @@ class TableDataCollector extends DataCollector {
     }
     
     public function collectConfig(TableInterface $table, $data = null, array $options = array()) {
+        
+        if ( !isset($options['_tid']) ) {
+            throw new \RuntimeException;
+        }
+        
         $this->init();
-        $this->data['tables'][$table->getId()] = array(
-            'name'      => $table->getName(),
+        $this->data['tables'][$options['_tid']] = array(
+            'name'      => $options['name'],
             'options'   => $options,
-            'caption'   => $table->getCaption(),
+            'caption'   => $options['caption'],
             'total'     => $table->getTotal(),
-            'query'     => $table->getQuery(),
+            'query'     => $options['_query'],
             'columns'   => $this->getTableColumns($table->getColumns())
         );
     }
@@ -50,10 +55,10 @@ class TableDataCollector extends DataCollector {
             if ( $column instanceof ActionInterface ) {
                 $config = array_merge($config, $this->getTableColumns($column->getColumns()));
             } else {
-                $config[$column->getName()] = array(
-                    'class' => get_class($column),
-                    'params' => $column->getParams(),
-                    'type'  => $column->getExtension()
+                $config[$column->getOption('name')] = array(
+                    'params'=> $column->getOption('params'),
+                    'type'  => $column->getType()->getName(),
+                    'class' => get_class($column->getType())
                 );
             }
         }

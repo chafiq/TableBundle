@@ -20,11 +20,6 @@ class TablePreSetDataEvent extends Event {
     private $type;
 
     /**
-     * @var string
-     */
-    private $tableId;
-
-    /**
      * @var mixed
      */
     private $data;
@@ -34,19 +29,14 @@ class TablePreSetDataEvent extends Event {
      */
     private $options;
     
-    function __construct(TableTypeInterface $type, $tableId, $data = null, array $options = array()) {
+    function __construct(TableTypeInterface $type, $data = null, array $options = array()) {
         $this->type = $type;
-        $this->tableId = $tableId;
         $this->data = $data;
         $this->options = $options;
     }
 
     public function getType() {
         return $this->type;
-    }
-
-    public function getTableId() {
-        return $this->tableId;
     }
 
     public function getData() {
