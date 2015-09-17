@@ -201,10 +201,12 @@ class MyTableType extends TableType {
 
     
 ```
-
-
+## Result
+### Table
 ![Table ](https://cloud.githubusercontent.com/assets/2777521/9934122/8f523e56-5d4f-11e5-96dd-46322cbb505a.png)
 
+### WebProfiler toolbar
 ![WebProfiler toolbar](https://cloud.githubusercontent.com/assets/2777521/9934127/94a2a3d2-5d4f-11e5-837d-2f047548526b.png)
 
+### WebProfiler content
 ![WebProfiler content](https://cloud.githubusercontent.com/assets/2777521/9934132/97c2a666-5d4f-11e5-8ec9-9c4cedb57925.png)
