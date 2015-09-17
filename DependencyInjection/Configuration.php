@@ -23,7 +23,9 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('template')->end()
-                ->arrayNode('extensions')->end()
+                ->arrayNode('extensions')
+                    ->prototype('scalar')
+                ->end()
             ->end()
         ;
 

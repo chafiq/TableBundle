@@ -11,9 +11,11 @@ This bundle gives a simple way to generate and manage tables based on Symfony. I
 
 1. Download TableBundle
 2. Enable the Bundle
-3. Examples
+3. Create/Custom new column type extension
+4. Examples
+5. Result & Screenshots
 
-### Step 1: Download TableBundle
+### Download TableBundle
 
 This can be done in several ways, depending on your preference. The first method is the standard Symfony2 method.
 
@@ -56,7 +58,7 @@ $loader->registerNamespaces(array(
 ));
 ```
 
-### Step 2: Enable the bundle
+### Enable the bundle
 
 Finally,
 
@@ -89,7 +91,49 @@ emc_table:
 * jQuery >= v1.4.2 : http://jquery.com/download/
 * emc/xmlhttprequest-bundle : v3.0
 
-## Step 3 : Exemples
+## Create/Custom new column type extension
+
+PHP : Column type class
+``` php
+<?php
+namespace Acme\MyBundle\Table\Column;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class CustomType extends ColumnType {
+    public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
+        parent::buildView($view, $column, $data, $options);
+        /* Add you column data view here. You can access to them in the twig extension widget */
+    }
+    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+        parent::setDefaultOptions($resolver);
+        /* define you parameters here */
+    }
+    public function getName() {
+        return 'custom';
+    }
+}
+```
+
+Twig : Column type template
+``` twig
+{# Acme/MyBundle/Resources/views/Table/Column/custom.html.twig #}
+{% block custom_widget %}
+    {# here you can edit the content of TD element (Cell). #}
+{% endblock %}
+```
+
+Config : Column type service
+``` yaml
+# Acme/MyBundle/Resources/config/services.yml
+services:
+    ...
+    my_custom_column_type:
+        class: Acme\MyBundle\Table\Column\CustomType
+        tags:
+            -  { name: table.type, alias: custom }
+```
+
+## Exemples
 
 Consider that we have two data base tables :
   - city : #id, name, createdAt, stateid
@@ -212,7 +256,7 @@ class MyTableType extends TableType {
 
     
 ```
-## Result
+## Result & Screenshots
 ### Table
 ![Table ](https://cloud.githubusercontent.com/assets/2777521/9934122/8f523e56-5d4f-11e5-96dd-46322cbb505a.png)
 
