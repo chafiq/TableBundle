@@ -89,7 +89,7 @@ emc_table:
 ### Dependances
 
 * jQuery >= v1.4.2 : http://jquery.com/download/
-* emc/xmlhttprequest-bundle : v3.0
+* emc/xmlhttprequest-bundle : 3.0
 
 ## Create/Custom new column type extension
 
