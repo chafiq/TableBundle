@@ -58,7 +58,9 @@ $loader->registerNamespaces(array(
 
 ### Step 2: Enable the bundle
 
-Finally, enable the bundle in the kernel:
+Finally,
+
+Enable the bundle in the kernel:
 
 ``` php
 <?php
@@ -71,6 +73,15 @@ public function registerBundles()
         new EMC\TableBundle\EMCTableBundle(),
     );
 }
+```
+
+Enable the routing config :
+
+``` yaml
+# app/config/routing.yml
+emc_table:
+    resource: "@EMCTableBundle/Resources/config/routing.yml"
+    prefix:   /
 ```
 
 ### Dependances
