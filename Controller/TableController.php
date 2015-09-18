@@ -21,9 +21,12 @@ class TableController extends Controller {
             return $this->createNotFoundException();
         }
         
-        $table = $factory->restore($tableId);
+        $params = $request->get('params', array());
+        $isSubtable = (bool) $request->get('subtable');
+        
+        $table = $factory->restore($tableId, $params);
         $table->handleRequest($request);
         
-        return $this->render('EMCTableBundle:Table:index.html.twig', array('table' => $table->getTable()));
+        return $this->render('EMCTableBundle:Table:' . ($isSubtable ? 'index' : 'fragment') . '.html.twig', array('table' => $table->getTable()));
     }
 }

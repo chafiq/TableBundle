@@ -42,10 +42,12 @@ class TableFactory implements TableFactoryInterface {
         $this->columnFactory    = $columnFactory;
     }
     
-    public function create(TableTypeInterface $type, $data = null, array $options = array()) {
+    public function create(TableTypeInterface $type, $data = null, array $options = array(), array $params=array()) {
         if (null !== $data && !array_key_exists('data', $options)) {
             $options['data'] = $data;
         }
+        
+        $options['params'] = $params;
 
         $resolver = new OptionsResolver();
         $type->setDefaultOptions($resolver);
@@ -54,6 +56,12 @@ class TableFactory implements TableFactoryInterface {
         $options = $resolver->resolve($options);
         
         $options['_tid'] = self::hash($type, $_options);
+        
+        if ( $options['subtable'] instanceof TableTypeInterface ) {
+            $subtable = $this->create($options['subtable'], $data, $options['subtable_options'])->create();
+            $options['_subtid'] = $subtable->getOption('_tid');
+        }
+        
         $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $type, $data, $options);
         
         $type->buildTable($builder, $builder->getOptions());
@@ -61,7 +69,7 @@ class TableFactory implements TableFactoryInterface {
         return $builder;
     }
     
-    public function load($class, $data = null, array $options = array()) {
+    public function load($class, $data = null, array $options = array(), array $params=array()) {
         
         assert(is_string($class));
         
@@ -71,12 +79,12 @@ class TableFactory implements TableFactoryInterface {
         if ( !$type instanceof TableTypeInterface ) {
             throw new \InvalidArgumentException;
         }
-        return $this->create($type, $data, $options);
+        return $this->create($type, $data, $options, $params);
     }
     
-    public function restore($tableId) {
+    public function restore($tableId, array $params=array()) {
         $config = $this->tableSession->restore($tableId);
-        return $this->load($config['class'], $config['data'], $config['options']);
+        return $this->load($config['class'], $config['data'], $config['options'], $params);
     }
     
     private static function hash(TableTypeInterface $type, array $options) {

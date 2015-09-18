@@ -43,6 +43,14 @@ table.emc-table > thead > tr > th.sortable.sort > div.dropdown > span.caret {
     color: #000000;
 }
 
+table.emc-table > tbody > tr[data-subtable] {
+    cursor: pointer;
+}
+
+table.emc-table > tbody > tr.subtable > td {
+    padding: 20px;
+}
+
 table.emc-table > tbody > tr > td {
     vertical-align: middle;
 }

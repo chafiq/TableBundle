@@ -17,10 +17,16 @@ abstract class ColumnType implements ColumnTypeInterface {
 
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         $type = $column->getType()->getName();
+        
+        if ( !isset($options['attrs']['class']) ) {
+            $options['attrs']['class'] = '';
+        }
+        $options['attrs']['class'] = trim($type . '_column ' . $options['attrs']['class']);
+        
         $view = array(
             'type'          => $type,
-            'column_class'  => $type . '_column ' . $options['column_class'],
             'cell_class'    => $options['name'] . '_cell',
+            'attrs'         => $options['attrs'],
             'value'         => self::getValue($options['format'], $data),
             'allow_sort'    => $options['allow_sort'],
             'allow_filter'  => $options['allow_filter'],
@@ -49,7 +55,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'name'      => $this->getName(),
             'title'     => '',
             'params'    => array(),
-            'column_class'  => '',
+            'attrs'    => array(),
             'data'      => null,
             'default'   => null,
             'format'    => null,
@@ -62,12 +68,12 @@ abstract class ColumnType implements ColumnTypeInterface {
             'name'          => 'string',
             'title'         => 'string',
             'params'        => array('string', 'array'),
-            'column_class'  => 'string',
+            'attrs'         => 'array',
             'format'        => array('null', 'string', 'callable'),
             'data'          => array('null', 'array'),
             'default'       => array('null', 'string'),
-            'allow_sort'    => 'bool',
-            'allow_filter'  => 'bool',
+            'allow_sort'    => array('bool', 'array'),
+            'allow_filter'  => array('bool', 'array'),
             'is_action'     => 'bool'
         ));
         

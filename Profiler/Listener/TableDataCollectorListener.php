@@ -23,9 +23,10 @@ class TableDataCollectorListener {
     }
     
     public function onPreSetData(TablePreSetDataEvent $event) {
+        $this->dataCollector->collectConfig($event->getTable(), $event->getData(), $event->getOptions());
     }
     
     public function onPostSetData(TablePostSetDataEvent $event) {
-        $this->dataCollector->collectConfig($event->getTable(), $event->getData(), $event->getOptions());
+        $this->dataCollector->collectData($event->getTable(), $event->getData(), $event->getOptions());
     }
 }

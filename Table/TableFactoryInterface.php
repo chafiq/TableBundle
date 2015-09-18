@@ -13,7 +13,7 @@ interface TableFactoryInterface {
      * @param array $options
      * @return TableBuilderInterface
      */
-    public function create(TableTypeInterface $type, $data = null, array $options = array());
+    public function create(TableTypeInterface $type, $data = null, array $options = array(), array $params=array());
     
     /**
      * 
@@ -24,5 +24,5 @@ interface TableFactoryInterface {
      */
     public function load($class, $data = null, array $options = array());
     
-    public function restore($uid);
+    public function restore($uid, array $params=array());
 }

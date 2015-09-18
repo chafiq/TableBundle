@@ -1,18 +1,20 @@
 {% block text_widget %}
-    <span class="{{ column_class }}">{{ value }}</span>
+    <span {{ block('attributes') }}>{{ value }}</span>
 {% endblock %}
 
 {% block datetime_widget %}
-    <span class="{{ column_class }}">{{ value|date(date_format) }}</span>
+    <span {{ block('attributes') }}>{{ value|date(date_format) }}</span>
 {% endblock %}
 
 {% block anchor_widget %}
-    <a class="{{ column_class }}" href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+    <a {{ block('attributes') }} href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
 {% endblock %}
 
 {% block button_widget %}
-    <button class="{{ column_class }} btn btn-default" title="{{ title }}">
+    {% set attrs = attrs|merge({'class': attrs.class|default('') ~ ' btn btn-default', 'title':title}) %}
+    <button {{ block('attributes') }}>
         {% if icon %}
+            {% set attrs = attrs|merge({'class':''}) %}
             {{ block('icon_widget') }}
         {% endif %}
         {{ text }}
@@ -20,9 +22,17 @@
 {% endblock %}
 
 {% block icon_widget %}
-    <i class="{{ column_class }} {{ icon_family }} {{ icon_family }}-{{ icon }}"></i>
+    {% set class = attrs.class|default(icon_family ~ ' ' ~ icon_family ~ '-' ~ icon) %}
+    {% set attrs = attrs|merge({'class': class}) %}
+    <i {{ block('attributes') }}></i>
 {% endblock %}
 
 {% block image_widget %}
-    <img class="{{ column_class }}" src="{{ asset(asset_url) }}" alt="{{ alt }}" />
+    <img {{ block('attributes') }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
+{% endblock %}
+
+{% block attributes %}
+    {% for key, val in attrs %}
+        {{ key }}="{{ val }}"
+    {% endfor %}
 {% endblock %}

@@ -30,10 +30,27 @@ class TableDataCollector extends DataCollector {
             'name'      => $options['name'],
             'options'   => $options,
             'caption'   => $options['caption'],
-            'total'     => $table->getTotal(),
-            'query'     => $options['_query'],
-            'columns'   => $this->getTableColumns($table->getColumns())
+            'columns'   => $this->getTableColumns($table->getColumns()),
+            'total'     => -1,
+            'query'     => array()
         );
+    }
+    
+    
+    public function collectData(TableInterface $table, $data = null, array $options = array()) {
+        
+        if ( !isset($options['_tid']) ) {
+            throw new \RuntimeException;
+        }
+        
+        $this->init();
+        
+        if ( !isset($this->data['tables'][$options['_tid']]) ) {
+            $this->collectConfig($table, $data, $options);
+        }
+        
+        $this->data['tables'][$options['_tid']]['total'] = $table->getData()->getCount();
+        $this->data['tables'][$options['_tid']]['query'] = $options['_query'];
     }
     
     protected function init() {

@@ -3,7 +3,7 @@
 namespace EMC\TableBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
-use EMC\TableBundle\Table\TableTypeInterface;
+use EMC\TableBundle\Table\TableInterface;
 
 /**
  * TablePreSetDataEvent
@@ -15,9 +15,9 @@ class TablePreSetDataEvent extends Event {
     const NAME = 'table.pre_set_data';
 
     /**
-     * @var TableTypeInterface
+     * @var TableInterface
      */
-    private $type;
+    private $table;
 
     /**
      * @var mixed
@@ -29,14 +29,14 @@ class TablePreSetDataEvent extends Event {
      */
     private $options;
     
-    function __construct(TableTypeInterface $type, $data = null, array $options = array()) {
-        $this->type = $type;
+    function __construct(TableInterface $table, $data = null, array $options = array()) {
+        $this->table = $table;
         $this->data = $data;
         $this->options = $options;
     }
 
-    public function getType() {
-        return $this->type;
+    public function getTable() {
+        return $this->table;
     }
 
     public function getData() {

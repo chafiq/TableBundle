@@ -8,6 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
 use EMC\TableBundle\Column\ColumnFactoryInterface;
+use EMC\TableBundle\Provider\QueryConfig;
 
 /**
  * TableBuilder
@@ -88,51 +89,33 @@ class TableBuilder implements TableBuilderInterface {
         $this->options['_query']['sort'] = (int) $request->get('_sort', $this->options['default_sorts']);
         $this->options['_query']['filter'] = $request->get('_filter', '');
     }
+    
+    public function create() {
+        $table = new Table($this->type, $this->columns, $this->options);
+        
+        $event = new TablePreSetDataEvent($table, $this->data, $this->options);
+        $this->eventDispatcher->dispatch(TablePreSetDataEvent::NAME, $event);
+        
+        return $table;
+    }
 
     public function getTable() {
-        $dataProvider = self::getDataProvider($this->options['data_provider']);
-
-        $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options);
-
-        $dataProvider->setQueryBuilder($queryBuilder);
-        $dataProvider->setColumns($this->columns);
-
-        $query = $this->options['_query'];
+        $table = $this->create();
         
-        $data = $dataProvider->getData($query['page'], $query['sort'], $query['limit'], $query['filter']);
-        $total = 0;
-
-        if ($query['limit'] > 0 && count($data) > 0) {
-            if (count($data) === $query['limit'] || $query['page'] > 1) {
-                $total = $dataProvider->getTotal($query['filter']);
-            }
-        }
+        $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
+        $queryConfig = new QueryConfig();
+        $this->type->buildQuery($queryConfig, $table, $this->options);
         
-        $event = new TablePreSetDataEvent($this->type, $this->data, $this->options);
-        $this->eventDispatcher->dispatch(TablePreSetDataEvent::NAME, $event);
-
-        $table = new Table($this->type, $this->columns, $data, $total, $this->options);
-
+        /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
+        $dataProvider = $this->options['data_provider'];
+        
+        $data = $dataProvider->find($queryBuilder, $queryConfig);
+        $table->setData($data);
+        
         $event = new TablePostSetDataEvent($table, $this->data, $this->options);
         $this->eventDispatcher->dispatch(TablePostSetDataEvent::NAME, $event);
 
         return $table;
-    }
-
-    /**
-     * @param string $class
-     * @return \EMC\TableBundle\Provider\DataProviderInterface
-     * @throws \InvalidArgumentException
-     */
-    private static function getDataProvider($class) {
-
-        $reflection = new \ReflectionClass($class);
-        $provider = $reflection->newInstance(array());
-
-        if (!$provider instanceof \EMC\TableBundle\Provider\DataProviderInterface) {
-            throw new \InvalidArgumentException;
-        }
-        return $provider;
     }
 
     public function add($name, $type, array $options = array()) {

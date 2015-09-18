@@ -2,6 +2,8 @@
 
 namespace EMC\TableBundle\Table;
 
+use EMC\TableBundle\Provider\QueryResultInterface;
+
 /**
  * Table
  * 
@@ -20,26 +22,20 @@ final class Table implements TableInterface {
     private $columns;
 
     /**
-     * @var array
+     * @var QueryResultInterface
      */
     private $data;
-
-    /**
-     * @var int
-     */
-    private $total;
 
     /**
      * @var array
      */
     private $options;
 
-    function __construct(TableTypeInterface $type, array $columns, $data, $total, array $options = array()) {
+    function __construct(TableTypeInterface $type, array $columns, array $options = array()) {
         $this->type = $type;
         $this->columns = $columns;
-        $this->data = $data;
-        $this->total = $total;
         $this->options = $options;
+        $this->data = null;
     }
 
     public function getView() {
@@ -48,12 +44,11 @@ final class Table implements TableInterface {
         return $view;
     }
 
+    /**
+     * @return QueryResultInterface
+     */
     public function getData() {
         return $this->data;
-    }
-
-    public function getTotal() {
-        return $this->total;
     }
 
     public function getType() {
@@ -62,6 +57,22 @@ final class Table implements TableInterface {
 
     public function getColumns() {
         return $this->columns;
+    }
+
+    public function getOptions() {
+        return $this->options;
+    }
+
+    public function setData(QueryResultInterface $data) {
+        $this->data = $data;
+    }
+
+    public function getOption($name) {
+        if (!isset($this->options[$name])) {
+            throw new \InvalidArgumentException;
+        }
+
+        return $this->options[$name];
     }
 
 }

@@ -38,8 +38,12 @@ class TableSession implements TableSessionInterface {
         $tables = $this->session->get('tables');
         
         $tid = $options['_tid'];
-        unset($options['_tid']);
-        unset($options['_query']);
+        
+        foreach($options as $option => $_) {
+            if ( substr($option, 0, 1) === '_' ) {
+                unset($options[$option]);
+            }
+        }
         
         $tables[$tid] = array(
             'class'     => get_class($type),

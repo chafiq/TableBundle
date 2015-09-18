@@ -8,10 +8,17 @@ use Doctrine\ORM\QueryBuilder;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface DataProviderInterface {
-    public function setQueryBuilder(QueryBuilder $queryBuilder);
-    public function setColumns(array $columns);
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @return QueryResultInterface
+     */
+    public function find(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig);
     
-    public function getData($page, $sort, $limit, $filter);
-    public function getTotal($filter);
-    public function getAll();
+    /**
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @return QueryResultInterface
+     */
+    public function findAll(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig);
 }

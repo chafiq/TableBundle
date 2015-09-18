@@ -65,6 +65,9 @@ class TableExtension extends \Twig_Extension {
             'table_cell' => new \Twig_Function_Method($this, 'cell', array(
                 'is_safe' => array('all'),
                 'needs_environment' => true
+                    )),
+            'camel_case_to_option'    => new \Twig_Function_Method($this, 'camelCaseToOption', array(
+                'is_safe' => array('all')
                     ))
         );
     }
@@ -89,6 +92,10 @@ class TableExtension extends \Twig_Extension {
     public function cell(\Twig_Environment $twig, array $data) {
         $this->load();
         return $this->getBlock($data['type'])->renderBlock($data['type'] . '_widget', $data);
+    }
+    
+    public function camelCaseToOption($option) {
+        return preg_replace('/(?<=\\w)(?=[A-Z])/','-$1', $option);
     }
     
     /**

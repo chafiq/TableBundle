@@ -3,7 +3,6 @@
 namespace EMC\TableBundle\Provider;
 
 use Doctrine\ORM\QueryBuilder;
-use EMC\TableBundle\Column\ColumnInterface;
 
 /**
  * DataProvider
@@ -12,89 +11,66 @@ use EMC\TableBundle\Column\ColumnInterface;
  */
 class DataProvider implements DataProviderInterface {
 
-    /**
-     * @var QueryBuilder 
-     */
-    private $queryBuilder;
+    public function find(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        /* Add where clauses if there is any query search filter */
+        $this->addConstraints($queryBuilder, $queryConfig);
 
-    /**
-     * @var array
-     */
-    private $columns;
-
-    function __construct() {
-        $this->queryBuilder = null;
-        $this->columns = array();
-        $this->data = array();
-        $this->total = 0;
+        $rows = $this->getRows($queryBuilder, $queryConfig);
+        $count = 0;
+        if ($queryConfig->getLimit() > 0 && count($rows) > 0) {
+            if (count($rows) === $queryConfig->getLimit() || $queryConfig->getPage() > 1) {
+                $count = $this->getCount($queryBuilder, $queryConfig);
+            }
+        }
+        
+        return new QueryResult($rows, $count);
     }
 
-    public function getData($page, $sort, $limit, $filter) {
+    public function findAll(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        $queryConfig->setLimit(0);
+        $queryConfig->setPage(1);
 
-        assert($limit >= 0);
-        assert($page > 0);
+        return $this->getData($queryBuilder, $queryConfig);
+    }
+    
+    private function getRows(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
 
-        $queryBuilder = clone $this->queryBuilder;
         $queryBuilder->resetDQLPart('select');
+
+        $limit = $queryConfig->getLimit();
+        $page = $queryConfig->getPage();
+        $select = $queryConfig->getSelect();
+        $orderBy = $queryConfig->getOrderBy();
 
         if ($limit > 0) {
             $queryBuilder->setMaxResults($limit)
                     ->setFirstResult(($page - 1) * $limit);
         }
 
-        $this->addFilter($queryBuilder, $filter);
-
-        $indexes = array();
-        foreach ($this->columns as $i => $column) {
-            $options = $column->getOptions();
-            if (count($options['params']) > 0) {
-                foreach ($options['params'] as $j => $param) {
-                    $indexes['col' . $i] = array($i, $j);
-                    $queryBuilder->addSelect($param . ' as col' . $i . $j);
-
-                    if ($sort !== 0 && $i === abs($sort) - 1) {
-                        $queryBuilder->orderBy($param, $sort > 0 ? 'ASC' : 'DESC');
-                    }
-                }
-            }
+        $columns = array_map(function($i){return 'col' . $i;}, array_flip($select));
+        foreach ($columns as $column => $name) {
+            $queryBuilder->addSelect($column . ' AS ' . $name);
         }
 
-        if (count($indexes) === 0) {
-            return array();
+        foreach ($orderBy as $column => $isAsc) {
+            $queryBuilder->orderBy($column, $isAsc ? 'ASC' : 'DESC');
         }
+
         $rows = $queryBuilder->getQuery()->getArrayResult();
-
-        foreach ($rows as &$data) {
-            $_data = array();
-
-            foreach ($this->columns as $i => $column) {
-                $options = $column->getOptions();
-                if (count($options['params']) > 0) {
-                    $__data = array();
-                    foreach ($options['params'] as $j => $param) {
-                        $__data[$param] = $data['col' . $i . $j];
-                    }
-                    $_data = array_merge($_data, $__data);
-                }
-            }
-
-            $data = $_data;
+        $keys = array_flip($columns);
+        foreach( $rows as &$row ) {
+            $row = array_combine($keys, $row);
         }
-        unset($data);
-
+        unset($row);
+        
         return $rows;
     }
 
-    public function getTotal($filter) {
-
-        $queryBuilder = clone $this->queryBuilder;
-
+    private function getCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         $queryBuilder->resetDQLPart('select')
-                ->resetDQLPart('orderBy')
-                ->setMaxResults(1)
-                ->setFirstResult(0);
-
-        $this->addFilter($queryBuilder, $filter);
+                    ->resetDQLPart('orderBy')
+                    ->setMaxResults(1)
+                    ->setFirstResult(0);
 
         return (int) $queryBuilder
                         ->select('count(distinct ' . $queryBuilder->getRootAlias() . '.id)')
@@ -102,46 +78,23 @@ class DataProvider implements DataProviderInterface {
                         ->getSingleScalarResult();
     }
 
-    public function getAll() {
-        return $this->getData(1, 0, 0);
-    }
+    private function addConstraints(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        $query = $queryConfig->getQuery();
+        $columns = $queryConfig->getFilters();
 
-    public function setColumns(array $columns) {
-        $this->columns = $columns;
-        return $this;
-    }
-
-    public function setQueryBuilder(QueryBuilder $queryBuilder) {
-        $this->queryBuilder = $queryBuilder;
-        return $this;
-    }
-
-    private function addFilter(QueryBuilder $queryBuilder, $filter) {
-        if (!is_string($filter) || strlen($filter) === 0) {
+        if (count($columns) === 0 || strlen($query) === 0) {
             return;
         }
 
-        if (strlen($filter) < 3) {
+        if (strlen($query) < 3) {
             throw new \InvalidArgumentException;
         }
 
-        $orX = $queryBuilder->expr()->orX();
-
-        $hasFilter = false;
-        foreach ($this->columns as $column) {
-            $options = $column->getOptions();
-            if ($options['allow_filter'] && count($options['params']) > 0) {
-                foreach ($options['params'] as $param) {
-                    $orX->add('LOWER(' . $param . ') LIKE :filter');
-                    $hasFilter = true;
-                }
-            }
-        }
-
-        if ($hasFilter) {
-            $queryBuilder->andWhere($orX)
-                    ->setParameter('filter', '%' . strtolower($filter) . '%');
-        }
+        $clause = implode(' OR ', array_map(function($col) {
+                    return 'LOWER(' . $col . ') LIKE :query';
+                }, $columns));
+        $queryBuilder->andWhere($clause)
+                ->setParameter('query', '%' . strtolower($query) . '%');
     }
 
 }
