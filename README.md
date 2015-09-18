@@ -2,18 +2,21 @@
 
 This bundle gives a simple way to generate and manage tables based on Symfony. It's allow also :
   - Flexibility
-  - Pagination (autonome)
+  - Pagination (automated)
   - Searching
   - Sorting
   - Theming
+  - Extensions
+  - Sub-tables (automated)
 
 ## Installation
 
 1. Download TableBundle
 2. Enable the Bundle
 3. Create/Custom new column type extension
-4. Examples
-5. Result & Screenshots
+4. Sub-tables
+5. Examples
+6. Result & Screenshots
 
 ### Download TableBundle
 
@@ -133,6 +136,80 @@ services:
             -  { name: table.type, alias: custom }
 ```
 
+## Sub-tables
+
+Controller Code
+``` php
+        /* Controller */
+        ...
+        $table = $factory->create(new MyTableType(), null, array(
+                        ...
+                        'caption' => 'My sub table exemple',
+                        'subtable'  => new MySubTableType(),
+                        'subtable_params'   => array('cityId' => 'c.id'),
+                        'subtable_options'  => array( /* can take the same options as the root table */ )
+                        ...
+      );
+```
+
+Table Type Code
+``` php
+
+<?php
+
+namespace Acme\MyBundle\Table\Type;
+
+use EMC\TableBundle\Table\TableType;
+use EMC\TableBundle\Table\TableBuilderInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+
+class MySubTableType extends TableType {
+    
+    public function buildTable(TableBuilderInterface $builder, array $options) {
+        $builder->add('store', 'text', array(
+            'params' => array('ci.name'),
+            'title' => 'Center of interest',
+            'allow_filter' => true,
+            'allow_sort' => true
+        ));
+
+        $builder->add('address', 'text', array(
+            'params' => array('ci.address', 'ci.zipcode', 'c.name'),
+            'format' => '%s %s %s',
+            'title' => 'Address',
+            'allow_filter' => true,
+            'allow_sort' => true
+        ));
+        
+        $builder->add('delete', 'button', array(
+            'icon' => 'remove',
+            'attrs' => class('attrs' => 'btn-xs')
+        ));
+
+        $builder->add('add', 'button', array(
+            'icon' => 'plus',
+            'attrs' => class('attrs' => 'btn-xs')
+        ));
+    }
+
+    public function getName() {
+        return 'my-sub-table';
+    }
+
+    public function getQueryBuilder(ObjectManager $entityManager, array $params) {
+        return $entityManager
+                    ->getRepository('AcmeMyBundle:CenterInterest')
+                        ->createQueryBuilder('ci')
+                        ->innerJoin('ci.city', 'c')
+                        ->where('c.id = :cityId')
+                        ->setParameter('cityId', $params['cityId']); /* this parameter was defined in the subtable_options. $params is poputated in the TableType::buildSubtableParams and are passed to this method */
+    }
+}
+
+    
+```
+
+
 ## Exemples
 
 Consider that we have two data base tables :
@@ -224,12 +301,12 @@ class MyTableType extends TableType {
         $builder->add('delete', 'button', array(
             'icon' => 'remove',
             'text' => 'Delete',
-            'column_class' => 'btn-xs'
+            'attrs' => class('attrs' => 'btn-xs')
         ));
 
         $builder->add('add', 'button', array(
             'icon' => 'plus',
-            'column_class' => 'btn-xs'
+            'attrs' => class('attrs' => 'btn-xs')
         ));
 
         $builder->add('status', 'icon', array(
