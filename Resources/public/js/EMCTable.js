@@ -36,7 +36,7 @@ EMCTable.handle = function(dom, route, subtableRoute, limit) {
         throw new Error('EMCTable.handle : route string is required');
     }
 
-    if (subtableRoute !== null || typeof (subtableRoute) !== "string") {
+    if (subtableRoute !== null && typeof (subtableRoute) !== "string") {
         throw new Error('EMCTable.handle : subtableRoute string|null');
     }
 
@@ -144,18 +144,36 @@ EMCTable.prototype.paginate = function(page, sort) {
 };
 
 EMCTable.prototype.openSubtable = function(tr) {
-    if ( tr.nextSibling.className === "subtable" ) {
-        $(tr.nextSibling).show();
+    if (tr.nextSibling.className === "subtable") {
+        if ( !$(tr.nextSibling).is(':visible') ) {
+            $(tr.parentNode).find('> tr.subtable').not(tr.nextSibling).hide();
+        }
+        $(tr.nextSibling).toggle();
         return;
     }
-    
+
+    $(tr.parentNode).find('> tr.subtable').hide();
+
     var $td = $(document.createElement('td'))
-                    .attr('colspan', tr.childElementCount);
-    
+            .attr('colspan', tr.childElementCount);
+
     var $tr = $(tr);
     $tr.after(
-        $(document.createElement('tr'))
-        .addClass('subtable')
-        .append($td)
+            $(document.createElement('tr'))
+            .addClass('subtable')
+            .append($td)
     );
+
+    var params = {};
+    var data = $tr.data();
+    for( var param in data ) {
+        if ( param.startsWith('_') ) {
+            params[param.substr(1)] = data[param];
+        }
+    }
+    delete(params.subtable);
+
+    var html = EMCXmlHttpRequest.getInstance().get(this.subtableRoute, {params: params, subtable: true}, null, null, 'X-EMC-Table');
+
+    $td.append(html);
 };
