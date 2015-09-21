@@ -9,6 +9,7 @@ use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
 use EMC\TableBundle\Column\ColumnFactoryInterface;
 use EMC\TableBundle\Provider\QueryConfig;
+use EMC\TableBundle\Provider\QueryResult;
 
 /**
  * TableBuilder
@@ -119,15 +120,21 @@ class TableBuilder implements TableBuilderInterface {
      */
     public function getTable() {
         $table = $this->create();
+        /* @var $data \EMC\TableBundle\Provider\QueryResultInterface */
+        $data = null;
+        if (is_array($this->data) && count($this->data) > 0) {
+            $data = new QueryResult($this->data, 0);
+        } else {
+            $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
+            $queryConfig = new QueryConfig();
+            $this->type->buildQuery($queryConfig, $table, $this->options);
 
-        $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
-        $queryConfig = new QueryConfig();
-        $this->type->buildQuery($queryConfig, $table, $this->options);
+            /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
+            $dataProvider = $this->options['data_provider'];
 
-        /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
-        $dataProvider = $this->options['data_provider'];
+            $data = $dataProvider->find($queryBuilder, $queryConfig);
+        }
 
-        $data = $dataProvider->find($queryBuilder, $queryConfig);
         $table->setData($data);
 
         $event = new TablePostSetDataEvent($table, $this->data, $this->options);

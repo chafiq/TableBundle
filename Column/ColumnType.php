@@ -35,8 +35,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'attrs'         => $options['attrs'],
             'value'         => self::getValue($options['format'], $data),
             'allow_sort'    => $options['allow_sort'],
-            'allow_filter'  => $options['allow_filter'],
-            'is_action'     => $options['is_action']
+            'allow_filter'  => $options['allow_filter']
         );
     }
     
@@ -78,8 +77,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'default'   => null,
             'format'    => null,
             'allow_sort'    => false,
-            'allow_filter'  => false,
-            'is_action'     => false
+            'allow_filter'  => false
         ));
 
         $resolver->setAllowedTypes(array(
@@ -91,8 +89,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'data'          => array('null', 'array'),
             'default'       => array('null', 'string'),
             'allow_sort'    => array('bool', 'array'),
-            'allow_filter'  => array('bool', 'array'),
-            'is_action'     => 'bool'
+            'allow_filter'  => array('bool', 'array')
         ));
         
         $resolver->setNormalizers(array(

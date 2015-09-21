@@ -53,6 +53,12 @@ table.emc-table > tbody > tr.subtable > td {
 
 table.emc-table > tbody > tr > td {
     vertical-align: middle;
+    
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
 }
 
 table.emc-table > tbody > tr > td.actions {

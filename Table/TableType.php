@@ -3,6 +3,7 @@
 namespace EMC\TableBundle\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Column\ColumnInterface;
 use EMC\TableBundle\Provider\DataProvider;
 use EMC\TableBundle\Provider\QueryConfigInterface;
@@ -35,12 +36,14 @@ abstract class TableType implements TableTypeInterface {
             'data_provider' => new DataProvider(),
             'default_sorts' => array(),
             'limit' => 10,
-            'selector' => false,
             'caption' => '',
             'route' => '_table',
             'subtable' => null,
             'subtable_options' => array(),
-            'subtable_params' => array()
+            'subtable_params' => array(),
+            'rows_pad' => true,
+            'rows_params' => array(),
+            'allow_select' => false
         ));
 
         $resolver->setAllowedTypes(array(
@@ -52,12 +55,14 @@ abstract class TableType implements TableTypeInterface {
             'data_provider' => array('null', 'EMC\TableBundle\Provider\DataProviderInterface'),
             'default_sorts' => 'array',
             'limit' => 'int',
-            'selector' => 'bool',
             'caption' => 'string',
             'route' => 'string',
             'subtable' => array('null', 'EMC\TableBundle\Table\TableTypeInterface'),
             'subtable_options' => 'array',
-            'subtable_params' => 'array'
+            'subtable_params' => 'array',
+            'rows_pad' => 'bool',
+            'rows_params' => 'array',
+            'allow_select' => 'bool',
         ));
     }
 
@@ -71,7 +76,9 @@ abstract class TableType implements TableTypeInterface {
         }
 
         if (!isset($options['attrs']['id'])) {
-            $options['attrs']['id'] = 'table_' . $table->getType()->getName();
+            $options['attrs']['id'] = 'table_'
+                    . $table->getType()->getName()
+                    . (count($options['params']) > 0 ? '_' . implode('_', $options['params']) : '' );
         }
 
         $view->setData(array(
@@ -84,14 +91,20 @@ abstract class TableType implements TableTypeInterface {
             'tbody' => $this->buildBodyView($table),
             'tfoot' => $this->buildFooterView($table),
             'total' => $table->getData()->getCount(),
-            'subtable' => $this->buildSubtableParams($table, $options),
             'limit' => isset($options['_query']['limit']) ? $options['_query']['limit'] : $options['limit'],
             'page' => isset($options['_query']['page']) ? $options['_query']['page'] : 1,
             'has_filter' => $this->hasFilter($table),
-            'route' => $options['route']
+            'route' => $options['route'],
+            'rows_pad' => $options['rows_pad'],
+            'allow_select' => $options['allow_select']
         ));
     }
 
+    /**
+     * Build the header view.
+     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @return array
+     */
     protected function buildHeaderView(TableInterface $table) {
         $view = array();
 
@@ -106,10 +119,21 @@ abstract class TableType implements TableTypeInterface {
         return $view;
     }
 
+    /**
+     * Build the footer view.
+     * @todo implement table footer
+     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @return array
+     */
     protected function buildFooterView(TableInterface $table) {
-        
+        return array();
     }
 
+    /**
+     * Build the body view.
+     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @return array
+     */
     protected function buildBodyView(TableInterface $table) {
 
         if (($count = count($table->getData())) === 0) {
@@ -121,13 +145,20 @@ abstract class TableType implements TableTypeInterface {
         foreach ($table->getData()->getRows() as $_data) {
             $rowView = array();
             foreach ($table->getColumns() as $name => $column) {
-                $__data = $this->extract($column->getOption('params'), $_data);
+                $__data = $this->resolveParams($column->getOption('params'), $_data);
                 $cellView = array();
                 $column->getType()->buildView($cellView, $column, $__data, $column->getOptions());
                 $column->getType()->buildCellView($cellView, $column, $__data);
                 $rowView[$name] = $cellView;
             }
-            $view[] = $rowView;
+            
+            $view[] = array(
+                'params'    => $this->resolveParams($table->getOption('rows_params'), $_data, true),
+                'subtable'  =>  $table->getOption('subtable') instanceof TableTypeInterface ?
+                                $this->resolveParams($table->getOption('subtable_params'), $_data, true, null) :
+                                null,
+                'data'      => $rowView
+            );
         }
 
         return $view;
@@ -186,17 +217,19 @@ abstract class TableType implements TableTypeInterface {
                 ->setQuery($options['_query']['filter']);
     }
 
-    private function buildSubtableParams(TableInterface $table, array $options) {
-        if (!$options['subtable'] || count($options['subtable_params']) === 0) {
-            return null;
-        }
-        $subtableParams = array();
-        foreach ($table->getData()->getRows() as $row) {
-            $subtableParams[] = $this->extract($options['subtable_params'], $row, true);
-        }
-        return $subtableParams;
+    /**
+     * {@inheritdoc}
+     */
+    public function getQueryBuilder(ObjectManager $entityManager, array $params) {
+        return null;
     }
 
+    /**
+     * This method return TRUE if one or more columns allow filtering.
+     * 
+     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @return boolean
+     */
     protected function hasFilter(TableInterface $table) {
         foreach ($table->getColumns() as $column) {
             $options = $column->getOptions();
@@ -207,9 +240,26 @@ abstract class TableType implements TableTypeInterface {
         return false;
     }
 
-    private function extract(array $params, array $data, $preserveKeys = false) {
+    /**
+     * This method populate $params with values in $data.<br/>
+     * 
+     * @param array $params
+     * @param array $data
+     * @param bool $preserveKeys    Preserve or not the $params keys. Default false
+     * @param null|array $default   Returned if $params is empty
+     * @return array
+     * @throws \RuntimeException
+     */
+    private function resolveParams(array $params, array $data, $preserveKeys = false, $default = array()) {
+        if (count($params) === 0) {
+            return $default;
+        }
+
         $result = array();
         foreach ($params as $key => $param) {
+            if (!isset($data[$param])) {
+                throw new \RuntimeException('Unknown parameter "' . $param . '"');
+            }
             $result[$preserveKeys ? $key : $param] = $data[$param];
         }
         return $result;

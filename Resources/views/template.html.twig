@@ -1,6 +1,6 @@
 {% block empty %}
     <tr>
-        <td colspan="{{ thead|length }}">
+        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}">
     <center>Aucun élément à afficher</center>
 </td>
 </tr>
@@ -16,7 +16,7 @@
 {% block thead %}
     {% if has_filter or caption %}
         <tr>
-            <td colspan="{{ thead|length }}">
+            <td colspan="{{ thead|length + (allow_select ? 1 : 0)}}">
                 {% if caption %}
                     <span class="caption">{{ caption }}</span>
                 {% endif %}
@@ -27,8 +27,11 @@
         </tr>
     {% endif %}
     <tr>
-        {% for key, th in thead %}
-            {% if th.sort != 0 %}
+        {% if allow_select %}
+            <th></th>
+            {% endif %}
+            {% for key, th in thead %}
+                {% if th.sort != 0 %}
                 <th class="sortable" data-sort="{{ th.sort }}">
             <div class="dropdown">
                 {{ th.title }}
@@ -52,7 +55,7 @@
 
 {% block tfoot %}
     <tr>
-        <td colspan="{{ thead|length }}">
+        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}">
             {{ block('pages') }}
             {{ block('limit_select') }}
         </td>
@@ -73,7 +76,13 @@
 
 {% block table %}
 
-    {% set attrs = attrs|merge({'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive'}) %}
+    {% set attrs = attrs|merge({
+            'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive',
+            'data-route': path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw,
+            'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : null,
+            'data-limit' : limit,
+            'data-selectable' : allow_select
+        }) %}
     <table {{ block('attributes') }}>
         <thead>
             {{ block('thead') }}
@@ -85,19 +94,17 @@
             {{ block('tfoot') }}
         </tfoot>
     </table>
+    {{ block('javascript') }}
 
+{% endblock %}
+
+{% block javascript %}
     <script type="text/javascript">
         $(function() {
             EMCTable.EMPTY = 'Aucun élément à afficher';
-            EMCTable.handle(
-                    document.getElementById('{{ attrs.id }}'),
-                    '{{ path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw }}',
-                    {% if subtid %} '{{ path(route, {'tid':subtid}) }}' {% else %} null {% endif %},
-                    10
-            );
+            EMCTable.handle(document.getElementById('{{ attrs.id }}'));
         });
     </script>
-
 {% endblock %}
 
 {% block pages %}
@@ -144,18 +151,33 @@
 {% block rows %}
     {% for idx, tr in tbody %}
         <tr 
-            {% if subtable and subtable[idx] %}
-                data-subtable="true"
-                {% for key, val in subtable[idx] %}
-                    data-_{{ camel_case_to_option(key) }}="{{val}}"
-                {% endfor%}
+            {% if tr.subtable %}
+                data-subtable={{ tr.subtable|json_encode() }}
             {% endif %}
-        >
-            {% for idx, td in tr %}
+            {% if tr.params %}
+                {% set rowId = "row" %}
+                {% for key, val in tr.params %}
+                    data-{{ camel_case_to_option(key) }}="{{val}}"
+                    {% set rowId = rowId ~ '_' ~ val %}
+                {% endfor%}
+                id="{{ rowId }}"
+            {% endif %}
+            >
+            {% if allow_select %}
+                <td class="select_column"><input type="checkbox" /></td>
+                {% endif %}
+                {% for idx, td in tr.data %}
                 <td>{{ table_cell(td) }}</td>
             {% endfor %}
         </tr>
     {% endfor %}
+    {% if rows_pad and limit > 0 and tbody|length < limit-1 and total > limit %}
+        {% for idx in tbody|length..limit %}
+            <tr class="empty">
+                <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}"><div></div></td>
+            </tr>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block params %}

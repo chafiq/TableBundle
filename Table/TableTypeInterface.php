@@ -44,20 +44,23 @@ interface TableTypeInterface {
      * Sets the default options for this type.<br/>
      * <br/>
      * Default options are :<br/>
-     * 'name'  => string<br/>
-     * 'route' => string<br/>
-     * 'data'  => null|array<br/>
-     * 'params'=> array<br/>
-     * 'attrs' => array<br/>
-     * 'data_provider' =>  null|EMC\TableBundle\Provider\DataProviderInterface<br/>
-     * 'default_sorts' =>  array<br/>
-     * 'limit'     => int<br/>
-     * 'selector'  => bool<br/>
-     * 'caption'   => string<br/>
-     * 'route'     => string<br/>
-     * 'subtable'  => null|EMC\TableBundle\Table\TableTypeInterface<br/>
-     * 'subtable_options'  => array<br/>
-     * 'subtable_params'   => array<br/>
+     * <ul>
+     * <li><b>name</b>  : string <i>Table type name</i></li>
+     * <li><b>route</b> : string <i>Point access route default "_table"</i></li>
+     * <li><b>data</b>  : null|array <i>Table data. If set, the table is static. Default null</i></li>
+     * <li><b>params</b>: array <i>Table parameters @see TableTypeInterface::getQueryBuilder</i></li>
+     * <li><b>attrs</b> : array <i>Table Dom element attributes</i></li>
+     * <li><b>data_provider</b> : null|EMC\TableBundle\Provider\DataProviderInterface <i> Custom data provider.</i></li>
+     * <li><b>default_sorts</b> : array <i>@todo implements default sort columns</i></li>
+     * <li><b>limit</b>     : int <i>Max rows per page</i></li>
+     * <li><b>caption</b>   : string <i>Table title (caption)</i></li>
+     * <li><b>subtable</b>  : null|EMC\TableBundle\Table\TableTypeInterface <i>Subtable type</i></li>
+     * <li><b>subtable_options</b>  : array <i>Subtable options</i></li>
+     * <li><b>subtable_params</b>   : array <i>Subtable parameters. Same use as "params" option</i></li>
+     * <li><b>rows_pad</b>           : bool <i>Fixe table height. Complete table with empty rows until "limit".</i></li>
+     * <li><b>rows_params</b>        : array <i>Parameters to inject in the TR Dom element as data</i></li>
+     * <li><b>allow_select</b>       : bool <i>Activate selection mode.</i></li>
+     * </ul>
      * 
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
      */

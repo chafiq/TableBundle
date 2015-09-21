@@ -45,7 +45,7 @@ class Column implements ColumnInterface {
      * {@inheritdoc}
      */
     public function getOption($name) {
-        if (!isset($this->options[$name])) {
+        if (!array_key_exists($name, $this->options)) {
             throw new \InvalidArgumentException;
         }
 

@@ -61,7 +61,7 @@ class TableFactory implements TableFactoryInterface {
         $options['_tid'] = self::hash($type, $_options);
         
         if ( $options['subtable'] instanceof TableTypeInterface ) {
-            $subtable = $this->create($options['subtable'], $data, $options['subtable_options'])->create();
+            $subtable = $this->create($options['subtable'], null, $options['subtable_options'])->create();
             $options['_subtid'] = $subtable->getOption('_tid');
         }
         

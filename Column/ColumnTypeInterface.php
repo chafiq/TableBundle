@@ -51,19 +51,18 @@ interface ColumnTypeInterface {
     public function buildFooterView(array &$view, ColumnInterface $column, array $data);
 
     /**
-     * Sets the default options for this type.<br/>
-     * <br/>
-     * 'name'          => string<br/>
-     * 'title'         => string<br/>
-     * 'params'        => string|array<br/>
-     * 'attrs'         => array<br/>
-     * 'format'        => null|string|callable<br/>
-     * 'data'          => null|array<br/>
-     * 'default'       => null|string<br/>
-     * 'allow_sort'    => bool|array<br/>
-     * 'allow_filter'  => bool|array<br/>
-     * 'is_action'     => bool<br/>
-     * 
+     * Sets the default options for this type. <i></i></li>
+     * <ul>
+     * <li><b>name</b>          : string <i>Column type name</i></li>
+     * <li><b>title</b>         : string <i>Column title -> TH Dom element content</i></li>
+     * <li><b>params</b>        : string|array <i>Columns parameters.</i></li>
+     * <li><b>attrs</b>         : array <i>Table Dom element attributes</i></li>
+     * <li><b>format</b>        : null|string|callable <i>Value formatter. If string @see sprintf. If function il must return scalar value.</i></li>
+     * <li><b>data</b>          : null|array <i>Data column (static)</i></li>
+     * <li><b>default</b>       : null|string <i>@todo implement default value</i></li>
+     * <li><b>allow_sort</b>    : bool|array <i>Allow sorting on the column. Array of parameters for orderBy or if true, the orderBy is "params". Otherwize (false) sort is disabled</i></li>
+     * <li><b>allow_filter</b>  : bool|array <i>Allow filtering on the column. Array of parameters for building the where clause filter or if true, the parameters are "params". Otherwize (false) filtering is disabled</i></li>
+     * </ul>
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver);
