@@ -144,7 +144,7 @@ Controller Code
         ...
         $table = $factory->create(new MyTableType(), null, array(
                         ...
-                        'caption' => 'My sub table exemple',
+                        'caption' => 'My sub table example',
                         'subtable'  => new MySubTableType(),
                         'subtable_params'   => array('cityId' => 'c.id'),
                         'subtable_options'  => array( /* can take the same options as the root table */ )
@@ -210,7 +210,7 @@ class MySubTableType extends TableType {
 ```
 
 
-## Exemples
+## Examples
 
 Consider that we have two data base tables :
   - city : #id, name, createdAt, stateid
@@ -229,7 +229,7 @@ Consider that we have two data base tables :
             $table = $factory   ->create(
                                     new MyTableType(),
                                     null,
-                                    array('caption' => 'My table exemple')
+                                    array('caption' => 'My table example')
                                 )
                                 ->getTable();
           

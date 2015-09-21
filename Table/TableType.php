@@ -176,6 +176,10 @@ abstract class TableType implements TableTypeInterface {
         if (count($options['subtable_params']) > 0) {
             $select = array_merge($select, $options['subtable_params']);
         }
+        
+        if (count($options['rows_params']) > 0) {
+            $select = array_merge($select, $options['rows_params']);
+        }
 
         $filter = $options['_query']['filter'];
 
