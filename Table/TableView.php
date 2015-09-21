@@ -8,16 +8,25 @@ namespace EMC\TableBundle\Table;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableView {
+    
     /**
+     * View's data. They are populated in the TableTypeInterface::buildView.<br/>
+     * This $data must contains all template needs.<br/>
      * @var array
      */
     private $data;
     
+    /**
+     * @return array
+     */
     public function getData() {
         return $this->data;
     }
 
-    public function setData($data) {
+    /**
+     * @param array $data
+     */
+    public function setData(array $data) {
         $this->data = $data;
     }
 }

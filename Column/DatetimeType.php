@@ -11,11 +11,17 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class DatetimeType extends ColumnType {
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         $view['date_format'] = $options['date_format'];
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
 
@@ -28,6 +34,9 @@ class DatetimeType extends ColumnType {
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName() {
         return 'datetime';
     }

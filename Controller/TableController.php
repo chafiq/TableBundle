@@ -12,6 +12,13 @@ use Symfony\Component\HttpFoundation\Request;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableController extends Controller {
+    
+    /**
+     * Access point for pagination, filtering and subtables loading.<br/>
+     * All the table action in the client side are performed here.<br/>
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function indexAction(Request $request) {
         /* @var $factory \EMC\TableBundle\Table\TableFactoryInterface */
         $factory = $this->get('table.factory');

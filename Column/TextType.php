@@ -9,6 +9,9 @@ namespace EMC\TableBundle\Column;
  */
 class TextType extends ColumnType {
     
+    /**
+     * {@inheritdoc}
+     */
     public function getName() {
         return 'text';
     }

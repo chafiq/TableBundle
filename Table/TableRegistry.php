@@ -26,6 +26,9 @@ class TableRegistry implements TableRegistryInterface {
         $this->types = $types;
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function getType($name) {
         if (!isset($this->types[$name])) {
             throw new \InvalidArgumentException(sprintf('The field type "%s" is not registered with the service container.', $name));
@@ -42,6 +45,9 @@ class TableRegistry implements TableRegistryInterface {
         return $type;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function hasType($name) {
         return isset($this->types[$name]);
     }

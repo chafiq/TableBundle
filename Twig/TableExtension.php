@@ -72,36 +72,60 @@ class TableExtension extends \Twig_Extension {
         );
     }
 
+    /**
+     * Render block $block with $table view's data.
+     * @param \Twig_Environment $twig
+     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @param string $block
+     * @return string
+     */
     public function render(\Twig_Environment $twig, TableInterface $table, $block) {
         $this->load();
         return $this->template->renderBlock($block, $table->getView()->getData());
     }
 
+    /**
+     * @see TableExtension::render
+     */
     public function table(\Twig_Environment $twig, TableInterface $table) {
         return $this->render($twig, $table, 'table');
     }
 
+    /**
+     * @see TableExtension::render
+     */
     public function rows(\Twig_Environment $twig, TableInterface $table) {
         return $this->render($twig, $table, 'rows');
     }
 
+    /**
+     * @see TableExtension::render
+     */
     public function pages(\Twig_Environment $twig, TableInterface $table) {
         return $this->render($twig, $table, 'pages');
     }
 
+    /**
+     * @see TableExtension::render
+     */
     public function cell(\Twig_Environment $twig, array $data) {
         $this->load();
         return $this->getBlock($data['type'])->renderBlock($data['type'] . '_widget', $data);
     }
     
+    /**
+     * Transform camel case to DOM data option : subTableId => sub-table-id
+     * @param string $option
+     * @return string
+     */
     public function camelCaseToOption($option) {
         return preg_replace('/(?<=\\w)(?=[A-Z])/','-$1', $option);
     }
     
     /**
-     * 
+     * Return the block template
      * @param string $type
-     * @return type
+     * @return \Twig_TemplateInterface
      * @throws \InvalidArgumentException
      */
     private function getBlock($type) {

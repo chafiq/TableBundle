@@ -10,6 +10,11 @@ use EMC\TableBundle\Provider\QueryResultInterface;
 interface TableInterface {
 
     /**
+     * @return TableView Table view object
+     */
+    public function getView();
+    
+    /**
      * @return QueryResultInterface
      */
     public function getData();

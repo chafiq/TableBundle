@@ -38,6 +38,9 @@ final class Table implements TableInterface {
         $this->data = null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getView() {
         $view = new TableView();
         $this->type->buildView($view, $this, $this->options);
@@ -51,22 +54,37 @@ final class Table implements TableInterface {
         return $this->data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getType() {
         return $this->type;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getColumns() {
         return $this->columns;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOptions() {
         return $this->options;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setData(QueryResultInterface $data) {
         $this->data = $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getOption($name) {
         if (!isset($this->options[$name])) {
             throw new \InvalidArgumentException;

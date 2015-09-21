@@ -6,7 +6,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMC\TableBundle\Table\TableRegistryInterface;
 
 /**
- * ColumnFactory
+ * ColumnFactory Service
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
@@ -21,10 +21,13 @@ class ColumnFactory implements ColumnFactoryInterface {
         $this->registry = $registry;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function create($name, $type, $idx, array $options = array()) {
 
         $type = $this->resolve($type);
-        
+
         $resolver = new OptionsResolver();
         $type->setDefaultOptions($resolver);
 
@@ -39,6 +42,9 @@ class ColumnFactory implements ColumnFactoryInterface {
         return $builder;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     private function resolve($type) {
         if ($type instanceof ColumnTypeInterface) {
             return $type;

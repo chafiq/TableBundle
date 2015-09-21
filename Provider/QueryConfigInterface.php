@@ -7,16 +7,34 @@ namespace EMC\TableBundle\Provider;
  */
 interface QueryConfigInterface {
 
+    /**
+     * @return array Query builder select
+     */
     public function getSelect();
 
+    /**
+     * @return array Query builder orderBy
+     */
     public function getOrderBy();
 
+    /**
+     * @return array Allowed filters
+     */
     public function getFilters();
 
+    /**
+     * @return array Max rows per page
+     */
     public function getLimit();
 
+    /**
+     * @return array Actual page nmber
+     */
     public function getPage();
 
+    /**
+     * @return array Search sequence
+     */
     public function getQuery();
 
     /**

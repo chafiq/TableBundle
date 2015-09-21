@@ -11,10 +11,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 abstract class ColumnType implements ColumnTypeInterface {
 
-    public function buildColumn(ColumnBuilderInterface $builder, $data = null, array $options = array()) {
+    /**
+     * {@inheritdoc}
+     */
+    public function buildColumn(ColumnBuilderInterface $builder, array $data = null, array $options = array()) {
         
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         $type = $column->getType()->getName();
         
@@ -34,14 +40,23 @@ abstract class ColumnType implements ColumnTypeInterface {
         );
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function buildCellView(array &$view, ColumnInterface $column, array $data) {
         
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildFooterView(array &$view, ColumnInterface $column, array $data) {
         
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildHeaderView(array &$view, ColumnInterface $column) {
         $view = array(
             'sort' => $column->getOption('allow_sort') ? $column->getOption('idx') : 0,
@@ -49,6 +64,9 @@ abstract class ColumnType implements ColumnTypeInterface {
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         
         $resolver->setDefaults(array(
@@ -105,6 +123,9 @@ abstract class ColumnType implements ColumnTypeInterface {
         
         throw new \UnexpectedValueException;
     }
-
+    
+    /**
+     * {@inheritdoc}
+     */
     abstract public function getName();
 }

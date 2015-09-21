@@ -11,12 +11,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ButtonType extends IconType {
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         $view['text'] = isset($options['text']) ? $options['text'] : $view['value'];
         $view['title'] = $options['desc'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
 
@@ -31,6 +37,9 @@ class ButtonType extends IconType {
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName() {
         return 'button';
     }

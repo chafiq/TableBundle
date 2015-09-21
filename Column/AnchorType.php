@@ -11,6 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class AnchorType extends ColumnType {
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         
@@ -25,6 +28,9 @@ class AnchorType extends ColumnType {
         
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
 
@@ -47,6 +53,9 @@ class AnchorType extends ColumnType {
         
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName() {
         return 'anchor';
     }

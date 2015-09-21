@@ -23,10 +23,16 @@ class QueryResult implements QueryResultInterface {
         $this->count = $count;
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function getRows() {
         return $this->rows;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCount() {
         return $this->count;
     }

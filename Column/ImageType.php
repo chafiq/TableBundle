@@ -11,6 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ImageType extends ColumnType {
     
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         
@@ -19,6 +22,9 @@ class ImageType extends ColumnType {
         $view['output'] = $options['output'] ? $options['output'] : null;
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
         
@@ -35,6 +41,9 @@ class ImageType extends ColumnType {
         ));
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function getName() {
         return 'image';
     }

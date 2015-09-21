@@ -42,7 +42,10 @@ class TableFactory implements TableFactoryInterface {
         $this->columnFactory    = $columnFactory;
     }
     
-    public function create(TableTypeInterface $type, $data = null, array $options = array(), array $params=array()) {
+    /**
+     * {@inheritdoc}
+     */
+    public function create(TableTypeInterface $type, array $data = null, array $options = array(), array $params=array()) {
         if (null !== $data && !array_key_exists('data', $options)) {
             $options['data'] = $data;
         }
@@ -69,7 +72,10 @@ class TableFactory implements TableFactoryInterface {
         return $builder;
     }
     
-    public function load($class, $data = null, array $options = array(), array $params=array()) {
+    /**
+     * {@inheritdoc}
+     */
+    public function load($class, array $data = null, array $options = array(), array $params=array()) {
         
         assert(is_string($class));
         
@@ -82,11 +88,20 @@ class TableFactory implements TableFactoryInterface {
         return $this->create($type, $data, $options, $params);
     }
     
+    /**
+     * {@inheritdoc}
+     */
     public function restore($tableId, array $params=array()) {
         $config = $this->tableSession->restore($tableId);
         return $this->load($config['class'], $config['data'], $config['options'], $params);
     }
     
+    /**
+     * This method create a unique identifier for the table type and options.
+     * @param \EMC\TableBundle\Table\TableTypeInterface $type
+     * @param array $options
+     * @return string
+     */
     private static function hash(TableTypeInterface $type, array $options) {
         return sha1(get_class($type) . $type->getName() . http_build_query($options));
     }

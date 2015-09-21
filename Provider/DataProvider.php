@@ -11,6 +11,9 @@ use Doctrine\ORM\QueryBuilder;
  */
 class DataProvider implements DataProviderInterface {
 
+    /**
+     * {@inheritdoc}
+     */
     public function find(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         /* Add where clauses if there is any query search filter */
         $this->addConstraints($queryBuilder, $queryConfig);
@@ -26,6 +29,9 @@ class DataProvider implements DataProviderInterface {
         return new QueryResult($rows, $count);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function findAll(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         $queryConfig->setLimit(0);
         $queryConfig->setPage(1);

@@ -14,18 +14,24 @@ use EMC\TableBundle\Provider\QueryConfigInterface;
  */
 abstract class TableType implements TableTypeInterface {
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildTable(TableBuilderInterface $builder, array $options) {
         
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
 
         $resolver->setDefaults(array(
             'name' => $this->getName(),
             'route' => '_table',
             'data' => null,
-            'params'=> array(),
-            'attrs'=> array(),
+            'params' => array(),
+            'attrs' => array(),
             'data_provider' => new DataProvider(),
             'default_sorts' => array(),
             'limit' => 10,
@@ -55,16 +61,19 @@ abstract class TableType implements TableTypeInterface {
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildView(TableView $view, TableInterface $table, array $options = array()) {
 
         if (!isset($options['_tid'])) {
             throw new \RuntimeException;
         }
 
-        if ( !isset($options['attrs']['id']) ) {
+        if (!isset($options['attrs']['id'])) {
             $options['attrs']['id'] = 'table_' . $table->getType()->getName();
         }
-        
+
         $view->setData(array(
             'id' => $options['_tid'],
             'subtid' => isset($options['_subtid']) ? $options['_subtid'] : null,
@@ -124,6 +133,9 @@ abstract class TableType implements TableTypeInterface {
         return $view;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildQuery(QueryConfigInterface $query, TableInterface $table, array $options = array()) {
 
         $select = array();
