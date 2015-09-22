@@ -86,10 +86,13 @@ EMCTable.prototype.init = function() {
         this.$dom.on(EMCTable.EVENT_CHANGE, function(event) {
             var selectedRows = Object.keys(that.selectedRows)
                     .map(function(id) {
-                        return '> tbody > tr#' + id + ' > td.select_column > input[type=checkbox]';
+                        return '> tbody > tr#' + id;
                     })
                     .join(', ');
-            that.$dom.find(selectedRows).prop("checked", true);
+            that.$dom.find(selectedRows)
+                        .addClass('info')
+                            .find('> td.select_column > input[type=checkbox]')
+                            .prop("checked", true);
         });
     }
 
@@ -102,7 +105,7 @@ EMCTable.prototype.init = function() {
     }
     
     if (this.subtableRoute !== null || this.selectable) {
-        this.$dom.on('click', '> tbody > tr[data-subtable]', function(event) {
+        this.$dom.on('click', '> tbody > tr[data-subtable], > tbody > tr[data-selectable]', function(event) {
             if ((event.target.nodeName === "INPUT" && event.target.parentNode.className === 'select_column')
                     || event.target.nodeName === "A"
                     || event.target.nodeName === "BUTTON"
@@ -114,7 +117,7 @@ EMCTable.prototype.init = function() {
                 var input = $(this).find('> td.select_column > input[type=checkbox]').get(0);
                 input.checked = !input.checked;
                 that.select(input);
-            } else if (!event.ctrlKey) {
+            } else if (that.subtableRoute !== null && !event.ctrlKey) {
                 that.openSubtable(this);
             }
             event.preventDefault();
@@ -215,6 +218,7 @@ EMCTable.prototype.select = function(input) {
     var tr = input.parentNode.parentNode;
     var data = $(tr).data();
     delete(data.subtable);
+    delete(data.selectable);
 
     $(tr).toggleClass('info', input.checked);
     if (!input.checked) {

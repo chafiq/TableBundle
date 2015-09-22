@@ -79,7 +79,7 @@
     {% set attrs = attrs|merge({
             'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive',
             'data-route': path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw,
-            'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : null,
+            'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : "null",
             'data-limit' : limit,
             'data-selectable' : allow_select
         }) %}
@@ -153,6 +153,9 @@
         <tr 
             {% if tr.subtable %}
                 data-subtable={{ tr.subtable|json_encode() }}
+            {% endif %}
+            {% if allow_select %}
+                data-selectable="true"
             {% endif %}
             {% if tr.params %}
                 {% set rowId = "row" %}
