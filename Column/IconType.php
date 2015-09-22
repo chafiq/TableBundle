@@ -23,6 +23,10 @@ class IconType extends ColumnType {
     
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>icon</b>          : string <i>Icon name without prefix icon_family : fa-table => table</i></li>
+     * <li><b>icon_family</b>   : string <i>Icon family (fa|icon|glyphicon|...).</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);

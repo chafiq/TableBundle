@@ -24,6 +24,11 @@ class ImageType extends ColumnType {
     
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>asset_url</b>     : string <i>Asset url of the image.</i></li>
+     * <li><b>alt</b>   : string <i>Alternative text if image does not exists.</i></li>
+     * <li><b>output</b>   : string <i>Asset output url.</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);

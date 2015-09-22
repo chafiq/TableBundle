@@ -13,6 +13,10 @@ class ButtonType extends IconType {
 
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>text</b>          : string|null <i>Button text. If null $view['value'] replace it.</i></li>
+     * <li><b>desc</b>          : string|null <i>Button title</i></li>
+     * </ul>
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);

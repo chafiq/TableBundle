@@ -25,7 +25,7 @@ class DataProvider implements DataProviderInterface {
                 $count = $this->getCount($queryBuilder, $queryConfig);
             }
         }
-        
+
         return new QueryResult($rows, $count);
     }
 
@@ -38,7 +38,7 @@ class DataProvider implements DataProviderInterface {
 
         return $this->getData($queryBuilder, $queryConfig);
     }
-    
+
     private function getRows(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
 
         $queryBuilder->resetDQLPart('select');
@@ -53,30 +53,36 @@ class DataProvider implements DataProviderInterface {
                     ->setFirstResult(($page - 1) * $limit);
         }
 
-        $columns = array_map(function($i){return 'col' . $i;}, array_flip($select));
+        $columns = array_map(function($i) {
+            return 'col' . $i;
+        }, array_flip($select));
         foreach ($columns as $column => $name) {
             $queryBuilder->addSelect($column . ' AS ' . $name);
         }
 
-        foreach ($orderBy as $column => $isAsc) {
-            $queryBuilder->orderBy($column, $isAsc ? 'ASC' : 'DESC');
+        if (count($orderBy) === 0) {
+            $queryBuilder->orderBy($queryBuilder->getRootAlias() . '.id', 'ASC');
+        } else {
+            foreach ($orderBy as $column => $isAsc) {
+                $queryBuilder->orderBy($column, $isAsc ? 'ASC' : 'DESC');
+            }
         }
 
         $rows = $queryBuilder->getQuery()->getArrayResult();
         $keys = array_flip($columns);
-        foreach( $rows as &$row ) {
+        foreach ($rows as &$row) {
             $row = array_combine($keys, $row);
         }
         unset($row);
-        
+
         return $rows;
     }
 
     private function getCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         $queryBuilder->resetDQLPart('select')
-                    ->resetDQLPart('orderBy')
-                    ->setMaxResults(1)
-                    ->setFirstResult(0);
+                ->resetDQLPart('orderBy')
+                ->setMaxResults(1)
+                ->setFirstResult(0);
 
         return (int) $queryBuilder
                         ->select('count(distinct ' . $queryBuilder->getRootAlias() . '.id)')

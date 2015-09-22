@@ -30,6 +30,14 @@ class AnchorType extends ColumnType {
     
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>route</b>         : string <i>Route name. if the route requires arguments, be sur that they are present in 'params'</i></li>
+     * <li><b>static_params</b> : string <i>Static params the add to the route params.</i></li>
+     * <li><b>text</b>          : string|null <i>Anchor text. If null $view['value'] replace it.</i></li>
+     * <li><b>attrs</b>         : array <i>Table Dom element attributes</i></li>
+     * <li><b>icon</b>          : string|null <i>icon name.</i></li>
+     * <li><b>desc</b>          : string|null <i>Anchor title</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);

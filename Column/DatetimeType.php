@@ -21,6 +21,9 @@ class DatetimeType extends ColumnType {
     
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>date_format</b>          : string <i>Date format : "Y-m-d H:i:s"</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
