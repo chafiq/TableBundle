@@ -50,15 +50,16 @@ class TableFactory implements TableFactoryInterface {
             $options['data'] = $data;
         }
         
+        $_options = $options;
         $options['params'] = $params;
 
         $resolver = new OptionsResolver();
         $type->setDefaultOptions($resolver);
         
-        $_options = $options;
         $options = $resolver->resolve($options);
         
         $options['_tid'] = self::hash($type, $_options);
+        $options['_passed_options'] = $_options;
         
         if ( $options['subtable'] instanceof TableTypeInterface ) {
             $subtable = $this->create($options['subtable'], null, $options['subtable_options'])->create();

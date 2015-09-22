@@ -167,11 +167,11 @@
             {% endif %}
             >
             {% if allow_select %}
-                <td class="select_column"><input type="checkbox" /></td>
+                <td class="column-select-checkbox"><input type="checkbox" /></td>
                 {% endif %}
                 {% for idx, td in tr.data %}
-                <td>{{ table_cell(td) }}</td>
-            {% endfor %}
+                <td class="column-{{ td.name }}">{{ table_cell(td) }}</td>
+                {% endfor %}
         </tr>
     {% endfor %}
     {% if rows_pad and limit > 0 and tbody|length < limit-1 and total > limit %}

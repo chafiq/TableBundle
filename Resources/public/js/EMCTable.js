@@ -77,9 +77,9 @@ EMCTable.prototype.init = function() {
 
     if (this.selectable) {
 
-        this.$dom.find('> tbody > tr:not(.empty) > td.select_column > input[type=checkbox]').prop('checked', false);
+        this.$dom.find('> tbody > tr:not(.empty) > td.column-select-checkbox > input[type=checkbox]').prop('checked', false);
 
-        this.$dom.on('change', '> tbody > tr:not(.empty) > td.select_column > input[type=checkbox]', function(event) {
+        this.$dom.on('change', '> tbody > tr:not(.empty) > td.column-select-checkbox > input[type=checkbox]', function(event) {
             that.select(this);
         });
 
@@ -91,7 +91,7 @@ EMCTable.prototype.init = function() {
                     .join(', ');
             that.$dom.find(selectedRows)
                         .addClass('info')
-                            .find('> td.select_column > input[type=checkbox]')
+                            .find('> td.column-select-checkbox > input[type=checkbox]')
                             .prop("checked", true);
         });
     }
@@ -106,7 +106,7 @@ EMCTable.prototype.init = function() {
     
     if (this.subtableRoute !== null || this.selectable) {
         this.$dom.on('click', '> tbody > tr[data-subtable], > tbody > tr[data-selectable]', function(event) {
-            if ((event.target.nodeName === "INPUT" && event.target.parentNode.className === 'select_column')
+            if ((event.target.nodeName === "INPUT" && event.target.parentNode.className === 'column-select-checkbox')
                     || event.target.nodeName === "A"
                     || event.target.nodeName === "BUTTON"
                     ) {
@@ -114,7 +114,7 @@ EMCTable.prototype.init = function() {
             }
 
             if (that.selectable && event.ctrlKey) {
-                var input = $(this).find('> td.select_column > input[type=checkbox]').get(0);
+                var input = $(this).find('> td.column-select-checkbox > input[type=checkbox]').get(0);
                 input.checked = !input.checked;
                 that.select(input);
             } else if (that.subtableRoute !== null && !event.ctrlKey) {

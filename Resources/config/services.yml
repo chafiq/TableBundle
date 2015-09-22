@@ -61,7 +61,7 @@ services:
     table.data_collector:
         class: EMC\TableBundle\Profiler\DataCollector\TableDataCollector
         tags:
-            - { name: data_collector, template: "EMCTableBundle:Profiler:layout.html.twig", id: "table"  }
+            - { name: data_collector, template: "EMCTableBundle:Profiler:index.html.twig", id: "table"  }
             
     table.data_collector.listener:
         class: EMC\TableBundle\Profiler\Listener\TableDataCollectorListener

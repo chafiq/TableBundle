@@ -30,8 +30,8 @@ abstract class ColumnType implements ColumnTypeInterface {
         $options['attrs']['class'] = trim($type . '_column ' . $options['attrs']['class']);
         
         $view = array(
+            'name'          => $options['name'],
             'type'          => $type,
-            'cell_class'    => $options['name'] . '_cell',
             'attrs'         => $options['attrs'],
             'value'         => self::getValue($options['format'], $data),
             'allow_sort'    => $options['allow_sort'],
@@ -58,7 +58,7 @@ abstract class ColumnType implements ColumnTypeInterface {
      */
     public function buildHeaderView(array &$view, ColumnInterface $column) {
         $view = array(
-            'sort' => $column->getOption('allow_sort') ? $column->getOption('idx') : 0,
+            'sort' => $column->getOption('allow_sort') ? $column->getOption('_idx') : 0,
             'title'=> $column->getOption('title')
         );
     }

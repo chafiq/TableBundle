@@ -37,19 +37,14 @@ class TableSession implements TableSessionInterface {
      */
     public function store(TableTypeInterface $type, array $data = null, array $options = array()) {
 
-        if (!isset($options['_tid'])) {
+        if (!isset($options['_tid']) || !isset($options['_passed_options'])) {
             throw new \RuntimeException;
         }
 
         $tables = $this->session->get('tables');
 
         $tid = $options['_tid'];
-
-        foreach ($options as $option => $_) {
-            if (substr($option, 0, 1) === '_') {
-                unset($options[$option]);
-            }
-        }
+        $options = $options['_passed_options'];
 
         $tables[$tid] = array(
             'class' => get_class($type),

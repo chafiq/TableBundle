@@ -28,12 +28,15 @@ class ColumnFactory implements ColumnFactoryInterface {
 
         $type = $this->resolve($type);
 
+        $_options = $options;
+        
         $resolver = new OptionsResolver();
         $type->setDefaultOptions($resolver);
 
-        $options = $resolver->resolve($options);
         $options['name'] = $name;
-        $options['idx'] = $idx;
+        $options = $resolver->resolve($options);
+        $options['_idx'] = $idx;
+        $options['_passed_options'] = $_options;
 
         $builder = new ColumnBuilder($type, $options);
 
