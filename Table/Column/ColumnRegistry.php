@@ -1,6 +1,6 @@
 <?php
 
-namespace EMC\TableBundle\Table;
+namespace EMC\TableBundle\Table\Column;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class TableRegistry implements TableRegistryInterface {
+class ColumnRegistry implements ColumnRegistryInterface {
 
     /**
      * @var ContainerInterface

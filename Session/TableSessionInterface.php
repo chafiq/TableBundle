@@ -2,7 +2,7 @@
 
 namespace EMC\TableBundle\Session;
 
-use EMC\TableBundle\Table\TableTypeInterface;
+use EMC\TableBundle\Table\Type\TableTypeInterface;
 
 /**
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
@@ -17,7 +17,7 @@ interface TableSessionInterface {
     
     /**
      * Store the table in the session
-     * @param \EMC\TableBundle\Table\TableTypeInterface $type
+     * @param \EMC\TableBundle\Table\Type\TableTypeInterface $type
      * @param array|null $data
      * @param array $options
      */

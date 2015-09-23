@@ -1,43 +1,40 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
- * Button Column
+ * Date Column
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ButtonType extends IconType {
+class DatetimeType extends ColumnType {
 
     /**
      * {@inheritdoc}
-     * <ul>
-     * <li><b>text</b>          : string|null <i>Button text. If null $view['value'] replace it.</i></li>
-     * <li><b>desc</b>          : string|null <i>Button title</i></li>
-     * </ul>
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
-        $view['text'] = isset($options['text']) ? $options['text'] : $view['value'];
-        $view['title'] = $options['desc'];
+        $view['date_format'] = $options['date_format'];
     }
-
+    
     /**
      * {@inheritdoc}
+     * <ul>
+     * <li><b>date_format</b>          : string <i>Date format : "Y-m-d H:i:s"</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
 
         $resolver->setDefaults(array(
-            'text' => null,
-            'desc' => null
+            'date_format' => 'd/m/Y H:i'
         ));
 
-        $resolver->setAllowedTypes(array(
-            'text' => array('null', 'string'),
-            'desc' => array('null', 'string')
+        $resolver->addAllowedTypes(array(
+            'date_format' => 'string'
         ));
     }
 
@@ -45,7 +42,7 @@ class ButtonType extends IconType {
      * {@inheritdoc}
      */
     public function getName() {
-        return 'button';
+        return 'datetime';
     }
 
 }

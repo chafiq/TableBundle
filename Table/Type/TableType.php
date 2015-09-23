@@ -1,12 +1,16 @@
 <?php
 
-namespace EMC\TableBundle\Table;
+namespace EMC\TableBundle\Table\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use EMC\TableBundle\Column\ColumnInterface;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 use EMC\TableBundle\Provider\DataProvider;
 use EMC\TableBundle\Provider\QueryConfigInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMC\TableBundle\Table\TableBuilderInterface;
+use EMC\TableBundle\Table\TableInterface;
+use EMC\TableBundle\Table\TableView;
 
 /**
  * TableType
@@ -37,7 +41,6 @@ abstract class TableType implements TableTypeInterface {
             'default_sorts' => array(),
             'limit' => 10,
             'caption' => '',
-            'route' => '_table',
             'subtable' => null,
             'subtable_options' => array(),
             'subtable_params' => array(),
@@ -56,8 +59,7 @@ abstract class TableType implements TableTypeInterface {
             'default_sorts' => 'array',
             'limit' => 'int',
             'caption' => 'string',
-            'route' => 'string',
-            'subtable' => array('null', 'EMC\TableBundle\Table\TableTypeInterface'),
+            'subtable' => array('null', 'EMC\TableBundle\Table\Type\TableTypeInterface'),
             'subtable_options' => 'array',
             'subtable_params' => 'array',
             'rows_pad' => 'bool',
@@ -108,7 +110,7 @@ abstract class TableType implements TableTypeInterface {
     protected function buildHeaderView(TableInterface $table) {
         $view = array();
 
-        /* @var $column \EMC\TableBundle\Column\ColumnInterface */
+        /* @var $column \EMC\TableBundle\Table\Column\ColumnInterface */
         $column = null;
         foreach ($table->getColumns() as $name => $column) {
             $_view = array();
@@ -226,6 +228,13 @@ abstract class TableType implements TableTypeInterface {
      */
     public function getQueryBuilder(ObjectManager $entityManager, array $params) {
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptionsResolver() {
+        return new OptionsResolver();
     }
 
     /**

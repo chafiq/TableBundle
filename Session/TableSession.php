@@ -3,7 +3,7 @@
 namespace EMC\TableBundle\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use EMC\TableBundle\Table\TableTypeInterface;
+use EMC\TableBundle\Table\Type\TableTypeInterface;
 
 /**
  * TableSession manage tables in the session

@@ -1,10 +1,13 @@
 <?php
 
-namespace EMC\TableBundle\Table;
+namespace EMC\TableBundle\Table\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Provider\QueryConfigInterface;
+use EMC\TableBundle\Table\TableBuilderInterface;
+use EMC\TableBundle\Table\TableInterface;
+use EMC\TableBundle\Table\TableView;
 
 /**
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
@@ -54,7 +57,7 @@ interface TableTypeInterface {
      * <li><b>default_sorts</b> : array <i>@todo implements default sort columns</i></li>
      * <li><b>limit</b>     : int <i>Max rows per page</i></li>
      * <li><b>caption</b>   : string <i>Table title (caption)</i></li>
-     * <li><b>subtable</b>  : null|EMC\TableBundle\Table\TableTypeInterface <i>Subtable type</i></li>
+     * <li><b>subtable</b>  : null|EMC\TableBundle\Table\Type\TableTypeInterface <i>Subtable type</i></li>
      * <li><b>subtable_options</b>  : array <i>Subtable options</i></li>
      * <li><b>subtable_params</b>   : array <i>Subtable parameters. Same use as "params" option</i></li>
      * <li><b>rows_pad</b>           : bool <i>Fixe table height. Complete table with empty rows until "limit".</i></li>
@@ -77,6 +80,13 @@ interface TableTypeInterface {
      * @return \Doctrine\ORM\QueryBuilder The query builder.
      */
     public function getQueryBuilder(ObjectManager $entityManager, array $params);
+    
+    /**
+     * Returns the configured options resolver used for this type.
+     *
+     * @return OptionsResolverInterface The options resolver.
+     */
+    public function getOptionsResolver();
     
     /**
      * @return string name of the table type (unique)

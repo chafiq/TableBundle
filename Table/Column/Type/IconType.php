@@ -1,8 +1,9 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
  * Icon Column

@@ -1,6 +1,6 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column;
 
 /**
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
@@ -9,7 +9,7 @@ interface ColumnInterface {
 
     /**
      * This Method return the column type.
-     * @return ColumnTypeInterface
+     * @return Type\ColumnTypeInterface
      */
     public function getType();
     

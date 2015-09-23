@@ -35,7 +35,7 @@ interface TableInterface {
     public function getColumns();
 
     /**
-     * @return TableTypeInterface
+     * @return Type\TableTypeInterface
      */
     public function getType();
 

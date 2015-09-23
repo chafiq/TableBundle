@@ -1,9 +1,11 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use EMC\TableBundle\Table\TableRegistryInterface;
+use EMC\TableBundle\Table\Column\ColumnRegistryInterface;
+
+use EMC\TableBundle\Table\Column\Type\ColumnTypeInterface;
 
 /**
  * ColumnFactory Service
@@ -13,11 +15,11 @@ use EMC\TableBundle\Table\TableRegistryInterface;
 class ColumnFactory implements ColumnFactoryInterface {
 
     /**
-     * @var TableRegistryInterface
+     * @var ColumnRegistryInterface
      */
     private $registry;
 
-    function __construct(TableRegistryInterface $registry) {
+    function __construct(ColumnRegistryInterface $registry) {
         $this->registry = $registry;
     }
 
@@ -30,7 +32,7 @@ class ColumnFactory implements ColumnFactoryInterface {
 
         $_options = $options;
         
-        $resolver = new OptionsResolver();
+        $resolver = $type->getOptionsResolver();
         $type->setDefaultOptions($resolver);
 
         $options['name'] = $name;

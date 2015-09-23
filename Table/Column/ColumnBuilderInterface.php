@@ -1,6 +1,6 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column;
 
 /**
  * ColumnBuilderInterface
@@ -11,7 +11,7 @@ interface ColumnBuilderInterface {
     
     /**
      * Create column object
-     * @return \EMC\TableBundle\Column\ColumnInterface
+     * @return ColumnInterface
      */
     public function getColumn();
 }

@@ -7,8 +7,7 @@ use Symfony\Component\HttpKernel\DataCollector\Util\ValueExporter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use EMC\TableBundle\Table\TableInterface;
-use EMC\TableBundle\Column\ColumnInterface;
-use EMC\TableBundle\Table\TableView;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
  * TableDataCollector
@@ -64,7 +63,7 @@ class TableDataCollector extends DataCollector {
         ksort($data['passed_options']);
         ksort($data['resolved_options']);
 
-        /* @var $column \EMC\TableBundle\Column\ColumnInterface */
+        /* @var $column \EMC\TableBundle\Table\Column\ColumnInterface */
         $column = null;
         foreach( $table->getColumns() as $column ) {
             $data['columns'][$column->getOption('name')] = $this->extractColumnConfig($column);

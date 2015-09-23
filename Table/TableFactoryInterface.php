@@ -2,6 +2,8 @@
 
 namespace EMC\TableBundle\Table;
 
+use EMC\TableBundle\Table\Type\TableTypeInterface;
+
 /**
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
@@ -9,7 +11,7 @@ interface TableFactoryInterface {
     
     /**
      * This method create and return an table builder.<br/>
-     * @param \EMC\TableBundle\Table\TableTypeInterface $type
+     * @param \EMC\TableBundle\Table\Type\TableTypeInterface $type
      * @param array|null $data table data
      * @param array $options table options
      * @return TableBuilderInterface

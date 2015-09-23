@@ -159,7 +159,7 @@ Table Type Code
 
 namespace Acme\MyBundle\Table\Type;
 
-use EMC\TableBundle\Table\TableType;
+use EMC\TableBundle\Table\Type\TableType;
 use EMC\TableBundle\Table\TableBuilderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -261,7 +261,7 @@ Consider that we have two data base tables :
 
 namespace Acme\MyBundle\Table\Type;
 
-use EMC\TableBundle\Table\TableType;
+use EMC\TableBundle\Table\Type\TableType;
 use EMC\TableBundle\Table\TableBuilderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 

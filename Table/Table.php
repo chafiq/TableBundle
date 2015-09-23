@@ -3,7 +3,7 @@
 namespace EMC\TableBundle\Table;
 
 use EMC\TableBundle\Provider\QueryResultInterface;
-
+use EMC\TableBundle\Table\Type\TableTypeInterface;
 /**
  * Table
  * 

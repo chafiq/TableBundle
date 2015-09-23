@@ -1,8 +1,11 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMC\TableBundle\Table\Column\ColumnBuilderInterface;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
  * ColumnType
@@ -69,7 +72,7 @@ abstract class ColumnType implements ColumnTypeInterface {
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         
         $resolver->setDefaults(array(
-            'name'      => $this->getName(),
+            'name'      => '',
             'title'     => '',
             'params'    => array(),
             'attrs'    => array(),
@@ -97,6 +100,13 @@ abstract class ColumnType implements ColumnTypeInterface {
                 return is_string($params) ? array($params) : $params;
             }
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOptionsResolver() {
+        return new OptionsResolver();
     }
     
     static protected function getValue($format, array $data) {

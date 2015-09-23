@@ -7,9 +7,10 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Event\TablePreSetDataEvent;
 use EMC\TableBundle\Event\TablePostSetDataEvent;
-use EMC\TableBundle\Column\ColumnFactoryInterface;
+use EMC\TableBundle\Table\Column\ColumnFactoryInterface;
 use EMC\TableBundle\Provider\QueryConfig;
 use EMC\TableBundle\Provider\QueryResult;
+use EMC\TableBundle\Table\Type\TableTypeInterface;
 
 /**
  * TableBuilder
@@ -60,15 +61,6 @@ class TableBuilder implements TableBuilderInterface {
         $this->type = $type;
         $this->data = $data;
         $this->options = $options;
-
-        $this->options['_query'] = array(
-            'route' => $options['route'],
-            'page' => 1,
-            'sort' => $options['default_sorts'],
-            'limit' => $options['limit'],
-            'filter' => null
-        );
-
         $this->columns = array();
     }
 
@@ -106,6 +98,19 @@ class TableBuilder implements TableBuilderInterface {
     /**
      * {@inheritdoc}
      */
+    public function add($name, $type, array $options = array()) {
+        
+        if ( isset($this->columns[$name]) ) {
+            throw new \InvalidArgumentException('Column name "' . $name . '" already exists.');
+        }
+        
+        $this->columns[$name] = $this->factory->create($name, $type, count($this->columns), $options)->getColumn();
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function create() {
         $table = new Table($this->type, $this->columns, $this->options);
 
@@ -120,35 +125,38 @@ class TableBuilder implements TableBuilderInterface {
      */
     public function getTable() {
         $table = $this->create();
-        /* @var $data \EMC\TableBundle\Provider\QueryResultInterface */
-        $data = null;
-        if (is_array($this->data) && count($this->data) > 0) {
-            $data = new QueryResult($this->data, 0);
-        } else {
-            $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
-            $queryConfig = new QueryConfig();
-            $this->type->buildQuery($queryConfig, $table, $this->options);
 
-            /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
-            $dataProvider = $this->options['data_provider'];
-
-            $data = $dataProvider->find($queryBuilder, $queryConfig);
-        }
-
-        $table->setData($data);
+        $table->setData( $this->getQueryResult($table) );
 
         $event = new TablePostSetDataEvent($table, $this->data, $this->options);
         $this->eventDispatcher->dispatch(TablePostSetDataEvent::NAME, $event);
 
         return $table;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function add($name, $type, array $options = array()) {
-        $this->columns[] = $this->factory->create($name, $type, count($this->columns), $options)->getColumn();
-        return $this;
+    
+    public function getQueryConfig(TableInterface $table) {
+        $queryConfig = new QueryConfig();
+        $this->type->buildQuery($queryConfig, $table, $this->options);
+        return $queryConfig;
     }
 
+    public function getQueryResult(TableInterface $table) {
+        /* @var $data \EMC\TableBundle\Provider\QueryResultInterface */
+        $data = null;
+        
+        $queryConfig = $this->getQueryConfig($table);
+        
+        if (is_array($this->data) && count($this->data) > 0) {
+            $data = new QueryResult($this->data, 0);
+        } else {
+            $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
+
+            /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
+            $dataProvider = $this->options['data_provider'];
+
+            $data = $dataProvider->find($queryBuilder, $queryConfig);
+        }
+        
+        return $data;
+    }
 }

@@ -1,0 +1,3 @@
+emc_table:
+    resource: "@EMCTableBundle/Resources/config/routing.yml"
+    prefix:   /

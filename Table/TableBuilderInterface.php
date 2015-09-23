@@ -34,7 +34,7 @@ interface TableBuilderInterface {
     public function getData();
     
     /**
-     * @return string table name
+     * @return TableInterface returns table instance
      */
     public function getTable();
     

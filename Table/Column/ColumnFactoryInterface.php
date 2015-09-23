@@ -1,6 +1,6 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column;
 
 /**
  *

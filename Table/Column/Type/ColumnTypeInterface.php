@@ -1,8 +1,10 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use EMC\TableBundle\Table\Column\ColumnBuilderInterface;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
  *
@@ -22,7 +24,7 @@ interface ColumnTypeInterface {
     /**
      * Build data column view
      * @param array $view
-     * @param \EMC\TableBundle\Column\ColumnInterface $column
+     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
      * @param array $options
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options);
@@ -30,14 +32,14 @@ interface ColumnTypeInterface {
     /**
      * Build the header view.
      * @param array $view
-     * @param \EMC\TableBundle\Column\ColumnInterface $column
+     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
      */
     public function buildHeaderView(array &$view, ColumnInterface $column);
 
     /**
      * Build the cell view
      * @param array $view
-     * @param \EMC\TableBundle\Column\ColumnInterface $column
+     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
      * @param array $data
      */
     public function buildCellView(array &$view, ColumnInterface $column, array $data);
@@ -45,7 +47,7 @@ interface ColumnTypeInterface {
     /**
      * Build the footer view.
      * @param array $view
-     * @param \EMC\TableBundle\Column\ColumnInterface $column
+     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
      * @param array $data
      */
     public function buildFooterView(array &$view, ColumnInterface $column, array $data);
@@ -67,6 +69,11 @@ interface ColumnTypeInterface {
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver);
 
+    /**
+     * @return OptionsResolverInterface
+     */
+    public function getOptionsResolver();
+    
     /**
      * Returns column type name.
      * 

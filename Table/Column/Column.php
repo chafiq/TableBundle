@@ -1,6 +1,8 @@
 <?php
 
-namespace EMC\TableBundle\Column;
+namespace EMC\TableBundle\Table\Column;
+
+use EMC\TableBundle\Table\Column\Type\ColumnTypeInterface;
 
 /**
  * Column
