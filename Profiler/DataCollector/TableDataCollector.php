@@ -104,10 +104,9 @@ class TableDataCollector extends DataCollector {
         $id = $options['_tid'];
         
         $this->init();
-
         
         if (!isset($this->data['tables'][$id])) {
-            $this->extractConfiguration($table, $data, $options);
+            $this->extractConfig($table, $data, $options);
         }
         
         $data = &$this->data['tables'][$id];

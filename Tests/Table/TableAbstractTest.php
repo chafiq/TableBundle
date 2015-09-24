@@ -33,7 +33,6 @@ abstract class TableAbstractTest extends AbstractUnitTest {
     /**
      * @var \EMC\TableBundle\Table\TableBuilder
      */
-    protected $builder;
 
     /**
      * @var \EMC\TableBundle\Provider\DataProviderInterface
@@ -64,32 +63,32 @@ abstract class TableAbstractTest extends AbstractUnitTest {
         $columnTypeNameMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
         $columnTypeTestMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
 
-        $columnBuilderId = new ColumnBuilder($columnTypeIdMock, $this->getResolvedOptions(array(
-                    'params' => array('id'),
-                    'allow_sort' => false
-        )));
-        $columnBuilderName = new ColumnBuilder($columnTypeNameMock, $this->getResolvedOptions(array(
-                    'params' => array('name'),
-                    'allow_sort' => array('name', 'id'),
-                    'allow_filter' => true
-        )));
-        $columnTypeTestMock = new ColumnBuilder($columnTypeNameMock, $this->getResolvedOptions(array(
-                    'params' => array( 'w' => 'x'),
-                    'allow_sort' => array('y'),
-                    'allow_filter' => array('z')
-        )));
-
-
+        $that = $this;
         $this->columnFactoryMock->expects($this->any())
                 ->method('create')
                 ->with($this->logicalOr(
                                 $this->equalTo('id'), $this->equalTo('name'), $this->equalTo('test')
                 ))
-                ->will($this->returnCallback(function($name) use ($columnBuilderId, $columnBuilderName, $columnTypeTestMock) {
+                ->will($this->returnCallback(function($name, $type, $options) use ($that, $columnTypeIdMock, $columnTypeNameMock, $columnTypeTestMock) {
+                            $options['name'] = $name;
                             switch ($name) {
-                                case 'id' : return $columnBuilderId;
-                                case 'name' : return $columnBuilderName;
-                                default : return $columnTypeTestMock;
+                                case 'id' : 
+                                    return new ColumnBuilder($columnTypeIdMock, $that->getResolvedOptions(array_merge($options, array(
+                                        'params' => array('id'),
+                                        'allow_sort' => false
+                                    ))));
+                                case 'name' :
+                                    return new ColumnBuilder($columnTypeNameMock, $that->getResolvedOptions(array_merge($options, array(
+                                        'params' => array('name'),
+                                        'allow_sort' => array('name', 'id'),
+                                        'allow_filter' => true
+                                    ))));
+                                default :
+                                    return new ColumnBuilder($columnTypeTestMock, $that->getResolvedOptions(array_merge($options, array(
+                                        'params' => array( 'w' => 'x'),
+                                        'allow_sort' => array('y'),
+                                        'allow_filter' => array('z')
+                                    ))));
                             }
                         }));
 
@@ -142,6 +141,8 @@ abstract class TableAbstractTest extends AbstractUnitTest {
             $this->assertArrayHasKey($option, $resolvedOptions);
         }
 
+        $resolvedOptions['_passed_options'] = $options;
+        
         return $resolvedOptions;
     }
     
