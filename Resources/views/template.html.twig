@@ -30,9 +30,10 @@
         {% if allow_select %}
             <th></th>
             {% endif %}
+            {% set idx = 1 %}
             {% for key, th in thead %}
-                {% if th.sort != 0 %}
-                <th class="sortable" data-sort="{{ th.sort }}">
+                {% if th.sort %}
+                <th class="sortable" data-sort="{{ idx }}">
             <div class="dropdown">
                 {{ th.title }}
                 <span class="caret"></span>
@@ -41,6 +42,7 @@
     {% else %}
         <th>{{ th.title }}</th>
         {% endif %}
+            {% set idx = idx + 1 %}
     {% endfor %}
 </tr>
 {% endblock %}
@@ -170,7 +172,7 @@
                 <td class="column-select-checkbox"><input type="checkbox" /></td>
                 {% endif %}
                 {% for idx, td in tr.data %}
-                <td class="column-{{ td.name }}">{{ table_cell(td) }}</td>
+                <td>{{ table_cell(td) }}</td>
                 {% endfor %}
         </tr>
     {% endfor %}

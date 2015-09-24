@@ -36,10 +36,41 @@ class DataProvider implements DataProviderInterface {
         $queryConfig->setLimit(0);
         $queryConfig->setPage(1);
 
-        return $this->getData($queryBuilder, $queryConfig);
+        return $this->find($queryBuilder, $queryConfig);
     }
 
+    /**
+     * Return rows according to the $queryConfig
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @return array
+     */
     private function getRows(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        $columns = array();
+
+        $rows = $this->getQueryRows($queryBuilder, $queryConfig, $columns)->getArrayResult();
+
+        return $this->resolveRowsKeys($rows, $columns);
+    }
+
+    /**
+     * Return total row count
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @return int
+     */
+    private function getCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        return (int) $this->getQueryCount($queryBuilder, $queryConfig)->getSingleScalarResult();
+    }
+
+    /**
+     * Build and returns Query for select rows
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @param array $columns
+     * @return \Doctrine\ORM\Query
+     */
+    private function getQueryRows(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig, array &$columns) {
 
         $queryBuilder->resetDQLPart('select');
 
@@ -56,6 +87,7 @@ class DataProvider implements DataProviderInterface {
         $columns = array_map(function($i) {
             return 'col' . $i;
         }, array_flip($select));
+
         foreach ($columns as $column => $name) {
             $queryBuilder->addSelect($column . ' AS ' . $name);
         }
@@ -68,45 +100,67 @@ class DataProvider implements DataProviderInterface {
             }
         }
 
-        $rows = $queryBuilder->getQuery()->getArrayResult();
-        $keys = array_flip($columns);
-        foreach ($rows as &$row) {
-            $row = array_combine($keys, $row);
-        }
-        unset($row);
-
-        return $rows;
+        return $queryBuilder->getQuery();
     }
 
-    private function getCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
-        $queryBuilder->resetDQLPart('select')
-                ->resetDQLPart('orderBy')
-                ->setMaxResults(1)
-                ->setFirstResult(0);
-
-        return (int) $queryBuilder
+    /**
+     * Build and returns Query for count
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @return \Doctrine\ORM\Query
+     */
+    private function getQueryCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
+        return $queryBuilder->resetDQLPart('select')
+                        ->resetDQLPart('orderBy')
                         ->select('count(distinct ' . $queryBuilder->getRootAlias() . '.id)')
-                        ->getQuery()
-                        ->getSingleScalarResult();
+                        ->setMaxResults(1)
+                        ->setFirstResult(0)
+                        ->getQuery();
     }
 
+    /**
+     * Add filters constraints in the where clause on each allowed filter column
+     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
+     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
+     * @throws \InvalidArgumentException
+     */
     private function addConstraints(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         $query = $queryConfig->getQuery();
         $columns = $queryConfig->getFilters();
 
         if (count($columns) === 0 || strlen($query) === 0) {
-            return;
+            return $queryBuilder;
         }
 
         if (strlen($query) < 3) {
             throw new \InvalidArgumentException;
         }
 
-        $clause = implode(' OR ', array_map(function($col) {
-                    return 'LOWER(' . $col . ') LIKE :query';
-                }, $columns));
-        $queryBuilder->andWhere($clause)
-                ->setParameter('query', '%' . strtolower($query) . '%');
+        $clause = implode(' OR ', array_map(function($col) {return 'LOWER(' . $col . ') LIKE :query';}, $columns));
+        $queryBuilder->andWhere($clause);
+        $queryBuilder->setParameter('query', '%' . strtolower($query) . '%');
+        
+        return $queryBuilder;
+    }
+
+    /**
+     * Remap rows indexes<br/>
+     * Examples :<br/>
+     *  [col0] -> [t.id]<br/>
+     *  [col1] -> [a.name]<br/>
+     * @param array $rows
+     * @param array $columns
+     * @return array
+     */
+    private function resolveRowsKeys(array $rows, array $columns) {
+        $keys = array_flip($columns);
+        
+        foreach ($rows as &$row) {
+            $row = array_combine($keys, $row);
+        }
+        unset($row);
+        
+        return $rows;
     }
 
 }

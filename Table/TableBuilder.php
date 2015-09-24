@@ -104,7 +104,7 @@ class TableBuilder implements TableBuilderInterface {
             throw new \InvalidArgumentException('Column name "' . $name . '" already exists.');
         }
         
-        $this->columns[$name] = $this->factory->create($name, $type, count($this->columns), $options)->getColumn();
+        $this->columns[$name] = $this->factory->create($name, $type, $options)->getColumn();
         return $this;
     }
 
@@ -141,22 +141,20 @@ class TableBuilder implements TableBuilderInterface {
     }
 
     public function getQueryResult(TableInterface $table) {
-        /* @var $data \EMC\TableBundle\Provider\QueryResultInterface */
-        $data = null;
         
         $queryConfig = $this->getQueryConfig($table);
         
-        if (is_array($this->data) && count($this->data) > 0) {
-            $data = new QueryResult($this->data, 0);
+        if (is_array($this->data)) {
+            return new QueryResult($this->data, 0);
         } else {
             $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
 
             /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
             $dataProvider = $this->options['data_provider'];
 
-            $data = $dataProvider->find($queryBuilder, $queryConfig);
+            return $dataProvider->find($queryBuilder, $queryConfig);
         }
         
-        return $data;
+        return null;
     }
 }

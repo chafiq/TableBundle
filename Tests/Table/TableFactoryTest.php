@@ -4,8 +4,9 @@ namespace EMC\TableBundle\Tests\Table;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMC\TableBundle\Table\TableFactory;
+use EMC\TableBundle\Tests\AbstractUnitTest;
 
-class TableFactoryTest extends \PHPUnit_Framework_TestCase {
+class TableFactoryTest extends AbstractUnitTest {
 
     /**
      * @var \Doctrine\Common\Persistence\ObjectManager

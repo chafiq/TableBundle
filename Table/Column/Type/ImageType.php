@@ -20,7 +20,7 @@ class ImageType extends ColumnType {
         
         $view['asset_url'] = $options['asset_url'];
         $view['alt'] = $options['alt'];
-        $view['output'] = $options['output'] ? $options['output'] : null;
+        $view['output'] = $options['output'];
     }
     
     /**

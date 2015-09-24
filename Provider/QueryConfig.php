@@ -132,6 +132,7 @@ class QueryConfig implements QueryConfigInterface {
      */
     public function setQuery($query) {
         $this->query = $query;
+        return $this;
     }
 
 

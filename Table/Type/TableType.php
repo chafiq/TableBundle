@@ -92,7 +92,7 @@ abstract class TableType implements TableTypeInterface {
             'thead' => $this->buildHeaderView($table),
             'tbody' => $this->buildBodyView($table),
             'tfoot' => $this->buildFooterView($table),
-            'total' => $table->getData()->getCount(),
+            'total' => $table->getData() !== null ? $table->getData()->getCount() : 0,
             'limit' => isset($options['_query']['limit']) ? $options['_query']['limit'] : $options['limit'],
             'page' => isset($options['_query']['page']) ? $options['_query']['page'] : 1,
             'has_filter' => $this->hasFilter($table),
@@ -137,8 +137,7 @@ abstract class TableType implements TableTypeInterface {
      * @return array
      */
     protected function buildBodyView(TableInterface $table) {
-
-        if (($count = count($table->getData())) === 0) {
+        if ($table->getData() === null || count($table->getData()->getRows()) === 0) {
             return array();
         }
 
@@ -153,13 +152,13 @@ abstract class TableType implements TableTypeInterface {
                 $column->getType()->buildCellView($cellView, $column, $__data);
                 $rowView[$name] = $cellView;
             }
-            
+
             $view[] = array(
-                'params'    => $this->resolveParams($table->getOption('rows_params'), $_data, true),
-                'subtable'  =>  $table->getOption('subtable') instanceof TableTypeInterface ?
-                                $this->resolveParams($table->getOption('subtable_params'), $_data, true, null) :
-                                null,
-                'data'      => $rowView
+                'params' => $this->resolveParams($table->getOption('rows_params'), $_data, true),
+                'subtable' => $table->getOption('subtable') instanceof TableTypeInterface ?
+                        $this->resolveParams($table->getOption('subtable_params'), $_data, true, null) :
+                        null,
+                'data' => $rowView
             );
         }
 
@@ -178,7 +177,7 @@ abstract class TableType implements TableTypeInterface {
         if (count($options['subtable_params']) > 0) {
             $select = array_merge($select, $options['subtable_params']);
         }
-        
+
         if (count($options['rows_params']) > 0) {
             $select = array_merge($select, $options['rows_params']);
         }
@@ -205,14 +204,23 @@ abstract class TableType implements TableTypeInterface {
         }
 
         $sort = abs($options['_query']['sort']);
-        if ($sort !== 0 && isset($columns[$sort])) {
-
-            $allowSort = $columns[$sort]->resolveAllowedParams('allow_sort');
-            if ($allowSort !== null) {
-                $orderBy = array_fill_keys(
-                        $allowSort, $options['_query']['sort'] > 0
-                );
+        if ($sort > 0) {
+            $sort -= 1;
+            if ($sort > count($columns)) {
+                throw new \UnexpectedValueException('Unkown sort column index ' . $sort);
             }
+
+            $columnNames = array_keys($columns);
+            $sortName = $columnNames[$sort];
+            unset($columnNames);
+
+            $allowSort = $columns[$sortName]->resolveAllowedParams('allow_sort');
+            if ($allowSort === null) {
+                throw new \UnexpectedValueException('Column sorting index ' . $sort . ' not allowed');
+            }
+            $orderBy = array_fill_keys(
+                    $allowSort, $options['_query']['sort'] > 0
+            );
         }
 
         $query->setSelect(array_unique(array_values($select)))

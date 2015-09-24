@@ -82,5 +82,4 @@ class AnchorType extends ColumnType {
 
         return array_merge($params, $args);
     }
-
 }

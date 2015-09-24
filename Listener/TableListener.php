@@ -3,7 +3,6 @@
 namespace EMC\TableBundle\Listener;
 
 use EMC\TableBundle\Event\TablePreSetDataEvent;
-use EMC\TableBundle\Event\TablePostSetDataEvent;
 use EMC\TableBundle\Session\TableSessionInterface;
 
 /**
@@ -28,6 +27,4 @@ class TableListener {
         $this->session->store($event->getTable()->getType(), $event->getData(), $event->getOptions());
     }
     
-    public function onPostSetData(TablePostSetDataEvent $event) {
-    }
 }

@@ -12,7 +12,6 @@ services:
         arguments: [@table.session]
         tags:
             - { name: kernel.event_listener, event: table.pre_set_data, method: onPreSetData }
-            - { name: kernel.event_listener, event: table.post_set_data, method: onPostSetData }
     
     table.extension:
         class: EMC\TableBundle\Twig\TableExtension

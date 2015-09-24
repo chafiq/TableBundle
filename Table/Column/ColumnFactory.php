@@ -26,7 +26,7 @@ class ColumnFactory implements ColumnFactoryInterface {
     /**
      * {@inheritdoc}
      */
-    public function create($name, $type, $idx, array $options = array()) {
+    public function create($name, $type, array $options = array()) {
 
         $type = $this->resolve($type);
 
@@ -37,7 +37,6 @@ class ColumnFactory implements ColumnFactoryInterface {
 
         $options['name'] = $name;
         $options = $resolver->resolve($options);
-        $options['_idx'] = $idx;
         $options['_passed_options'] = $_options;
 
         $builder = new ColumnBuilder($type, $options);
@@ -56,7 +55,7 @@ class ColumnFactory implements ColumnFactoryInterface {
         } else if (is_string($type)) {
             return $this->registry->getType($type);
         }
-        throw new \InvalidArgumentException('Column type "' . $type . '" unknown');
+        throw new \InvalidArgumentException('$type ColumnTypeInterface|string expected, "' . gettype($type) . '" found');
     }
 
 }

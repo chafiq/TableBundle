@@ -2,7 +2,7 @@
 
 namespace EMC\TableBundle\Tests\Table\Column;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use EMC\TableBundle\Tests\AbstractUnitTest;
 use EMC\TableBundle\Table\Column\ColumnFactory;
 
 /**
@@ -10,7 +10,7 @@ use EMC\TableBundle\Table\Column\ColumnFactory;
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
+class ColumnFactoryTest extends AbstractUnitTest {
     
     /**
      *
@@ -54,20 +54,24 @@ class ColumnFactoryTest extends \PHPUnit_Framework_TestCase {
     }
     
     public function testCreate() {
-        $idx = rand(1, 10);
-        $column = $this->factory->create('foo', 'bar', $idx, array());
+        $column = $this->factory->create('foo', 'bar', array());
         $options = $column->getColumn()->getOptions();
-        
-        $this->assertArrayHasKey('_idx', $options);
-        $this->assertEquals($idx, $options['_idx']);
         $this->assertArrayHasKey('_passed_options', $options);
-        
     }
     
     public function testResolve() {
-        $type = new Type\BarType();
-        $this->assertEquals($this->typeMock, $this->factory->create('foo', $this->typeMock, 0)->getColumn()->getType());
-        $this->assertEquals($this->typeMock, $this->factory->create('foo', 'bar', 0)->getColumn()->getType());
+        $this->assertEquals($this->typeMock, $this->invokeMethod($this->factory, 'resolve', array($this->typeMock)));
+        $this->assertEquals($this->typeMock, $this->invokeMethod($this->factory, 'resolve', array('bar')));
+    }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testResolveException() {
+        $this->invokeMethod($this->factory, 'resolve', array(array('x' => 1)));
+        $this->invokeMethod($this->factory, 'resolve', array(null));
+        $this->invokeMethod($this->factory, 'resolve', array(1));
+        $this->invokeMethod($this->factory, 'resolve', array('test'));
     }
     
     public function getOptionsResolverMock($name, array $options) {
