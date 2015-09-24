@@ -278,10 +278,10 @@ abstract class TableType implements TableTypeInterface {
 
         $result = array();
         foreach ($params as $key => $param) {
-            if (!isset($data[$param])) {
+            if (!array_key_exists($param, $data)) {
                 throw new \RuntimeException('Unknown parameter "' . $param . '"');
             }
-            $result[$preserveKeys ? $key : $param] = $data[$param];
+            $result[$preserveKeys || is_string($key) ? $key : $param] = $data[$param];
         }
         return $result;
     }

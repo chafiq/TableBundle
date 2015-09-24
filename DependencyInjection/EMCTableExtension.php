@@ -20,11 +20,11 @@ class EMCTableExtension extends Extension {
     public function load(array $configs, ContainerBuilder $container) {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
+        
         $container->setParameter('emc_table.template', isset($config['template']) ? $config['template'] : 'EMCTableBundle::template.html.twig');
         $extensions = array('EMCTableBundle::extensions.html.twig');
         if ( isset($config['extensions']) ) {
-            $extensions += $config['extensions'];
+            $extensions = array_unique(array_merge($extensions, $config['extensions']));
         }
         $container->setParameter('emc_table.extensions',  $extensions);
 

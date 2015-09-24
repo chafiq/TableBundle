@@ -178,7 +178,7 @@ class TableTypeTest extends TableAbstractTest {
                 'params' => array('a', 'b')
             ),
             array(
-                'expected' => array('a' => 1, 'b' => 2),
+                'expected' => array('c' => 1, 'b' => 2),
                 'params' => array('c' => 'a', 'b')
             )
         );
@@ -186,6 +186,8 @@ class TableTypeTest extends TableAbstractTest {
         foreach ($tests as $test) {
             $this->assertEquals($test['expected'], $this->invokeMethod($this->fooType, 'resolveParams', array($test['params'], array('a' => 1, 'b' => 2, 'x' => 3))));
         }
+        
+        $this->assertEquals(array('a' => null, 'b' => 2), $this->invokeMethod($this->fooType, 'resolveParams', array(array('a', 'b'), array('a' => null, 'b' => 2, 'x' => 3))));
     }
 
     /**
