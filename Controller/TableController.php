@@ -25,7 +25,7 @@ class TableController extends Controller {
         
         $tableId = $request->get('tid');
         if ( !is_string($tableId) || strlen($tableId) === 0 ) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
         
         $params = $request->get('params', array());

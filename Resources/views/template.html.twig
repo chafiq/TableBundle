@@ -1,3 +1,121 @@
+
+{% block table %}
+    {% spaceless %}
+        {% set attrs = attrs|merge({
+            'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive',
+            'data-route': path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw,
+            'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : "null",
+            'data-limit' : limit,
+            'data-selectable' : allow_select
+        }) %}
+        {% import _self as table %}
+        <table{{ table.attributes(attrs) }}>
+            <thead>
+                {{ block('thead') }}
+            </thead>
+            <tbody>
+                {{ block('tbody') }}
+            </tbody>
+            <tfoot>
+                {{ block('tfoot') }}
+            </tfoot>
+        </table>
+        {{ block('javascript') }}
+    {% endspaceless %}
+{% endblock %}
+
+{% block thead %}
+    {% spaceless %}
+        {% if has_filter or caption %}
+            <tr>
+                <td colspan="{{ thead|length + (allow_select ? 1 : 0)}}">
+                    {% if caption %}
+                        <span class="caption">{{ caption }}</span>
+                    {% endif %}
+                    {% if has_filter %}
+                        {{ block('filter') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+        <tr>
+            {% if allow_select %}
+                <th></th>
+            {% endif %}
+            {% set idx = 1 %}
+            {% for key, th in thead %}
+                {% if th.sort %}
+                    <th class="sortable" data-sort="{{ idx }}">
+                        <div class="dropdown">{{ th.title }} <span class="caret"></span></div>
+                    </th>
+                {% else %}
+                    <th>{{ th.title }}</th>
+                {% endif %}
+                {% set idx = idx + 1 %}
+            {% endfor %}
+        </tr>
+    {% endspaceless %}
+{% endblock %}
+
+{% block tbody %}
+    {% spaceless %}
+        {% if tbody|length > 0 %}
+            {{ block('rows') }}
+        {% else %}
+            {{ block('empty') }}
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}
+
+{% block tfoot %}
+    <tr>
+        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}">
+            {{ block('pages') }}
+            {{ block('limit_select') }}
+        </td>
+    </tr>
+{% endblock %}
+
+
+{% block rows %}
+    {% import _self as table %}
+    {% spaceless %}
+        {% for idx, tr in tbody %}
+            {% set row_attrs = {} %}
+            {% if tr.params %}
+                {% set rowId = "row" %}
+                {% for key, val in tr.params %}
+                    {% set key = 'data-' ~ camel_case_to_option(key) %}
+                    {% set row_attrs = row_attrs|merge({ (key) : val}) %}
+                    {% set rowId = rowId ~ '_' ~ val %}
+                {% endfor%}
+                {% set row_attrs = row_attrs|merge({ 'id' : rowId}) %}
+            {% endif %}
+            {% if tr.subtable %}
+                {% set row_attrs = row_attrs|merge({ 'data-subtable' : tr.subtable|json_encode() }) %}
+            {% endif %}
+            {% if allow_select %}
+                {% set row_attrs = row_attrs|merge({ 'data-selectable' : true }) %}
+            {% endif %}
+            <tr{{ table.attributes(row_attrs) }}>
+                {% if allow_select %}
+                    <td class="column-select-checkbox"><input type="checkbox" /></td>
+                    {% endif %}
+                    {% for idx, td in tr.data %}
+                    <td>{{ table_cell(td) }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        {% if rows_pad and limit > 0 and tbody|length < limit-1 and total > limit %}
+            {% for idx in tbody|length..limit %}
+                <tr class="empty">
+                    <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}"><div></div></td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    {% endspaceless %}
+{% endblock %}
+
 {% block empty %}
     <tr>
         <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}">
@@ -13,57 +131,6 @@
     </div>
 {% endblock %}
 
-{% block thead %}
-    {% if has_filter or caption %}
-        <tr>
-            <td colspan="{{ thead|length + (allow_select ? 1 : 0)}}">
-                {% if caption %}
-                    <span class="caption">{{ caption }}</span>
-                {% endif %}
-                {% if has_filter %}
-                    {{ block('filter') }}
-                {% endif %}
-            </td>
-        </tr>
-    {% endif %}
-    <tr>
-        {% if allow_select %}
-            <th></th>
-            {% endif %}
-            {% set idx = 1 %}
-            {% for key, th in thead %}
-                {% if th.sort %}
-                <th class="sortable" data-sort="{{ idx }}">
-            <div class="dropdown">
-                {{ th.title }}
-                <span class="caret"></span>
-            </div>
-        </th>
-    {% else %}
-        <th>{{ th.title }}</th>
-        {% endif %}
-            {% set idx = idx + 1 %}
-    {% endfor %}
-</tr>
-{% endblock %}
-
-{% block tbody %}
-    {% if tbody|length > 0 %}
-        {{ block('rows') }}
-    {% else %}
-        {{ block('empty') }}
-    {% endif %}
-{% endblock %}
-
-{% block tfoot %}
-    <tr>
-        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}">
-            {{ block('pages') }}
-            {{ block('limit_select') }}
-        </td>
-    </tr>
-{% endblock %}
-
 {% block limit_select %}
     {% if total > 10 %}
         <select id="{{ attrs.id }}_limit" class="selectpicker btn-xs" data-width="70px">
@@ -74,30 +141,6 @@
             <option value="0">Tous</option>
         </select>
     {% endif %}
-{% endblock %}
-
-{% block table %}
-
-    {% set attrs = attrs|merge({
-            'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive',
-            'data-route': path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw,
-            'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : "null",
-            'data-limit' : limit,
-            'data-selectable' : allow_select
-        }) %}
-    <table {{ block('attributes') }}>
-        <thead>
-            {{ block('thead') }}
-        </thead>
-        <tbody>
-            {{ block('tbody') }}
-        </tbody>
-        <tfoot>
-            {{ block('tfoot') }}
-        </tfoot>
-    </table>
-    {{ block('javascript') }}
-
 {% endblock %}
 
 {% block javascript %}
@@ -150,49 +193,4 @@
 
 {% endblock %}
 
-{% block rows %}
-    {% for idx, tr in tbody %}
-        <tr 
-            {% if tr.subtable %}
-                data-subtable={{ tr.subtable|json_encode() }}
-            {% endif %}
-            {% if allow_select %}
-                data-selectable="true"
-            {% endif %}
-            {% if tr.params %}
-                {% set rowId = "row" %}
-                {% for key, val in tr.params %}
-                    data-{{ camel_case_to_option(key) }}="{{val}}"
-                    {% set rowId = rowId ~ '_' ~ val %}
-                {% endfor%}
-                id="{{ rowId }}"
-            {% endif %}
-            >
-            {% if allow_select %}
-                <td class="column-select-checkbox"><input type="checkbox" /></td>
-                {% endif %}
-                {% for idx, td in tr.data %}
-                <td>{{ table_cell(td) }}</td>
-                {% endfor %}
-        </tr>
-    {% endfor %}
-    {% if rows_pad and limit > 0 and tbody|length < limit-1 and total > limit %}
-        {% for idx in tbody|length..limit %}
-            <tr class="empty">
-                <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}"><div></div></td>
-            </tr>
-        {% endfor %}
-    {% endif %}
-{% endblock %}
-
-{% block params %}
-    {% for key, val in params %}
-        data-_{{ key }}="{{ val }}"
-    {% endfor %}
-{% endblock %}
-
-{% block attributes %}
-    {% for key, val in attrs %}
-        {{ key }}="{{ val }}"
-    {% endfor %}
-{% endblock %}
+{% macro attributes(attrs) %}{% for key, val in attrs %} {{ key }}="{{ val }}"{% endfor %}{% endmacro %}

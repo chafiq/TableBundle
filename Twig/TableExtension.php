@@ -119,13 +119,13 @@ class TableExtension extends \Twig_Extension {
      * @return string
      */
     public function camelCaseToOption($option) {
-        return preg_replace('/(?<=\\w)(?=[A-Z])/','-$1', $option);
+        return strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/','-$1', $option));
     }
     
     /**
      * Return the block template
      * @param string $type
-     * @return \Twig_TemplateInterface
+     * @return \Twig_Template
      * @throws \InvalidArgumentException
      */
     private function getBlock($type) {

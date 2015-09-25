@@ -20,7 +20,7 @@ class AnchorTypeTest extends AbstractUnitTest {
         $type->setDefaultOptions($optionsResolver);
         $options = array(
             'name' => 'foo',
-            'params'=> array('k' => 'i', 'j'),
+            'params'=> array('k' => 'i', 'l' => 'j'),
             'format'=> '%d:%d',
             'attrs' => array('a' => 1, 'b' => 2),
             'static_params' => array('x' => 'y', 'z' => 1),
@@ -32,7 +32,7 @@ class AnchorTypeTest extends AbstractUnitTest {
 
         $column = new Column($type, $resolvedOptions);
 
-        $type->buildView($view, $column, array('i' => 1, 'j' => 2), $resolvedOptions);
+        $type->buildView($view, $column, array('k' => 1, 'l' => 2), $resolvedOptions);
 
         $expectedViewKeys = array(
             'name',
@@ -65,7 +65,7 @@ class AnchorTypeTest extends AbstractUnitTest {
         $this->assertEquals(trim('column-' . $type->getName() . ' column-foo'), $view['attrs']['class']);
         $this->assertArrayHasKey('a', $view['attrs']);
         $this->assertArrayHasKey('b', $view['attrs']);
-        $this->assertEquals(array('x' => 'y', 'z' => 1, 'k' => 1, 0 => 2), $view['params']);
+        $this->assertEquals(array('x' => 'y', 'z' => 1, 'k' => 1, 'l' => 2), $view['params']);
         $this->assertArrayHasKey('b', $view['attrs']);
     }
 

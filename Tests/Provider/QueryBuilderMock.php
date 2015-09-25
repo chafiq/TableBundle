@@ -30,7 +30,7 @@ class QueryBuilderMock extends QueryBuilder {
         return new QueryMock(
             clone $this->paramReflect->getValue($this),
             $this->getDQL(),
-            $this->getFirstResult(),
+            $this->getMaxResults(),
             $this->getFirstResult()
         );
     }

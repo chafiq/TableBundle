@@ -3,6 +3,7 @@
 namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\Options;
 use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
@@ -60,6 +61,16 @@ class AnchorType extends ColumnType {
             'desc'          => array('null', 'string')
         ));
         
+        $resolver->setNormalizers(array(
+            'params'    => function(Options $options, $params) {
+                assert(is_array($params));
+                foreach ($params as $param => $_) {
+                    assert(is_string($param));
+                }
+                return $params;
+            }
+        ));
+        
     }
 
     /**
@@ -70,9 +81,8 @@ class AnchorType extends ColumnType {
     }
 
     private function resolveParams(array $params, array $args, array $data) {
-        
-        foreach ($params as &$param) {
-            $param = $data[$param];
+        foreach ($params as $key => &$param) {
+            $param = $data[$key];
         }
         unset($param);
 

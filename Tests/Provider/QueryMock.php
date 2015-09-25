@@ -32,7 +32,7 @@ class QueryMock extends AbstractQuery {
 
     
     public function getArrayResult() {
-        $row = array_fill(0, substr_count($this->dql, 'AS'), null);
+        $row = array_keys(array_fill(0, substr_count($this->dql, 'AS col'), null));
         return array_fill($this->offset, $this->offset + ($this->limit ?: $this->count), $row);
     }
 

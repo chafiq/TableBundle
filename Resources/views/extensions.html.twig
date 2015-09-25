@@ -1,18 +1,22 @@
 {% block text_widget %}
-    <span {{ block('attributes') }}>{{ value }}</span>
+    {% import _self as table %}
+    <span{{ table.attributes(attrs) }}>{{ value }}</span>
 {% endblock %}
 
 {% block datetime_widget %}
-    <span {{ block('attributes') }}>{{ value|date(date_format) }}</span>
+    {% import _self as table %}
+    <span{{ table.attributes(attrs) }}>{{ value|date(date_format) }}</span>
 {% endblock %}
 
 {% block anchor_widget %}
-    <a {{ block('attributes') }} href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+    {% import _self as table %}
+    <a{{ table.attributes(attrs) }} href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
 {% endblock %}
 
 {% block button_widget %}
+    {% import _self as table %}
     {% set attrs = attrs|merge({'class': attrs.class|default('') ~ ' btn btn-default', 'title':title}) %}
-    <button {{ block('attributes') }}>
+    <button{{ table.attributes(attrs) }}>
         {% if icon %}
             {% set attrs = attrs|merge({'class':''}) %}
             {{ block('icon_widget') }}
@@ -22,17 +26,15 @@
 {% endblock %}
 
 {% block icon_widget %}
+    {% import _self as table %}
     {% set class = attrs.class|default(icon_family ~ ' ' ~ icon_family ~ '-' ~ icon) %}
     {% set attrs = attrs|merge({'class': class}) %}
-    <i {{ block('attributes') }}></i>
+    <i{{ table.attributes(attrs) }}></i>
 {% endblock %}
 
 {% block image_widget %}
-    <img {{ block('attributes') }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
+    {% import _self as table %}
+    <img{{ table.attributes(attrs) }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
 {% endblock %}
 
-{% block attributes %}
-    {% for key, val in attrs %}
-        {{ key }}="{{ val }}"
-    {% endfor %}
-{% endblock %}
+{% macro attributes(attrs) %}{% for key, val in attrs %} {{ key }}="{{ val }}"{% endfor %}{% endmacro %}
