@@ -90,9 +90,9 @@ EMCTable.prototype.init = function() {
         this.selectAll(false);
 
         this.$dom.find('> thead > tr > td > div.left > .selection > button:first').on('click', function(event) {
-            var state = this.firstChild.className.indexOf(this.firstChild.getAttribute('icon-checked')) === -1;
-            that.selectAll(state, true);
-        });
+                    var state = this.firstChild.className.indexOf(this.firstChild.getAttribute('icon-checked')) === -1;
+                    that.selectAll(state, true);
+                });
 
         this.$dom.find('> thead > tr > td > div.left > .selection > ul > li > a').on('click', function(event) {
             switch ($(this.parentNode).index()) {
@@ -114,7 +114,7 @@ EMCTable.prototype.init = function() {
         this.$dom.on('change', '> tbody > tr:not(.empty) > td.column-select-checkbox > input[type=checkbox]', function(event) {
             that.select(this);
         });
-        
+
         this.$dom.on(EMCTable.EVENT_CHANGE, function(event) {
             that.$dom.find('> tbody > tr').each(function() {
                 if (this.id in that.selectedRows) {
@@ -123,6 +123,12 @@ EMCTable.prototype.init = function() {
                             .prop("checked", true);
                 }
             });
+        });
+
+        var button = this.$dom.find('> thead > tr > td > div.right > .export > button:first').get(0);
+        $(button).prop('disabled', true);
+        this.$dom.on(EMCTable.EVENT_SELECT, function(event, selectedRows) {
+            $(button).attr('disabled', Object.keys(selectedRows).length === 0);
         });
     }
 
@@ -164,7 +170,7 @@ EMCTable.prototype.find = function(page) {
 
     var height = this.$dom.height();
 
-    var html = EMCXmlHttpRequest.getInstance().get(this.route, {query:this.getQuery(page)}, null, null, 'X-EMC-Table');
+    var html = EMCXmlHttpRequest.getInstance().get(this.route, {query: this.getQuery(page)}, null, null, 'X-EMC-Table');
 
     var $html = $(html);
 
@@ -232,15 +238,15 @@ EMCTable.prototype.openSubtable = function(tr) {
 };
 
 EMCTable.prototype.getRows = function() {
-    return EMCXmlHttpRequest.getInstance().get(this.selectRoute, {query:this.getQuery()}, null, null, 'X-EMC-Table');
+    return EMCXmlHttpRequest.getInstance().get(this.selectRoute, {query: this.getQuery()}, null, null, 'X-EMC-Table');
 };
 
 EMCTable.prototype.export = function(type) {
 
     var append_recursive = function(form, data, parentKey) {
-        for( var key in data ) {
+        for (var key in data) {
             var name = parentKey.length > 0 ? parentKey + '[' + key + ']' : key;
-            if ( typeof(data[key]) === "object" ) {
+            if (typeof (data[key]) === "object") {
                 append_recursive(form, data[key], name);
             } else {
                 var input = document.createElement('input');
@@ -251,7 +257,7 @@ EMCTable.prototype.export = function(type) {
             }
         }
     };
-    
+
     var form = document.createElement('form');
     form.setAttribute('method', 'POST');
     form.setAttribute('action', this.exportRoute);
@@ -259,11 +265,11 @@ EMCTable.prototype.export = function(type) {
 
 
     var data = {type: type};
-    data.query = $.extend(this.getQuery(), {limit:0});
+    data.query = $.extend(this.getQuery(), {limit: 0});
     data.query.selectedRows = this.selectedRows;
-    
+
     append_recursive(form, data, '');
-    
+
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
