@@ -4,6 +4,7 @@ namespace EMC\TableBundle\Session;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use EMC\TableBundle\Table\Type\TableTypeInterface;
+use EMC\TableBundle\Table\Type\Decorator\TableDecoratorInterface;
 
 /**
  * TableSession manage tables in the session
@@ -46,8 +47,15 @@ class TableSession implements TableSessionInterface {
         $tid = $options['_tid'];
         $options = $options['_passed_options'];
 
+        $ressolvedType = null;
+        if ( $type instanceof TableDecoratorInterface ) {
+            $ressolvedType = $type->getType();
+        } else {
+            $ressolvedType = $type;
+        }
+        
         $tables[$tid] = array(
-            'class' => get_class($type),
+            'class' => get_class($ressolvedType),
             'data' => $data,
             'options' => $options
         );

@@ -33,17 +33,10 @@ interface ColumnTypeInterface {
      * Build the header view.
      * @param array $view
      * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
-     */
-    public function buildHeaderView(array &$view, ColumnInterface $column);
-
-    /**
-     * Build the cell view
-     * @param array $view
-     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
      * @param array $data
      */
-    public function buildCellView(array &$view, ColumnInterface $column, array $data);
-
+    public function buildHeaderView(array &$view, ColumnInterface $column);
+    
     /**
      * Build the footer view.
      * @param array $view
@@ -73,6 +66,13 @@ interface ColumnTypeInterface {
      * @return OptionsResolverInterface
      */
     public function getOptionsResolver();
+    
+    /**
+     * Returns column is exportable or not.
+     * 
+     * @return string
+     */
+    public function isExportable();
     
     /**
      * Returns column type name.

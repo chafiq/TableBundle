@@ -26,4 +26,21 @@ abstract class AbstractUnitTest extends \PHPUnit_Framework_TestCase {
         return $method->invokeArgs($object, $parameters);
     }
 
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $name 
+     * @param mixed  $value 
+     *
+     * @return object.
+     */
+    protected function invokeSetter(&$object, $name, $value) {
+        $reflection = new \ReflectionClass(get_class($object));
+        $property = $reflection->getProperty($name);
+        $property->setAccessible(true);
+        $property->setValue($object, $value);
+        return $object;
+    }
+
 }

@@ -1,0 +1,38 @@
+services:
+    table.column.registry:
+        class: EMC\TableBundle\Table\Column\ColumnRegistry
+        arguments: [@service_container, {}]
+
+    table.column.factory:
+        class: EMC\TableBundle\Table\Column\ColumnFactory
+        arguments: [@table.column.registry]
+
+    table.column.text:
+        class: EMC\TableBundle\Table\Column\Type\TextType
+        tags:
+            -  { name: column.type, alias: text }
+            
+    table.column.anchor:
+        class: EMC\TableBundle\Table\Column\Type\AnchorType
+        tags:
+            -  { name: column.type, alias: anchor }
+            
+    table.column.datetime:
+        class: EMC\TableBundle\Table\Column\Type\DatetimeType
+        tags:
+            -  { name: column.type, alias: datetime }
+                            
+    table.column.icon:
+        class: EMC\TableBundle\Table\Column\Type\IconType
+        tags:
+            -  { name: column.type, alias: icon }
+            
+    table.column.button:
+        class: EMC\TableBundle\Table\Column\Type\ButtonType
+        tags:
+            -  { name: column.type, alias: button }
+            
+    table.column.image:
+        class: EMC\TableBundle\Table\Column\Type\ImageType
+        tags:
+            -  { name: column.type, alias: image }

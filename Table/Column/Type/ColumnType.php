@@ -33,20 +33,11 @@ abstract class ColumnType implements ColumnTypeInterface {
         $options['attrs']['class'] = trim( 'column-' . $type . ' column-' . $options['name'] . ' ' . $options['attrs']['class']);
         
         $view = array(
-            'name'          => $options['name'],
             'type'          => $type,
+            'name'          => $options['name'],
             'attrs'         => $options['attrs'],
-            'value'         => static::getValue($options['format'], $data),
-            'allow_sort'    => $options['allow_sort'],
-            'allow_filter'  => $options['allow_filter']
+            'value'         => static::getValue($options['format'], $data)
         );
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function buildCellView(array &$view, ColumnInterface $column, array $data) {
-        
     }
 
     /**
@@ -62,7 +53,8 @@ abstract class ColumnType implements ColumnTypeInterface {
     public function buildHeaderView(array &$view, ColumnInterface $column) {
         $view = array(
             'sort' => $column->getOption('allow_sort'),
-            'title'=> $column->getOption('title')
+            'title'=> $column->getOption('title'),
+            'width'=> $column->getOption('width')
         );
     }
 
@@ -75,10 +67,11 @@ abstract class ColumnType implements ColumnTypeInterface {
             'name'      => '',
             'title'     => '',
             'params'    => array(),
-            'attrs'    => array(),
+            'attrs'     => array(),
             'data'      => null,
             'default'   => null,
             'format'    => null,
+            'width'     => null,
             'allow_sort'    => false,
             'allow_filter'  => false
         ));
@@ -91,6 +84,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'format'        => array('null', 'string', 'callable'),
             'data'          => array('null', 'array'),
             'default'       => array('null', 'string'),
+            'width'         => array('null', 'string'),
             'allow_sort'    => array('bool', 'array'),
             'allow_filter'  => array('bool', 'array')
         ));
@@ -107,6 +101,13 @@ abstract class ColumnType implements ColumnTypeInterface {
      */
     public function getOptionsResolver() {
         return new OptionsResolver();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isExportable() {
+        return true;
     }
     
     static protected function getValue($format, array $data) {

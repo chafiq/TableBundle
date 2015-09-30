@@ -51,6 +51,10 @@ class TableDataCollectorTest extends TableAbstractTest {
                     'subtable' => 'null',
                     'subtable_options' => '[]',
                     'subtable_params' => '[]',
+                    'subtable_params' => '[]',
+                    'export' => '[]',
+                    'export_route' => '_table_export',
+                    'select_route' => '_table_select',
                 ),
                 'columns' => array(
                     'id' => array(
@@ -73,6 +77,7 @@ class TableDataCollectorTest extends TableAbstractTest {
                             'format' => 'null',
                             'allow_sort' => 'false',
                             'allow_filter' => 'false',
+                            'width' => 'null'
                         ),
                     ),
                     'name' => array(
@@ -98,6 +103,7 @@ class TableDataCollectorTest extends TableAbstractTest {
                             'format' => '#%s!',
                             'allow_sort' => '[0 => name, 1 => id]',
                             'allow_filter' => 'true',
+                            'width' => 'null'
                         ),
                     ),
                 ),
@@ -135,15 +141,7 @@ class TableDataCollectorTest extends TableAbstractTest {
             'rows 8' => '[id => 9, name => Franche Comté]',
             'rows 9' => '[id => 10, name => Ile de France]',
             'rows 10' => '[id => 11, name => Languedoc Roussillon]',
-            'rows 11' => '[id => 12, name => Limousin]',
-            'rows 12' => '[id => 13, name => Lorraine]',
-            'rows 13' => '[id => 14, name => Midi Pyrénées]',
-            'rows 14' => '[id => 15, name => Nord Pas de Calais]',
-            'rows 15' => '[id => 17, name => Haute Normandie ]',
-            'rows 16' => '[id => 18, name => Pays de la Loire]',
-            'rows 17' => '[id => 19, name => Picardie]',
-            'rows 18' => '[id => 20, name => Poitou Charentes]',
-            'rows 19' => '[id => 21, name => Provence Alpes Côte d\'azur]',
+            '...' => '',
             'rows 20' => '[id => 22, name => Rhône Alpes]',
             'rows 21' => '[id => 23, name => Alsace]',
             'rows 22' => '[id => 24, name => Basse-Normandie]',

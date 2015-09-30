@@ -1,0 +1,6 @@
+services:
+    table.export.xls:
+        class: EMC\TableBundle\Table\Export\Extension\XlsExportExtension
+        arguments: [@templating, %emc_table.export.xls.template%]
+        tags:
+            -  { name: export.extension, alias: xls }

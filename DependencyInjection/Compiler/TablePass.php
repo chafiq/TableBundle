@@ -17,17 +17,26 @@ class TablePass implements CompilerPassInterface {
             return;
         }
 
-        $definition = $container->getDefinition('table.registry');
-
-        // Builds an array with service IDs as keys and tag aliases as values
-        $types = array();
-
-        foreach ($container->findTaggedServiceIds('table.type') as $serviceId => $tag) {
-            $alias = isset($tag[0]['alias']) ? $tag[0]['alias'] : $serviceId;
-            $types[$alias] = $serviceId;
+        $this->load($container, 'table.column.registry', 'column.type');
+        $this->load($container, 'table.export.registry', 'export.extension');
+    }
+    
+    private function load(ContainerBuilder $container, $service, $tag) {
+        if (!$container->hasDefinition('table.extension')) {
+            return;
         }
 
-        $definition->replaceArgument(1, $types);
+        $definition = $container->getDefinition($service);
+
+        // Builds an array with service IDs as keys and tag aliases as values
+        $services = array();
+
+        foreach ($container->findTaggedServiceIds($tag) as $id => $config) {
+            $alias = isset($config[0]['alias']) ? $config[0]['alias'] : $id;
+            $services[$alias] = $id;
+        }
+
+        $definition->replaceArgument(1, $services);
     }
 
 }

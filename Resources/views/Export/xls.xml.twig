@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<ss:Workbook
+    xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:x="urn:schemas-microsoft-com:office:excel"
+    xmlns:c="urn:schemas-microsoft-com:office:component:spreadsheet"
+    xmlns:s="uuid:BDC6E3F0-6DA3-11d1-A2A3-00AA00C14882"
+    xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+    <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+        <Author>{{ app.request.getBaseURL() }}</Author>
+        <LastAuthor>{{ app.request.getBaseURL() }}</LastAuthor>
+        <Created>{{ "now"|date("Y-m-d\TH:i:s\Z") }}</Created>
+        <LastSaved>{{ "now"|date("Y-m-d\TH:i:s\Z") }}</LastSaved>
+        <Company>{{ app.request.getBaseURL() }}</Company>
+        <Version>1.0</Version>
+    </DocumentProperties>
+    <ss:Styles>
+        <ss:Style ss:ID="Default" ss:Name="Normal">
+            <ss:Alignment ss:Vertical="Bottom" />
+            <ss:Borders />
+            <ss:Font />
+            <ss:Interior />
+            <ss:NumberFormat />
+            <ss:Protection />
+        </ss:Style>
+        <ss:Style ss:ID="H1" ss:Name="H1">
+            <ss:Alignment ss:Vertical="Bottom" />
+            <ss:Borders>
+                <ss:Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+                           ss:Color="#000000"/>
+                <ss:Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1"
+                           ss:Color="#000000"/>
+                <ss:Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+                           ss:Color="#000000"/>
+                <ss:Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+                           ss:Color="#000000"/>
+            </ss:Borders>
+            <ss:Font ss:Size="16" ss:Weight="bold"/>
+            <ss:Interior />
+            <ss:NumberFormat />
+            <ss:Protection />
+        </ss:Style>
+        <ss:Style ss:ID="Cell" ss:Name="Normal" ss:Parent="H1">
+            <ss:Font ss:Size="10"/>
+        </ss:Style>
+        <ss:Style ss:ID="Header" ss:Name="Header" ss:Parent="H1">
+            <ss:Font ss:Size="11" ss:Bold="1"/>
+            <ss:Interior ss:Color="#DDDDDD" ss:Pattern="Solid"/>
+        </ss:Style>
+    </ss:Styles>
+    <ss:Worksheet ss:Name="{{ table.caption }}">
+        <ss:Table ss:ExpandedColumnCount="{{ table.thead|length - 1 }}"
+                  ss:ExpandedRowCount="{{ table.tbody|length }}"
+                  ss:DefaultColumnWidth="100" ss:DefaultRowHeight="50"
+                  ss:LeftCell="30" ss:TopCell="30">
+            {% for key, th in table.thead %}
+                <ss:Column ss:AutoFitWidth="1" c:Caption="{{ th.title }}"/>
+            {% endfor%}
+            <ss:Row />
+            <ss:Row ss:AutoFitHeight="1">
+                <ss:Cell ss:StyleID="H1" ss:Index="2" ss:MergeAcross="{{ table.thead|length - 1 }}">
+                    <ss:Data ss:Type="String">{{ table.caption }}</ss:Data>
+                </ss:Cell>
+            </ss:Row>
+            <ss:Row />
+            <ss:Row  ss:AutoFitHeight="1">
+                {% set isIndexed = false %}
+                {% for key, th in table.thead %}
+                    <ss:Cell ss:StyleID="Header" {% if not isIndexed %} ss:Index="2" {% endif %}>
+                        <ss:Data ss:Type="String">{{ th.title }}</ss:Data>
+                    </ss:Cell>
+                    {% set isIndexed = true %}
+                {% endfor%}
+            </ss:Row>
+            {% for tr in table.tbody %}
+                <ss:Row ss:AutoFitHeight="1">
+                    {% set isIndexed = false %}
+                    {% for key, td in tr.data %}
+                        <ss:Cell ss:StyleID="Cell" {% if not isIndexed %} ss:Index="2" {% endif %} {% if td.type == "anchor" %} ss:HRef="{{ url(td.route, td.params) }}" {% endif %}>
+                            <ss:Data ss:Type="String">{{ td.value }}</ss:Data>
+                        </ss:Cell>
+                        {% set isIndexed = true %}
+                    {% endfor%}
+                </ss:Row>
+            {% endfor%}
+        </ss:Table>
+        <c:WorksheetOptions>
+            <c:DisplayCustomHeaders/>
+        </c:WorksheetOptions>
+        <x:WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+            <x:PageSetup>
+                <x:Layout x:CenterHorizontal="1"/>
+                <x:PageMargins x:Left="10" x:Right="10"/>
+            </x:PageSetup>
+            <c:DisplayPageBreak/>
+            <x:DoNotDisplayGridlines/>
+            <Print>
+                <ValidPrinterInfo />
+                <HorizontalResolution>600</HorizontalResolution>
+                <VerticalResolution>600</VerticalResolution>
+            </Print>
+            <Selected />
+            <Panes>
+                <Pane>
+                    <Number>1</Number>
+                    <ActiveRow>2</ActiveRow>
+                    <ActiveCol>1</ActiveCol>
+                </Pane>
+            </Panes>
+            <ProtectObjects>False</ProtectObjects>
+            <ProtectScenarios>False</ProtectScenarios>
+        </x:WorksheetOptions>
+    </ss:Worksheet>
+</ss:Workbook>

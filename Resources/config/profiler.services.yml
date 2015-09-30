@@ -1,0 +1,12 @@
+services:
+    table.data_collector:
+        class: EMC\TableBundle\Profiler\DataCollector\TableDataCollector
+        tags:
+            - { name: data_collector, template: "EMCTableBundle:Profiler:index.html.twig", id: "table"  }
+            
+    table.data_collector.listener:
+        class: EMC\TableBundle\Profiler\Listener\TableDataCollectorListener
+        arguments: [@table.data_collector]
+        tags:
+            - { name: kernel.event_listener, event: table.pre_set_data, method: onPreSetData }
+            - { name: kernel.event_listener, event: table.post_set_data, method: onPostSetData }

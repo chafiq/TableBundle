@@ -116,8 +116,14 @@ class TableDataCollector extends DataCollector {
             'total' => $table->getData()->getCount()
         );
         
-        foreach( $table->getData()->getRows() as $idx => $row ){
+        $rows = $table->getData()->getRows();
+        for( $idx=0; $idx<count($rows); $idx++){
+            $row = $rows[$idx]; 
             $data['query_result']['rows ' . $idx] = $this->valueExporter->exportValue($row);
+            if ( $idx === 10 ) {
+                $data['query_result']['...'] = '';
+                $idx = max($idx, count($rows) - 4);
+            }
         }
         unset($data);
     }

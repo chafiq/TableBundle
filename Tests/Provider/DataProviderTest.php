@@ -34,13 +34,23 @@ class DataProviderTest extends AbstractUnitTest {
                 ->setLimit(5)
                 ->setSelect(array('t.a', 't.b', 't.c'))
                 ->setPage(2)
-                ->setQuery('xxx')
                 ->setOrderBy(array('t.d' => true, 't.e' => false))
-                ->setFilters(array('t.a', 't.c'));
-
+                ->addParameter('query', '%xxx%')
+                ->getConstraints()
+                    ->add('LOWER(t.a) LIKE :query')
+                    ->add('LOWER(t.c) LIKE :query');
+        
         $this->queryBuilder = new QueryBuilderMock();
         $this->queryBuilder->from('Table', 't');
 
+        if ($this->queryConfig->getConstraints()->count() > 0) {
+            $this->queryBuilder->andWhere($this->queryConfig->getConstraints());
+        }
+        
+        if ( count($this->queryConfig->getParameters()) > 0 ) {
+            $this->queryBuilder->setParameters($this->queryConfig->getParameters());
+        }
+        
         $this->dataProvider = new DataProvider();
     }
 
@@ -57,33 +67,8 @@ class DataProviderTest extends AbstractUnitTest {
         $this->assertEquals(0, $result->getCount());
     }
 
-    
-    public function testFindAll() {
-        $queryConfig = clone $this->queryConfig;
-        $queryConfig->setLimit(0);
-        $queryConfig->setPage(1);
-        $queryBuilder = clone $this->queryBuilder;
-        $result = $this->dataProvider->find($queryBuilder, $queryConfig);
-        $this->assertEquals($result, $this->dataProvider->findAll($this->queryBuilder, $this->queryConfig));
-    }
-
-    public function testAddConstraints() {
-        $this->queryBuilder->select('t.a');
-        $this->invokeMethod($this->dataProvider, 'addConstraints', array($this->queryBuilder, $this->queryConfig));
-        $query = $this->queryBuilder->getQuery();
-        $this->assertEquals('SELECT t.a FROM Table t WHERE LOWER(t.a) LIKE :query OR LOWER(t.c) LIKE :query', $query->getDQL());
-        $this->assertEquals(1, $query->getParameters()->count());
-
-        /* @var $paramater \Doctrine\ORM\Query\Parameter */
-        $parameter = $query->getParameters()->get(0);
-        $this->assertEquals('query', $parameter->getName());
-        $this->assertEquals(2, $parameter->getType());
-        $this->assertEquals('%xxx%', $parameter->getValue());
-    }
-
     public function testGetQueryRows() {
         $columns = array();
-        $this->invokeMethod($this->dataProvider, 'addConstraints', array($this->queryBuilder, $this->queryConfig));
 
         $query = $this->invokeMethod($this->dataProvider, 'getQueryRows', array($this->queryBuilder, $this->queryConfig, &$columns));
 
@@ -106,7 +91,6 @@ class DataProviderTest extends AbstractUnitTest {
         $columns = array();
         $queryConfig = clone $this->queryConfig;
         $queryConfig->setOrderBy(array());
-        $this->invokeMethod($this->dataProvider, 'addConstraints', array($this->queryBuilder, $queryConfig));
 
         $query = $this->invokeMethod($this->dataProvider, 'getQueryRows', array($this->queryBuilder, $queryConfig, &$columns));
 
@@ -124,8 +108,8 @@ class DataProviderTest extends AbstractUnitTest {
 
     public function testGetQueryCount() {
         $query = $this->invokeMethod($this->dataProvider, 'getQueryCount', array($this->queryBuilder, $this->queryConfig));
-        $this->assertEquals('SELECT count(distinct t.id) FROM Table t', $query->getDQL());
-        $this->assertEquals(0, $query->getParameters()->count());
+        $this->assertEquals('SELECT count(distinct t.id) FROM Table t WHERE LOWER(t.a) LIKE :query OR LOWER(t.c) LIKE :query', $query->getDQL());
+        $this->assertEquals(1, $query->getParameters()->count());
     }
 
     public function testResolveRowsKeys() {
@@ -142,28 +126,4 @@ class DataProviderTest extends AbstractUnitTest {
         $this->assertEquals($expected, $result);
     }
 
-    
-    public function testNoConstraints() {
-        $queryBuilderClone = clone $this->queryBuilder;
-        
-        $queryConfig = clone $this->queryConfig;
-        $queryConfig->setFilters(array());
-        $queryBuilder = $this->invokeMethod($this->dataProvider, 'addConstraints', array($queryBuilderClone, $queryConfig));
-        $this->assertEquals($queryBuilderClone, $queryBuilder);
-        
-        $queryConfig = clone $this->queryConfig;
-        $queryConfig->setQuery(null);
-        $queryBuilder = $this->invokeMethod($this->dataProvider, 'addConstraints', array($queryBuilderClone, $queryConfig));
-        $this->assertEquals($queryBuilderClone, $queryBuilder);
-    }
-    
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testConstraintsException() {
-        $queryConfig = clone $this->queryConfig;
-        $queryBuilderClone = clone $this->queryBuilder;
-        $queryConfig->setQuery('x');
-        $this->invokeMethod($this->dataProvider, 'addConstraints', array($queryBuilderClone, $queryConfig));
-    }
 }

@@ -44,6 +44,10 @@ class IconType extends ColumnType {
         
     }
     
+    public function isExportable() {
+        return false;
+    }
+    
     /**
      * {@inheritdoc}
      */

@@ -17,7 +17,7 @@ class DatetimeType extends ColumnType {
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
-        $view['date_format'] = $options['date_format'];
+        $view['value'] = $view['value']->format($options['date_format']);
     }
     
     /**

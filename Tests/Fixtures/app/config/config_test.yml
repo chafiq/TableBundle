@@ -60,3 +60,7 @@ monolog:
 
 swiftmailer:
     disable_delivery: true
+    
+emc_table:
+    export:
+        csv : ~

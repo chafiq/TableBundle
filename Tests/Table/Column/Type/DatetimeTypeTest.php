@@ -26,17 +26,14 @@ class DatetimeTypeTest extends AbstractUnitTest {
         $view = array();
 
         $column = new Column($type, $resolvedOptions);
-
-        $type->buildView($view, $column, array(new \DateTime), $resolvedOptions);
-
+        $date = new \DateTime;
+        $type->buildView($view, $column, array($date), $resolvedOptions);
+        
         $expectedViewKeys = array(
             'name',
             'type',
             'attrs',
-            'value',
-            'allow_sort',
-            'allow_filter',
-            'date_format'
+            'value'
         );
 
         foreach ($expectedViewKeys as $key) {
@@ -45,6 +42,6 @@ class DatetimeTypeTest extends AbstractUnitTest {
         $this->assertArrayHasKey('class', $view['attrs']);
         $this->assertEquals('foo', $view['name']);
         $this->assertEquals($view['type'], $type->getName());
-        $this->assertEquals($view['date_format'], $resolvedOptions['date_format']);
+        $this->assertEquals($view['value'], $date->format('Y:m_d\TH-s'));
     }
 }

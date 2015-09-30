@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block head %}
+            <meta charset="utf-8">
+        {% endblock %}
+        <style>
+            {% block style %}
+                table {
+                    width: 100%;
+                    border:1px solid black;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                }
+
+                thead, tfoot { display: table-row-group }
+                thead { display: table-header-group }
+                tfoot { display: table-footer-group }
+                
+                tr { page-break-inside: avoid; }
+
+                td, th {
+                    border: 1px solid black;
+                    font-size: 10px;
+                    padding: 5px;
+                }
+
+                th { background-color: #ddd; }
+            {% endblock %}
+        </style>
+    </head>
+    <body>
+        <header>
+            {% block header %}
+            {% endblock %}
+        </header>
+        {% block body %}
+            {{ table_export(table) }}
+        {% endblock %}
+        <footer>
+            {% block footer %}
+            {% endblock %}
+        </footer>
+    </body>
+</html>

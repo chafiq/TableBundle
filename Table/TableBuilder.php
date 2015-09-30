@@ -89,10 +89,19 @@ class TableBuilder implements TableBuilderInterface {
      * {@inheritdoc}
      */
     public function handleRequest(Request $request) {
-        $this->options['_query']['limit'] = (int) $request->get('_limit', $this->options['limit']);
-        $this->options['_query']['page'] = (int) $request->get('_page', 1);
-        $this->options['_query']['sort'] = (int) $request->get('_sort', $this->options['default_sorts']);
-        $this->options['_query']['filter'] = $request->get('_filter', '');
+        $this->options['_query'] = array_merge(
+            array(
+                'page' => 1,
+                'sort' => 0,
+                'limit' => $this->options['limit'],
+                'filter' => null
+            ),
+            $request->get('query', array())
+        );
+        
+        $this->options['_query']['page'] = (int) $this->options['_query']['page'];
+        $this->options['_query']['limit'] = (int) $this->options['_query']['limit'];
+        $this->options['_query']['sort'] = (int) $this->options['_query']['sort'];
     }
 
     /**
@@ -136,13 +145,12 @@ class TableBuilder implements TableBuilderInterface {
     
     public function getQueryConfig(TableInterface $table) {
         $queryConfig = new QueryConfig();
-        $this->type->buildQuery($queryConfig, $table, $this->options);
+        $this->type->buildQuery($queryConfig, $table);
         return $queryConfig;
     }
 
     public function getQueryResult(TableInterface $table) {
         
-        $queryConfig = $this->getQueryConfig($table);
         
         if (is_array($this->data)) {
             return new QueryResult($this->data, 0);
@@ -151,7 +159,13 @@ class TableBuilder implements TableBuilderInterface {
 
             /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
             $dataProvider = $this->options['data_provider'];
+            
+            $queryConfig = $this->getQueryConfig($table);
 
+            if ( !$queryConfig->isValid() ) {
+                return null;
+            }
+            
             return $dataProvider->find($queryBuilder, $queryConfig);
         }
         

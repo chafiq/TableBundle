@@ -2,7 +2,7 @@
 
 namespace EMC\TableBundle\Twig;
 
-use EMC\TableBundle\Table\TableInterface;
+use EMC\TableBundle\Table\TableView;
 
 /**
  * TableExtension
@@ -15,7 +15,7 @@ class TableExtension extends \Twig_Extension {
      * @var \Twig_Environment 
      */
     private $environment;
-    
+
     /**
      * @var \Twig_Template
      */
@@ -25,7 +25,7 @@ class TableExtension extends \Twig_Extension {
      * @var array
      */
     private $extensions;
-    
+
     function __construct(\Twig_Environment $environment, $template, array $extensions) {
         $this->environment = $environment;
         $this->template = $template;
@@ -33,21 +33,20 @@ class TableExtension extends \Twig_Extension {
     }
 
     public function load() {
-        if ( $this->template instanceof \Twig_Template ) {
+        if ($this->template instanceof \Twig_Template) {
             return;
         }
-        
+
         $this->template = $this->environment->loadTemplate($this->template);
         $extensions = array();
         foreach ($this->extensions as $extension) {
             $extensions = array_merge(
-                $extensions,
-                $this->environment->loadTemplate($extension)->getBlocks()
+                    $extensions, $this->environment->loadTemplate($extension)->getBlocks()
             );
         }
         $this->extensions = $extensions;
     }
-    
+
     public function getFunctions() {
         return array(
             'table' => new \Twig_Function_Method($this, 'table', array(
@@ -66,7 +65,7 @@ class TableExtension extends \Twig_Extension {
                 'is_safe' => array('all'),
                 'needs_environment' => true
                     )),
-            'camel_case_to_option'    => new \Twig_Function_Method($this, 'camelCaseToOption', array(
+            'camel_case_to_option' => new \Twig_Function_Method($this, 'camelCaseToOption', array(
                 'is_safe' => array('all')
                     ))
         );
@@ -75,34 +74,34 @@ class TableExtension extends \Twig_Extension {
     /**
      * Render block $block with $table view's data.
      * @param \Twig_Environment $twig
-     * @param \EMC\TableBundle\Table\TableInterface $table
+     * @param \EMC\TableBundle\Table\TableView $view
      * @param string $block
      * @return string
      */
-    public function render(\Twig_Environment $twig, TableInterface $table, $block) {
+    public function render(\Twig_Environment $twig, TableView $view, $block) {
         $this->load();
-        return $this->template->renderBlock($block, $table->getView()->getData());
+        return $this->template->renderBlock($block, $view->getData());
     }
 
     /**
      * @see TableExtension::render
      */
-    public function table(\Twig_Environment $twig, TableInterface $table) {
-        return $this->render($twig, $table, 'table');
+    public function table(\Twig_Environment $twig, TableView $view) {
+        return $this->render($twig, $view, 'table');
     }
 
     /**
      * @see TableExtension::render
      */
-    public function rows(\Twig_Environment $twig, TableInterface $table) {
-        return $this->render($twig, $table, 'rows');
+    public function rows(\Twig_Environment $twig, TableView $view) {
+        return $this->render($twig, $view, 'rows');
     }
 
     /**
      * @see TableExtension::render
      */
-    public function pages(\Twig_Environment $twig, TableInterface $table) {
-        return $this->render($twig, $table, 'pages');
+    public function pages(\Twig_Environment $twig, TableView $view) {
+        return $this->render($twig, $view, 'pages');
     }
 
     /**
@@ -112,16 +111,16 @@ class TableExtension extends \Twig_Extension {
         $this->load();
         return $this->getBlock($data['type'])->renderBlock($data['type'] . '_widget', $data);
     }
-    
+
     /**
      * Transform camel case to DOM data option : subTableId => sub-table-id
      * @param string $option
      * @return string
      */
     public function camelCaseToOption($option) {
-        return strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/','-$1', $option));
+        return strtolower(preg_replace('/(?<=\\w)(?=[A-Z])/', '-$1', $option));
     }
-    
+
     /**
      * Return the block template
      * @param string $type
@@ -129,7 +128,7 @@ class TableExtension extends \Twig_Extension {
      * @throws \InvalidArgumentException
      */
     private function getBlock($type) {
-        if ( !isset($this->extensions[$type . '_widget']) ) {
+        if (!isset($this->extensions[$type . '_widget'])) {
             throw new \InvalidArgumentException('Block ' . $type . '_widget for the column type ' . $type . ' not found');
         }
         return $this->extensions[$type . '_widget'][0];

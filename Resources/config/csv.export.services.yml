@@ -1,0 +1,6 @@
+services:
+    table.export.csv:
+        class: EMC\TableBundle\Table\Export\Extension\CsvExportExtension
+        arguments: [%emc_table.export.csv.delimiter%, %emc_table.export.csv.enclosure%, %emc_table.export.csv.escape%]
+        tags:
+            -  { name: export.extension, alias: csv }

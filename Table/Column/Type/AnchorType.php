@@ -22,9 +22,8 @@ class AnchorType extends ColumnType {
         $view = array_merge($view, array(
             'route' => $options['route'],
             'params' => $this->resolveParams($options['params'], $options['static_params'], $data),
-            'text' => isset($options['text']) ? $options['text'] : $view['value'],
+            'value' => isset($options['text']) ? $options['text'] : $view['value'],
             'title' => $options['desc'],
-            'desc' => $options['desc'],
             'icon' => $options['icon']
         ));
         

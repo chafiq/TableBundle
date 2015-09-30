@@ -1,0 +1,7 @@
+services:
+    table.export.pdf:
+        class: EMC\TableBundle\Table\Export\Extension\PdfExportExtension
+        arguments: [@templating, %emc_table.export.pdf.template%, %emc_table.export.pdf.bin%, %emc_table.export.pdf.options%]
+        tags:
+            -  { name: export.extension, alias: pdf }
+            

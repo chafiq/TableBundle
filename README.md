@@ -133,7 +133,7 @@ services:
     my_custom_column_type:
         class: Acme\MyBundle\Table\Column\CustomType
         tags:
-            -  { name: table.type, alias: custom }
+            -  { name: column.type, alias: custom }
 ```
 
 ## Sub-tables

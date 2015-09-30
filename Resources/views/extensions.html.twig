@@ -1,16 +1,16 @@
 {% block text_widget %}
     {% import _self as table %}
-    <span{{ table.attributes(attrs) }}>{{ value }}</span>
+    <span{{ table.attributes(attrs) }}>{{ value|raw }}</span>
 {% endblock %}
 
 {% block datetime_widget %}
     {% import _self as table %}
-    <span{{ table.attributes(attrs) }}>{{ value|date(date_format) }}</span>
+    <span{{ table.attributes(attrs) }}>{{ value|raw }}</span>
 {% endblock %}
 
 {% block anchor_widget %}
     {% import _self as table %}
-    <a{{ table.attributes(attrs) }} href="{{ path(route, params) }}" title="{{ title }}">{{ text }}</a>
+    <a{{ table.attributes(attrs) }} href="{{ path(route, params) }}" title="{{ title }}">{{ value|raw }}</a>
 {% endblock %}
 
 {% block button_widget %}
@@ -21,7 +21,7 @@
             {% set attrs = attrs|merge({'class':''}) %}
             {{ block('icon_widget') }}
         {% endif %}
-        {{ text }}
+        {{ text|raw }}
     </button>
 {% endblock %}
 

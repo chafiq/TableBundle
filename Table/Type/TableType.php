@@ -46,7 +46,10 @@ abstract class TableType implements TableTypeInterface {
             'subtable_params' => array(),
             'rows_pad' => true,
             'rows_params' => array(),
-            'allow_select' => false
+            'allow_select' => false,
+            'select_route' => '_table_select',
+            'export' => array(),
+            'export_route' => '_table_export',
         ));
 
         $resolver->setAllowedTypes(array(
@@ -65,13 +68,27 @@ abstract class TableType implements TableTypeInterface {
             'rows_pad' => 'bool',
             'rows_params' => 'array',
             'allow_select' => 'bool',
+            'select_route' => 'string',
+            'export' => 'array',
+            'export_route' => 'string',
+        ));
+
+        $resolver->setNormalizers(array(
+            'allow_select' => function($options, $allowSelect) {
+        if ($allowSelect && count($options['rows_params']) === 0) {
+            throw new \InvalidArgumentException('rows_params is required if allow_select is true');
+        }
+        return $allowSelect;
+    }
         ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildView(TableView $view, TableInterface $table, array $options = array()) {
+    public function buildView(TableView $view, TableInterface $table) {
+
+        $options = $table->getOptions();
 
         if (!isset($options['_tid'])) {
             throw new \RuntimeException;
@@ -83,102 +100,122 @@ abstract class TableType implements TableTypeInterface {
                     . (count($options['params']) > 0 ? '_' . implode('_', $options['params']) : '' );
         }
 
-        $view->setData(array(
+        $data = array(
             'id' => $options['_tid'],
             'subtid' => isset($options['_subtid']) ? $options['_subtid'] : null,
             'params' => $options['params'],
             'attrs' => $options['attrs'],
             'caption' => $options['caption'],
-            'thead' => $this->buildHeaderView($table),
-            'tbody' => $this->buildBodyView($table),
-            'tfoot' => $this->buildFooterView($table),
+            'thead' => array(),
+            'tbody' => array(),
+            'tfoot' => array(),
             'total' => $table->getData() !== null ? $table->getData()->getCount() : 0,
-            'limit' => isset($options['_query']['limit']) ? $options['_query']['limit'] : $options['limit'],
-            'page' => isset($options['_query']['page']) ? $options['_query']['page'] : 1,
+            'limit' => $options['_query']['limit'],
+            'page' => $options['_query']['page'],
             'has_filter' => $this->hasFilter($table),
             'route' => $options['route'],
             'rows_pad' => $options['rows_pad'],
-            'allow_select' => $options['allow_select']
-        ));
+            'allow_select' => $options['allow_select'],
+            'export' => $this->buildExportView($options['export']),
+            'export_route' => $options['export_route'],
+            'select_route' => $options['select_route']
+        );
+
+        $table->getType()->buildHeaderView($data['thead'], $table);
+        $table->getType()->buildBodyView($data['tbody'], $table);
+        $table->getType()->buildFooterView($data['tfoot'], $table);
+
+        $view->setData($data);
     }
 
-    /**
-     * Build the header view.
-     * @param \EMC\TableBundle\Table\TableInterface $table
-     * @return array
-     */
-    protected function buildHeaderView(TableInterface $table) {
-        $view = array();
-
+    public function buildHeaderView(array &$view, TableInterface $table) {
         /* @var $column \EMC\TableBundle\Table\Column\ColumnInterface */
         $column = null;
         foreach ($table->getColumns() as $name => $column) {
-            $_view = array();
-            $column->getType()->buildHeaderView($_view, $column);
-            $view[$name] = $_view;
+            $cellView = array();
+            $table->getType()->buildHeaderCellView($cellView, $column);
+            if ($cellView !== null) {
+                $view[$name] = $cellView;
+            }
         }
-
-        return $view;
     }
 
-    /**
-     * Build the footer view.
-     * @todo implement table footer
-     * @param \EMC\TableBundle\Table\TableInterface $table
-     * @return array
-     */
-    protected function buildFooterView(TableInterface $table) {
-        return array();
-    }
-
-    /**
-     * Build the body view.
-     * @param \EMC\TableBundle\Table\TableInterface $table
-     * @return array
-     */
-    protected function buildBodyView(TableInterface $table) {
+    public function buildBodyView(array &$view, TableInterface $table) {
         if ($table->getData() === null || count($table->getData()->getRows()) === 0) {
             return array();
         }
 
-        $view = array();
-
         foreach ($table->getData()->getRows() as $_data) {
-            $rowView = array();
-            foreach ($table->getColumns() as $name => $column) {
-                $__data = $this->resolveParams($column->getOption('params'), $_data);
-                $cellView = array();
-                $column->getType()->buildView($cellView, $column, $__data, $column->getOptions());
-                $column->getType()->buildCellView($cellView, $column, $__data);
-                $rowView[$name] = $cellView;
-            }
-
-            $view[] = array(
+            $rowView = array(
                 'params' => $this->resolveParams($table->getOption('rows_params'), $_data, true),
                 'subtable' => $table->getOption('subtable') instanceof TableTypeInterface ?
                         $this->resolveParams($table->getOption('subtable_params'), $_data, true, null) :
                         null,
-                'data' => $rowView
+                'data' => array()
+            );
+
+            foreach ($table->getColumns() as $name => $column) {
+                $cellView = array();
+                $table->getType()->buildBodyCellView($cellView, $column, $_data);
+                if ($cellView !== null) {
+                    $rowView['data'][$name] = $cellView;
+                }
+            }
+
+            $view[] = $rowView;
+        }
+    }
+
+    public function buildFooterView(array &$view, TableInterface $table) {
+        
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildHeaderCellView(array &$view, ColumnInterface $column) {
+        $column->getType()->buildHeaderView($view, $column);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildBodyCellView(array &$view, ColumnInterface $column, array $data) {
+        $_data = $this->resolveParams($column->getOption('params'), $data);
+        $column->getType()->buildView($view, $column, $_data, $column->getOptions());
+    }
+
+    protected function buildExportView(array $exports) {
+        $view = array();
+
+        /* @var $export \EMC\TableBundle\Table\Export\ExportInterface */
+        $export = null;
+        foreach ($exports as $export) {
+            $view[$export->getName()] = array(
+                'text' => $export->getText(),
+                'icon' => $export->getIcon()
             );
         }
-
         return $view;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(QueryConfigInterface $query, TableInterface $table, array $options = array()) {
+    public function buildQuery(QueryConfigInterface $query, TableInterface $table) {
 
         $select = array();
         $filters = array();
         $orderBy = array();
+
+        $options = $table->getOptions();
 
         if (count($options['subtable_params']) > 0) {
             $select = array_merge($select, $options['subtable_params']);
         }
 
         if (count($options['rows_params']) > 0) {
+
             $select = array_merge($select, $options['rows_params']);
         }
 
@@ -225,10 +262,15 @@ abstract class TableType implements TableTypeInterface {
 
         $query->setSelect(array_unique(array_values($select)))
                 ->setOrderBy($orderBy)
-                ->setFilters($filters)
                 ->setLimit($options['_query']['limit'])
-                ->setPage($options['_query']['page'])
-                ->setQuery($options['_query']['filter']);
+                ->setPage($options['_query']['page']);
+
+        if (strlen($filter) > 0) {
+            foreach ($filters as $col) {
+                $query->getConstraints()->add('LOWER(' . $col . ') LIKE :query');
+            }
+            $query->addParameter('query', '%' . strtolower($filter) . '%');
+        }
     }
 
     /**
@@ -271,7 +313,7 @@ abstract class TableType implements TableTypeInterface {
      * @return array
      * @throws \RuntimeException
      */
-    private function resolveParams(array $params, array $data, $preserveKeys = false, $default = array()) {
+    public function resolveParams(array $params, array $data, $preserveKeys = false, $default = array()) {
         if (count($params) === 0) {
             return $default;
         }

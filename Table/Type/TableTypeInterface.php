@@ -8,12 +8,13 @@ use EMC\TableBundle\Provider\QueryConfigInterface;
 use EMC\TableBundle\Table\TableBuilderInterface;
 use EMC\TableBundle\Table\TableInterface;
 use EMC\TableBundle\Table\TableView;
+use EMC\TableBundle\Table\Column\ColumnInterface;
 
 /**
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface TableTypeInterface {
-    
+
     /**
      * This method build the table object.<br/>
      * It's called in the TableFactoryInterface::create.<br/>
@@ -22,7 +23,7 @@ interface TableTypeInterface {
      * @param array $options
      */
     public function buildTable(TableBuilderInterface $builder, array $options);
-    
+
     /**
      * This method populate the table view object $view.<br/>
      * It's has to take care of template needs.<br/>
@@ -30,19 +31,36 @@ interface TableTypeInterface {
      * <br/>
      * @param \EMC\TableBundle\Table\TableView $view
      * @param \EMC\TableBundle\Table\TableInterface $table
-     * @param array $options
      */
-    public function buildView(TableView $view, TableInterface $table, array $options = array());
-    
+    public function buildView(TableView $view, TableInterface $table);
+
+    public function buildHeaderView(array &$view, TableInterface $table);
+
+    public function buildBodyView(array &$view, TableInterface $table);
+
+    public function buildFooterView(array &$view, TableInterface $table);
+
+    /**
+     * 
+     * @param \EMC\TableBundle\Table\Type\ColumnInterface $column
+     * @param array $data
+     */
+    public function buildBodyCellView(array &$view, ColumnInterface $column, array $data);
+
+    /**
+     * 
+     * @param \EMC\TableBundle\Table\Column\ColumnInterface $column
+     */
+    public function buildHeaderCellView(array &$view, ColumnInterface $column);
+
     /**
      * This method populate the query config $query. @see QueryConfigInterface<br/>
      * <br/>
      * @param \EMC\TableBundle\Provider\QueryConfigInterface $query
      * @param \EMC\TableBundle\Table\TableInterface $table
-     * @param array $options
      */
-    public function buildQuery(QueryConfigInterface $query, TableInterface $table, array $options = array());
-    
+    public function buildQuery(QueryConfigInterface $query, TableInterface $table);
+
     /**
      * Sets the default options for this type.<br/>
      * <br/>
@@ -63,12 +81,13 @@ interface TableTypeInterface {
      * <li><b>rows_pad</b>           : bool <i>Fixe table height. Complete table with empty rows until "limit".</i></li>
      * <li><b>rows_params</b>        : array <i>Parameters to inject in the TR Dom element as data</i></li>
      * <li><b>allow_select</b>       : bool <i>Activate selection mode.</i></li>
+     * <li><b>export</b>       : array <i>Allowed Export services names. Example : array('pdf', 'excel')</i></li>
      * </ul>
      * 
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver);
-    
+
     /**
      * This method return the query builder.<br/>
      * This query builder must contains all table aliases declared in the $options['params'] of columns.<br/>
@@ -80,7 +99,7 @@ interface TableTypeInterface {
      * @return \Doctrine\ORM\QueryBuilder The query builder.
      */
     public function getQueryBuilder(ObjectManager $entityManager, array $params);
-    
+
     /**
      * Returns the configured options resolver used for this type.
      *
@@ -88,6 +107,8 @@ interface TableTypeInterface {
      */
     public function getOptionsResolver();
     
+    public function resolveParams(array $params, array $data, $preserveKeys = false, $default = array());
+
     /**
      * @return string name of the table type (unique)
      */

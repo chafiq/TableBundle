@@ -3,24 +3,67 @@ table.emc-table {
     padding: 0;
     border: none;
     width: 100%;
+    table-layout: auto;
 }
 
 table.emc-table > thead > tr {
     height : 40px;
 }
 
-table.emc-table > thead > tr > td > .input-group {
-    width: 224px;
+table.emc-table > thead > tr > td > span {
+    font-size: 16px;
+    line-height: 30px;
+    margin-left: 10px;
+}
+
+table.emc-table > thead > tr > td > div.left,
+table.emc-table > thead > tr > td > div.right {
+    display: inline;
+}
+
+table.emc-table > thead > tr > td > div.left > .btn-group.selection > button:first-child {
+    margin: 0;
+    padding: 1px 10px 0;
+    font-size: 18px;
+}
+
+table.emc-table > thead > tr > td > div.right {
     float: right;
 }
 
-table.emc-table > thead > tr > td > .input-group > span {
+table.emc-table > thead > tr > td > div.right > div {
+    display: inline-table;
+    vertical-align: top;
+}
+
+#table_full-table thead > tr > td > div > * {
+    display: inline-table;
+    vertical-align: top;
+}
+
+table.emc-table > thead > tr > td > div > .export {
+    margin-left: 20px;
+}
+
+table.emc-table > thead > tr > td > div > div > ul > li {
+    cursor: pointer;
+}
+
+table.emc-table > thead > tr > td > div > .export > ul > li > a > span {
+    margin-left: 10px;
+}
+
+table.emc-table > thead > tr > td > div > .filter {
+    width: 224px;
+}
+
+table.emc-table > thead > tr > td > div > .filter > span {
     background: none repeat scroll 0 0 transparent;
     border-radius: 15px 0 0 15px;
     padding: 5px;
 }
 
-table.emc-table > thead > tr > td > .input-group > input {
+table.emc-table > thead > tr > td > div > .filter > input {
     display: inline;
     width: 200px;
     height: 30px;

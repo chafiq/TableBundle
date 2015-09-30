@@ -19,21 +19,42 @@ class EMCTableExtension extends Extension {
      */
     public function load(array $configs, ContainerBuilder $container) {
         $configuration = new Configuration();
+        
         $config = $this->processConfiguration($configuration, $configs);
         
-        $container->setParameter('emc_table.template', isset($config['template']) ? $config['template'] : 'EMCTableBundle::template.html.twig');
-        $extensions = array('EMCTableBundle::extensions.html.twig');
-        if ( isset($config['extensions']) ) {
-            $extensions = array_unique(array_merge($extensions, $config['extensions']));
-        }
-        $container->setParameter('emc_table.extensions',  $extensions);
-
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.yml');
+        
+        array_unshift($config['extensions'], $config['default_extensions']);
+        $container->setParameter('emc_table.extensions',  $config['extensions']);
+        $container->setParameter('emc_table.template', $config['template']);
+        
+        $loader->load('table.services.yml');
+        $loader->load('column.services.yml');
+        $loader->load('profiler.services.yml');
+        
+        if ( isset($config['export']) ) {
+            $loader->load('export.services.yml');
+            $container->setParameter('emc_table.export.template', $config['export']['template']);
+        }
+        
+        if ( isset($config['export']['csv']) ) {
+            $container->setParameter('emc_table.export.csv.delimiter',  $config['export']['csv']['delimiter']);
+            $container->setParameter('emc_table.export.csv.enclosure',  $config['export']['csv']['enclosure']);
+            $container->setParameter('emc_table.export.csv.escape',  $config['export']['csv']['escape']);
+            $loader->load('csv.export.services.yml');
+        }
+        
+        if ( isset($config['export']['pdf']) ) {
+            $container->setParameter('emc_table.export.pdf.bin',  $config['export']['pdf']['bin']);
+            $container->setParameter('emc_table.export.pdf.template', $config['export']['pdf']['template']);
+            $container->setParameter('emc_table.export.pdf.options', $config['export']['pdf']['options']);
+            $loader->load('pdf.export.services.yml');
+        }
+        
+        if ( isset($config['export']['xls']) ) {
+            $container->setParameter('emc_table.export.xls.template', $config['export']['xls']['template']);
+            $loader->load('xls.export.services.yml');
+        }
     }
     
-    private function loadTemplates($template, array $extensions) {
-        
-    }
-
 }

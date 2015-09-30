@@ -33,8 +33,6 @@ class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
             'type',
             'attrs',
             'value',
-            'allow_sort',
-            'allow_filter'
         );
 
         foreach ($expectedViewKeys as $key) {
@@ -44,8 +42,6 @@ class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals( 'foo', $view['name'] );
         $this->assertEquals( $view['type'], $type->getName() );
         $this->assertEquals( $view['value'], 'test' );
-        $this->assertEquals( $view['allow_sort'], $resolvedOptions['allow_sort'] );
-        $this->assertEquals( $view['allow_filter'], $resolvedOptions['allow_filter'] );
         $this->assertEquals( trim('column-' . $type->getName() . ' column-foo'), $view['attrs']['class']);
         $this->assertArrayHasKey( 'a', $view['attrs'] );
         $this->assertArrayHasKey( 'b', $view['attrs'] );

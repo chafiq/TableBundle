@@ -20,7 +20,7 @@ class TableTypeTest extends TableAbstractTest {
         $this->builder->add('id', 'text');
         $this->builder->add('name', 'text');
         $table = $this->builder->getTable();
-        $table->getType()->buildView($view, $table, $table->getOptions());
+        $table->getType()->buildView($view, $table);
 
         $expectedViewKeys = array(
             'id',
@@ -51,7 +51,8 @@ class TableTypeTest extends TableAbstractTest {
     public function testBuildBodyViewEmptyData() {
         $builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, array(), $this->resolvedOptions);
         $table = $builder->getTable();
-        $this->assertEquals(array(), $this->invokeMethod($table->getType(), 'buildBodyView', array($table)));
+        $view = array();
+        $this->assertEquals(array(), $table->getType()->buildBodyView($view, $table));
     }
 
     /**
@@ -62,7 +63,11 @@ class TableTypeTest extends TableAbstractTest {
         $table = $this->builder->getTable();
         $options = $table->getOptions();
         unset($options['_tid']);
-        $table->getType()->buildView($view, $table, $options);
+        
+        
+        $this->invokeSetter($table, 'options', $options);
+        
+        $table->getType()->buildView($view, $table);
     }
 
     /**
@@ -72,7 +77,7 @@ class TableTypeTest extends TableAbstractTest {
         $view = new TableView();
         $this->builder->add('test', 'text');
         $table = $this->builder->getTable();
-        $table->getType()->buildView($view, $table, $table->getOptions());
+        $table->getType()->buildView($view, $table);
     }
 
     public function testBuildQuery() {
@@ -93,14 +98,15 @@ class TableTypeTest extends TableAbstractTest {
         $this->resolvedOptions['rows_params'] = array('f' => 'g', 'h');
         $this->resolvedOptions['subtable_params'] = array('h' => 'k', 'l' => 'm');
 
+        $this->invokeSetter($table, 'options', $this->resolvedOptions);
+        
         $queryConfig = new QueryConfig();
-        $table->getType()->buildQuery($queryConfig, $table, $this->resolvedOptions);
-
+        $table->getType()->buildQuery($queryConfig, $table);
+        
         $this->assertEquals(array('k', 'm', 'g', 'h', 'id', 'name', 'x'), $queryConfig->getSelect());
-        $this->assertEquals(array('name', 'z'), $queryConfig->getFilters());
+        $this->assertEquals(array('LOWER(name) LIKE :query', 'LOWER(z) LIKE :query'), $queryConfig->getConstraints()->getParts());
         $this->assertEquals($this->resolvedOptions['_query']['limit'], $queryConfig->getLimit());
         $this->assertEquals($this->resolvedOptions['_query']['page'], $queryConfig->getPage());
-        $this->assertEquals($this->resolvedOptions['_query']['filter'], $queryConfig->getQuery());
         $this->assertEquals(array('name' => false, 'id' => false), $queryConfig->getOrderBy());
     }
 
@@ -114,8 +120,10 @@ class TableTypeTest extends TableAbstractTest {
 
         $this->resolvedOptions['_query']['filter'] = 'xx';
 
+        $this->invokeSetter($table, 'options', $this->resolvedOptions);
+        
         $queryConfig = new QueryConfig();
-        $table->getType()->buildQuery($queryConfig, $table, $this->resolvedOptions);
+        $table->getType()->buildQuery($queryConfig, $table);
     }
 
     /**
@@ -128,8 +136,10 @@ class TableTypeTest extends TableAbstractTest {
 
         $this->resolvedOptions['_query']['sort'] = -5;
 
+        $this->invokeSetter($table, 'options', $this->resolvedOptions);
+        
         $queryConfig = new QueryConfig();
-        $table->getType()->buildQuery($queryConfig, $table, $this->resolvedOptions);
+        $table->getType()->buildQuery($queryConfig, $table);
     }
 
     /**
@@ -142,8 +152,10 @@ class TableTypeTest extends TableAbstractTest {
 
         $this->resolvedOptions['_query']['sort'] = 1;
 
+        $this->invokeSetter($table, 'options', $this->resolvedOptions);
+        
         $queryConfig = new QueryConfig();
-        $table->getType()->buildQuery($queryConfig, $table, $this->resolvedOptions);
+        $table->getType()->buildQuery($queryConfig, $table);
     }
 
     public function testHasFilter() {

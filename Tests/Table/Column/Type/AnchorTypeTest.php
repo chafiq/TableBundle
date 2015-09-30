@@ -39,13 +39,9 @@ class AnchorTypeTest extends AbstractUnitTest {
             'type',
             'attrs',
             'value',
-            'allow_sort',
-            'allow_filter',
             'route',
-            'text',
             'title',
-            'icon',
-            'desc'
+            'icon'
         );
 
         foreach ($expectedViewKeys as $key) {
@@ -56,12 +52,8 @@ class AnchorTypeTest extends AbstractUnitTest {
         $this->assertEquals($view['type'], $type->getName());
         $this->assertEquals($view['value'], '1:2');
         $this->assertEquals($view['route'], $resolvedOptions['route']);
-        $this->assertEquals($view['text'], '1:2');
         $this->assertEquals($view['title'], $resolvedOptions['title']);
         $this->assertEquals($view['icon'], $resolvedOptions['icon']);
-        $this->assertEquals($view['desc'], $resolvedOptions['desc']);
-        $this->assertEquals($view['allow_sort'], $resolvedOptions['allow_sort']);
-        $this->assertEquals($view['allow_filter'], $resolvedOptions['allow_filter']);
         $this->assertEquals(trim('column-' . $type->getName() . ' column-foo'), $view['attrs']['class']);
         $this->assertArrayHasKey('a', $view['attrs']);
         $this->assertArrayHasKey('b', $view['attrs']);

@@ -34,8 +34,6 @@ class ButtonTypeTest extends AbstractUnitTest {
             'type',
             'attrs',
             'value',
-            'allow_sort',
-            'allow_filter',
             'text',
             'title'
         );

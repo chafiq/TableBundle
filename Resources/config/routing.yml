@@ -1,3 +1,17 @@
 _table:
     path:     /_table
     defaults: { _controller: EMCTableBundle:Table:index }
+    requirements:
+        method: GET
+
+_table_export:
+    path:     /_table/export
+    defaults: { _controller: EMCTableBundle:Table:export }
+    requirements:
+        method: POST
+        
+_table_select:
+    path:     /_table/select
+    defaults: { _controller: EMCTableBundle:Table:select }
+    requirements:
+        method: GET

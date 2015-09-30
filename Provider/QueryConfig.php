@@ -8,36 +8,49 @@ namespace EMC\TableBundle\Provider;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class QueryConfig implements QueryConfigInterface {
+
     /**
      * @var array
      */
     private $select;
-    
+
     /**
      * @var array
      */
     private $orderBy;
-    
-    /**
-     * @var array
-     */
-    private $filters;
 
     /**
      * @var int
      */
     private $limit;
-    
+
     /**
      * @var int
      */
     private $page;
-    
+
     /**
-     * @var string
+     * @var \Doctrine\ORM\Query\Expr\Orx
      */
-    private $query;
-    
+    private $constraints;
+
+    /**
+     * @var array
+     */
+    private $parameters;
+
+    /**
+     *
+     * @var boolean
+     */
+    private $isValid;
+
+    function __construct() {
+        $this->constraints = new \Doctrine\ORM\Query\Expr\Orx();
+        $this->parameters = array();
+        $this->isValid = true;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,13 +63,6 @@ class QueryConfig implements QueryConfigInterface {
      */
     public function getOrderBy() {
         return $this->orderBy;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFilters() {
-        return $this->filters;
     }
 
     /**
@@ -79,12 +85,26 @@ class QueryConfig implements QueryConfigInterface {
     public function getFilter() {
         return $this->filter;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getQuery() {
-        return $this->query;
+    public function getConstraints() {
+        return $this->constraints;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParameters() {
+        return $this->parameters;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid() {
+        return $this->isValid;
     }
 
     /**
@@ -100,14 +120,6 @@ class QueryConfig implements QueryConfigInterface {
      */
     public function setOrderBy(array $orderBy) {
         $this->orderBy = $orderBy;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setFilters(array $filters) {
-        $this->filters = $filters;
         return $this;
     }
 
@@ -130,10 +142,40 @@ class QueryConfig implements QueryConfigInterface {
     /**
      * {@inheritdoc}
      */
-    public function setQuery($query) {
-        $this->query = $query;
+    public function setConstraints(\Doctrine\ORM\Query\Expr\Orx $constraints) {
+        $this->constraints = $constraints;
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function addConstraint(\Doctrine\ORM\Query\Expr\Andx $constraint) {
+        $this->constraints->add($constraint);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addParameter($name, $value) {
+        $this->parameters[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setParameters(array $parameters) {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValid($isValid) {
+        $this->isValid = $isValid;
+    }
 
 }

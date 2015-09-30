@@ -7,12 +7,20 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use EMC\TableBundle\Session\TableSessionInterface;
 use EMC\TableBundle\Table\Column\ColumnFactoryInterface;
 use EMC\TableBundle\Table\Type\TableTypeInterface;
+use EMC\TableBundle\Table\Export\ExportRegistryInterface;
+use EMC\TableBundle\Table\Type\Decorator\TableExportDecorator;
+use EMC\TableBundle\Table\Type\Decorator\TableSelectionDecorator;
+
 /**
  * TableFactory
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 class TableFactory implements TableFactoryInterface {
+
+    const MODE_NORMAL = 0;
+    const MODE_EXPORT = 1;
+    const MODE_SELECTION = 2;
 
     /**
      * @var ObjectManager
@@ -34,17 +42,24 @@ class TableFactory implements TableFactoryInterface {
      */
     private $columnFactory;
 
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory) {
+    /**
+     *
+     * @var ExportRegistryInterface
+     */
+    private $exportRegistry;
+
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory, ExportRegistryInterface $exportRegistry) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->tableSession = $tableSession;
         $this->columnFactory = $columnFactory;
+        $this->exportRegistry = $exportRegistry;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create(TableTypeInterface $type, array $data = null, array $options = array(), array $params = array()) {
+    public function create(TableTypeInterface $type, array $data = null, array $options = array(), array $params = array(), $mode = self::MODE_NORMAL) {
 
         $options = $this->resolveOptions($type, $data, $options, $params);
 
@@ -52,10 +67,12 @@ class TableFactory implements TableFactoryInterface {
             $subtable = $this->create($options['subtable'], null, $options['subtable_options'])->create();
             $options['_subtid'] = $subtable->getOption('_tid');
         }
+        
+        $resolvedType = $this->getResolvedType($type, $mode);
+        
+        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $resolvedType, $data, $options);
 
-        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $type, $data, $options);
-
-        $type->buildTable($builder, $builder->getOptions());
+        $resolvedType->buildTable($builder, $builder->getOptions());
 
         return $builder;
     }
@@ -63,17 +80,17 @@ class TableFactory implements TableFactoryInterface {
     /**
      * {@inheritdoc}
      */
-    public function load($class, array $data = null, array $options = array(), array $params = array()) {
+    public function load($class, array $data = null, array $options = array(), array $params = array(), $mode = self::MODE_NORMAL) {
         $type = $this->newInstance($class);
-        return $this->create($type, $data, $options, $params);
+        return $this->create($type, $data, $options, $params, $mode);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function restore($tableId, array $params = array()) {
+    public function restore($tableId, array $params = array(), $mode = self::MODE_NORMAL) {
         $config = $this->tableSession->restore($tableId);
-        return $this->load($config['class'], $config['data'], $config['options'], $params);
+        return $this->load($config['class'], $config['data'], $config['options'], $params, $mode);
     }
 
     /**
@@ -105,6 +122,23 @@ class TableFactory implements TableFactoryInterface {
         return $type;
     }
 
+    private function getResolvedType(TableTypeInterface $type, $mode) {
+        if (!is_int($mode)) {
+            throw new \InvalidArgumentException('$mode int expected');
+        }
+
+        switch ($mode) {
+            case self::MODE_NORMAL :
+                return $type;
+            case self::MODE_EXPORT :
+                return new TableExportDecorator($type);
+            case self::MODE_SELECTION :
+                return new TableSelectionDecorator($type);
+        }
+        
+        throw new \UnexpectedValueException('Unknown mode "' . $mode . '"');
+    }
+
     /**
      * Resolve table type options
      * @param \EMC\TableBundle\Table\Type\TableTypeInterface $type
@@ -127,6 +161,13 @@ class TableFactory implements TableFactoryInterface {
         $type->setDefaultOptions($resolver);
 
         $options = $resolver->resolve($options);
+
+        $availableExport = array();
+        foreach ($options['export'] as $export) {
+            $availableExport[$export] = $this->exportRegistry->get($export);
+        }
+        unset($options['export']);
+        $options['export'] = $availableExport;
 
         $options['_tid'] = $this->generateTableId($type, $_options);
         $options['_passed_options'] = $_options;

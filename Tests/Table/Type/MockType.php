@@ -2,8 +2,10 @@
 
 namespace EMC\TableBundle\Tests\Table\Type;
 
+use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Table\Type\TableType;
 use EMC\TableBundle\Tests\Provider\QueryBuilderMock;
+use EMC\TableBundle\Table\TableBuilderInterface;
 
 /**
  * MockType
@@ -12,17 +14,19 @@ use EMC\TableBundle\Tests\Provider\QueryBuilderMock;
  */
 class MockType extends TableType {
 
-    public function buildTable(\EMC\TableBundle\Table\TableBuilderInterface $builder, array $options) {
+    public function buildTable(TableBuilderInterface $builder, array $options) {
         parent::buildTable($builder, $options);
         $builder->add('id', 'text', array(
+                    'title' => 'ID',
                     'params' => array('id')
                 ))
                 ->add('name', 'text', array(
+                    'title' => 'Name',
                     'params' => array('name')
         ));
     }
 
-    public function getQueryBuilder(\Doctrine\Common\Persistence\ObjectManager $entityManager = null, array $params) {
+    public function getQueryBuilder(ObjectManager $entityManager = null, array $params) {
         $queryBuilder = new QueryBuilderMock();
         $queryBuilder->from('Table', 't');
         return $queryBuilder;

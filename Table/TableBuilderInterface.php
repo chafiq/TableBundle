@@ -34,6 +34,11 @@ interface TableBuilderInterface {
     public function getData();
     
     /**
+     * @return TableInterface returns table instance (prototype) without retrieving data
+     */
+    public function create();
+    
+    /**
      * @return TableInterface returns table instance
      */
     public function getTable();

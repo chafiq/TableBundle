@@ -43,4 +43,10 @@ interface TableInterface {
      * @param \EMC\TableBundle\Provider\QueryResultInterface $data
      */
     public function setData(QueryResultInterface $data);
+    
+    /**
+     * @param string $type
+     * @return Export\ExportInterface
+     */
+    public function export($type);
 }

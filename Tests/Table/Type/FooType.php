@@ -44,7 +44,7 @@ class FooType extends TableType {
         return '03bc791ec92a4d00683586852cd3bd75990883ed';
     }
 
-    public function getQueryBuilder(\Doctrine\Common\Persistence\ObjectManager $entityManager = null, array $params) {
+    public function getQueryBuilder(\Doctrine\Common\Persistence\ObjectManager $entityManager, array $params) {
         return $this->queryBuilder;
     }
 

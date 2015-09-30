@@ -15,13 +15,4 @@ interface DataProviderInterface {
      * @return QueryResultInterface
      */
     public function find(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig);
-    
-    /**
-     * This method return all rows
-     * @see DataProviderInterface::find
-     * @param \Doctrine\ORM\QueryBuilder $queryBuilder
-     * @param \EMC\TableBundle\Provider\QueryConfigInterface $queryConfig
-     * @return QueryResultInterface
-     */
-    public function findAll(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig);
 }

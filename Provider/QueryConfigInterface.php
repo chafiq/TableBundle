@@ -6,7 +6,7 @@ namespace EMC\TableBundle\Provider;
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
 interface QueryConfigInterface {
-
+    
     /**
      * @return array Query builder select
      */
@@ -18,25 +18,30 @@ interface QueryConfigInterface {
     public function getOrderBy();
 
     /**
-     * @return array Allowed filters
-     */
-    public function getFilters();
-
-    /**
      * @return array Max rows per page
      */
     public function getLimit();
 
     /**
-     * @return array Actual page nmber
+     * @return array Actual page number
      */
     public function getPage();
 
     /**
-     * @return array Search sequence
+     * @return \Doctrine\ORM\Query\Expr\Orx Where clause constraints
      */
-    public function getQuery();
+    public function getConstraints();
 
+    /**
+     * @return array
+     */
+    public function getParameters();
+
+    /**
+     * @return boolean Query config is valid or not
+     */
+    public function isValid();
+    
     /**
      * @param array $select
      * @return QueryConfigInterface
@@ -48,12 +53,6 @@ interface QueryConfigInterface {
      * @return QueryConfigInterface
      */
     public function setOrderBy(array $orderBy);
-
-    /**
-     * @param array $filter
-     * @return QueryConfigInterface
-     */
-    public function setFilters(array $filter);
 
     /**
      * @param int $limit
@@ -68,8 +67,37 @@ interface QueryConfigInterface {
     public function setPage($page);
 
     /**
-     * @param string $query
+     * 
+     * @param \Doctrine\ORM\Query\Expr\Orx $constraints
      * @return QueryConfigInterface
      */
-    public function setQuery($query);
+    public function setConstraints(\Doctrine\ORM\Query\Expr\Orx $constraints);
+
+    /**
+     * 
+     * @param \Doctrine\ORM\Query\Expr\Andx $constraint
+     * @return QueryConfigInterface
+     */
+    public function addConstraint(\Doctrine\ORM\Query\Expr\Andx $constraint);
+
+    /**
+     * 
+     * @param array $parameters
+     * @return QueryConfigInterface
+     */
+    public function setParameters(array $parameters);
+
+    /**
+     * 
+     * @param string $name
+     * @param mixed $value
+     * @return QueryConfigInterface
+     */
+    public function addParameter($name, $value);
+    
+    /**
+     * 
+     * @param boolean $isValid
+     */
+    public function setValid($isValid);
 }

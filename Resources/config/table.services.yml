@@ -1,0 +1,24 @@
+services:
+    table.factory:
+        class: EMC\TableBundle\Table\TableFactory
+        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session, @table.column.factory, @table.export.registry]
+    
+    table.session:
+        class: EMC\TableBundle\Session\TableSession
+        arguments: [@session]
+    
+    table.listener:
+        class: EMC\TableBundle\Listener\TableListener
+        arguments: [@table.session]
+        tags:
+            - { name: kernel.event_listener, event: table.pre_set_data, method: onPreSetData }
+    
+    table.extension:
+        class: EMC\TableBundle\Twig\TableExtension
+        arguments: [@twig, %emc_table.template%, %emc_table.extensions%]
+        tags:
+            -  { name: twig.extension }
+            
+    table.export.registry:
+        class: EMC\TableBundle\Table\Export\ExportRegistry
+        arguments: [@service_container, {}]

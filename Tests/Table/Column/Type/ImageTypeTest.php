@@ -35,8 +35,6 @@ class ImageTypeTest extends AbstractUnitTest {
             'type',
             'attrs',
             'value',
-            'allow_sort',
-            'allow_filter',
             'asset_url',
             'alt',
             'output'

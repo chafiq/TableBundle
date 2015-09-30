@@ -53,6 +53,11 @@ abstract class TableAbstractTest extends AbstractUnitTest {
      * @var \EMC\TableBundle\Provider\QueryResultInterface
      */
     protected $queryResult;
+    
+    /**
+     * @var \EMC\TableBundle\Table\TableBuilderInterface
+     */
+    protected $builder;
 
     public function setUp() {
         $this->entityManagerMock = $this->getMock('Doctrine\Common\Persistence\ObjectManager');

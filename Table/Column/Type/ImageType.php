@@ -41,10 +41,14 @@ class ImageType extends ColumnType {
         ));
         
         $resolver->addAllowedTypes(array(
-            'asset_url'       => 'string',
+            'asset_url' => 'string',
             'alt'       => 'string',
             'output'    => 'string'
         ));
+    }
+    
+    public function isExportable() {
+        return false;
     }
     
     /**
