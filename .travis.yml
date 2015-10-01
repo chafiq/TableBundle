@@ -1,5 +1,10 @@
 language: php
 
+sudo: required
+
+services:
+  - docker
+
 php:
   - 5.4
   - 5.5
@@ -8,6 +13,7 @@ php:
 
 before_script:
   - docker pull chafiq/wkhtmltox
+  - composer self-update
   - composer install --dev
 
 script: phpunit --coverage-text
