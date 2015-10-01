@@ -6,17 +6,23 @@ services:
   - docker
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - hhvm
+    - 5.4
+    - 5.5
+    - 5.6
+    - 7.0
+    - hhvm
+
+matrix:
+    allow_failures:
+        - php: hhvm
 
 before_script:
-  - docker pull chafiq/wkhtmltox
-  - composer self-update
-  - composer install --dev
+    - composer self-update
+    - composer install --no-interaction
+    - docker pull chafiq/wkhtmltox
 
-script: phpunit --coverage-text
+script:
+    - ./bin/phpunit
 
 notifications:
   email:
