@@ -3,7 +3,7 @@
 namespace EMC\TableBundle\Tests\Table\Export\Extension;
 
 use EMC\TableBundle\Table\TableView;
-use EMC\TableBundle\Table\Export\ExportInterface;
+use EMC\TableBundle\Tests\AbstractUnitTest;
 use EMC\TableBundle\Table\Export\Extension\PdfExportExtension;
 
 /**
@@ -11,7 +11,7 @@ use EMC\TableBundle\Table\Export\Extension\PdfExportExtension;
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class PdfExportExtensionTest extends \PHPUnit_Framework_TestCase {
+class PdfExportExtensionTest extends AbstractUnitTest {
 
     /**
      * @var PdfExportExtension
@@ -28,16 +28,22 @@ class PdfExportExtensionTest extends \PHPUnit_Framework_TestCase {
                 . '</table>';
 
         $twigMock = $this->getMock('Symfony\Component\Templating\EngineInterface');
+
+        $dir = getcwd() . '/Tests/build/tmp';
+        $bin = sprintf('docker run --rm -t -i -v %s:%s chafiq/wkhtmltox:1.0 wkhtmltopdf', $dir, $dir);
+
         $options = array(
             'page-size' => 'A4',
             'orientation' => 'Portrait',
             'title' => 'Export [caption] [now]',
             'filename' => 'Export [caption] [now]',
-            'timeout' => 10
+            'timeout' => 10,
+            'dir' => $dir
         );
-        $this->extension = new PdfExportExtension($twigMock, 'tpl', 'wkhtmltopdf', $options);
 
-        $twigMock->expects($this->once())
+        $this->extension = new PdfExportExtension($twigMock, 'tpl', $bin, $options);
+
+        $twigMock->expects($this->any())
                 ->method('render')
                 ->will($this->returnValue($content));
 
@@ -57,4 +63,28 @@ class PdfExportExtensionTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('application/pdf', mime_content_type($export->getFile()->getPathname()));
     }
 
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testBuildPdfRuntimeException() {
+        $input = tempnam('/tmp', 'phpunit-test-');
+        $output = tempnam('/tmp', 'phpunit-test-');
+        $this->invokeSetter($this->extension, 'bin', '/tmp/' . md5(rand()));
+        $this->invokeMethod($this->extension, 'buildPdf', array($input, $output, array('caption'=>'test')));
+    }
+    
+    public function testGetProcess() {
+        $cmd = '#test process command';
+        /* @var $process \Symfony\Component\Process\Process */
+        $process = $this->invokeMethod($this->extension, 'getProcess', array($cmd));
+        $this->assertEquals($cmd, $process->getCommandLine());
+        $this->assertEquals(10, $process->getTimeout());
+    }
+    
+    public function testTempnam() {
+        $filename = $this->invokeMethod($this->extension, 'tempnam', array('ext'));
+        $this->assertTrue(file_exists($filename));
+        $this->assertEquals('.ext', substr($filename, -4));
+    }
+    
 }

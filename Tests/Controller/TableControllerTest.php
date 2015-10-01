@@ -4,7 +4,6 @@ namespace EMC\TableBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use EMC\TableBundle\Tests\Table\Type\MockType;
-use EMC\TableBundle\Table\TableFactory;
 
 class TableControllerTest extends WebTestCase {
 
