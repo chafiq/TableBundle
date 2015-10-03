@@ -30,7 +30,9 @@ class PdfExportExtensionTest extends AbstractUnitTest {
         $twigMock = $this->getMock('Symfony\Component\Templating\EngineInterface');
 
         $dir = getcwd() . '/Tests/build/tmp';
-        $bin = sprintf('docker run --rm -t -i -v %s:%s chafiq/wkhtmltox:1.0 wkhtmltopdf', $dir, $dir);
+        /* phpenv HTMLTOPDF_BIN='docker run --rm -t -i -v %s:%s chafiq/wkhtmltox:1.0 wkhtmltopdf' */
+        $bin = isset($_ENV['HTMLTOPDF_BIN']) ? $_ENV['HTMLTOPDF_BIN'] : 'wkhtmltopdf';
+        $bin = sprintf($bin, $dir, $dir);
 
         $options = array(
             'page-size' => 'A4',

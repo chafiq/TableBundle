@@ -6,14 +6,6 @@ twig:
     debug:            %kernel.debug%
     strict_variables: %kernel.debug%
 
-# Assetic Configuration
-assetic:
-    debug:          %kernel.debug%
-    use_controller: false
-    bundles:        []
-    filters:
-        cssrewrite: ~
-        
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -58,9 +50,6 @@ monolog:
             path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
 
-swiftmailer:
-    disable_delivery: true
-    
 emc_table:
     export:
         csv : ~

@@ -19,11 +19,13 @@ class DataProvider implements DataProviderInterface {
         if ($queryConfig->getConstraints()->count() > 0) {
             $queryBuilder->andWhere($queryConfig->getConstraints());
         }
-        
-        if ( count($queryConfig->getParameters()) > 0 ) {
-            $queryBuilder->setParameters($queryConfig->getParameters());
+
+        if (count($queryConfig->getParameters()) > 0) {
+            foreach ($queryConfig->getParameters() as $key => $value) {
+                $queryBuilder->setParameter($key, $value);
+            }
         }
-        
+
         $rows = $this->getRows($queryBuilder, $queryConfig);
         $count = 0;
         if ($queryConfig->getLimit() > 0 && count($rows) > 0) {
@@ -45,7 +47,7 @@ class DataProvider implements DataProviderInterface {
         $mapping = array();
 
         $rows = $this->getQueryRows($queryBuilder, $queryConfig, $mapping)->getArrayResult();
-        
+
         return $this->resolveRowsKeys($rows, $mapping);
     }
 
