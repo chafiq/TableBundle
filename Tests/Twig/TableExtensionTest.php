@@ -25,12 +25,12 @@ class TableExtensionTest extends AbstractUnitTest {
     public function setUp() {
         $twigMock = $this->getMock('\Twig_Environment');
 
-        $templateMock = $this->getMockBuilder('\Twig_Template')
-                            ->disableOriginalConstructor()
-                                ->getMock();
-        $this->extensionTemplateMock = $this->getMockBuilder('\Twig_Template')
-                                        ->disableOriginalConstructor()
-                                            ->getMock();
+        
+        $env = new \Twig_Environment($this->getMock('Twig_LoaderInterface'));
+        
+        $templateMock = new TemplateMock($env);
+        
+        $this->extensionTemplateMock = new TemplateMock($env);
 
         $this->extension = new TableExtension($twigMock, $templateMock, array(
             'test_widget' => array($this->extensionTemplateMock)
@@ -40,13 +40,12 @@ class TableExtensionTest extends AbstractUnitTest {
     public function testGetFunctions() {
         $expectedFunctionsKeys = array('table', 'table_rows', 'table_pages', 'table_cell', 'camel_case_to_option');
         $functions = $this->extension->getFunctions();
-        
-        foreach( $expectedFunctionsKeys as $function ) {
+
+        foreach ($expectedFunctionsKeys as $function) {
             $this->assertArrayHasKey($function, $functions);
             $this->assertInstanceOf('\Twig_Function_Method', $functions[$function]);
         }
     }
-
 
     public function testGetBlock() {
         $this->assertEquals($this->extensionTemplateMock, $this->invokeMethod($this->extension, 'getBlock', array('test')));
