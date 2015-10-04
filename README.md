@@ -1,13 +1,19 @@
 # TableBundle
 
+[![Build Status](https://travis-ci.org/chafiq/TableBundle.svg?branch=master)](https://travis-ci.org/chafiq/TableBundle)
+
+### Documentation & Demo Homepage : http://www.table-bundle.com/
+
 This bundle gives a simple way to generate and manage tables based on Symfony. It's allow also :
   - Flexibility
   - Pagination (automated)
-  - Searching
-  - Sorting
+  - Searching (automated)
+  - Sorting (automated)
   - Theming
   - Extensions
   - Sub-tables (automated)
+  - Rows selection (automated)
+  - Export (PDF, XSL, CSV) (automated)
 
 ## Installation
 
