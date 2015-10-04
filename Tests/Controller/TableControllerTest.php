@@ -27,7 +27,7 @@ class TableControllerTest extends WebTestCase {
         
         $client->request('GET', '/_table?' . http_build_query($query));
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals('932fd173e2fb5060526342514ff8374066d854a6', sha1($client->getResponse()->getContent()));
+        $this->assertEquals('c534e285d35ef457b5173c577d7462e8e0269a13', sha1($client->getResponse()->getContent()));
     }
 
     public function testIndexAction404() {

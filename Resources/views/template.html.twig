@@ -125,7 +125,7 @@
 
 {% block empty %}
     <tr>
-        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}"><center>{{ 'empty'|trans({}, 'EMCTableBundle') }}</center></td>
+        <td colspan="{{ thead|length + (allow_select ? 1 : 0) }}"><center>{{ 'No matching entries found'|trans({}, 'EMCTableBundle') }}</center></td>
     </tr>
 {% endblock %}
 
@@ -143,13 +143,12 @@
         </button>
         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span class="caret"></span>
-            <span class="sr-only">{{ 'Toggle Dropdown'|trans({}, 'EMCTableBundle') }}</span>
         </button>
         <ul class="dropdown-menu">
+            <li><a>{{ 'All (page)'|trans({}, 'EMCTableBundle') }}</a></li>
+            <li><a>{{ 'Any (page)'|trans({}, 'EMCTableBundle') }}</a></li>
             <li><a>{{ 'All'|trans({}, 'EMCTableBundle') }}</a></li>
             <li><a>{{ 'Any'|trans({}, 'EMCTableBundle') }}</a></li>
-            <li><a>{{ 'All (Page)'|trans({}, 'EMCTableBundle') }}</a></li>
-            <li><a>{{ 'Any (Page)'|trans({}, 'EMCTableBundle') }}</a></li>
         </ul>
     </div>
 {% endblock %}
@@ -182,49 +181,14 @@
 {% block javascript %}
     <script type="text/javascript">
         $(function() {
-            EMCTable.EMPTY = 'Aucun élément à afficher';
+            EMCTable.EMPTY = '{{ 'No matching entries found'|trans({}, 'EMCTableBundle') }}';
             EMCTable.handle(document.getElementById('{{ attrs.id }}'));
         });
     </script>
 {% endblock %}
 
 {% block pages %}
-    {% if limit > 0 %}
-        {% set current = page %}
-        {% set previous = max(1, page - 1) %}
-        {% set pageCount = (total/limit)|round(0,'ceil') %}
-        {% set next = min(pageCount, page + 1) %}
-        {% set maxRange = min(pageCount,max(5,page+2)) %}
-        {% set pagesInRange = range(max(1,min(page-2, maxRange-4)),maxRange) %}
-    {% endif %}
-
-    {% if limit > 0 and pageCount > 1 %}
-        <ul class="pagination pagination-sm">
-            {% if current > 1 %}
-                <li class="previous"><a class="hidden-xs" data-page="1">&laquo;</a></li>
-                <li class="previous"><a class="hidden-xs" data-page="{{previous}}">&lsaquo;</a></li>
-            {% else %}
-                <li class="previous"><span class="hidden-xs">&laquo;</span></li>
-                <li class="previous"><span class="hidden-xs">&lsaquo;</span></li>
-            {% endif %}
-
-            {% for page in pagesInRange %}
-                {% if page != current %}
-                    <li class="page"><a data-page="{{page}}">{{ page }}</a></li>
-                {% else %}
-                    <li class="current active" data-page="{{page}}"><a>{{ page }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if current < pageCount %}
-                <li class="next"><a class="hidden-xs" data-page="{{next}}">&rsaquo;</a></li>
-                <li class="next"><a class="hidden-xs" data-page="{{pageCount}}">&raquo;</a></li>
-            {% else %}
-                <li class="next"><span class="hidden-xs">&rsaquo;</span></li>
-                <li class="next"><span class="hidden-xs">&raquo;</span></li>
-            {% endif %}
-        </ul>
-    {% endif %}
+    {{ include('EMCTableBundle:Table:pages.html.twig') }}
 {% endblock %}
 
 {% macro attributes(attrs) %}{% for key, val in attrs %} {{ key }}="{{ val }}"{% endfor %}{% endmacro %}

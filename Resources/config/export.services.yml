@@ -4,5 +4,3 @@ services:
         arguments: [%emc_table.export.template%]
         tags:
             -  { name: twig.extension }
-            
-            
