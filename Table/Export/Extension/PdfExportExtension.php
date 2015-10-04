@@ -80,21 +80,23 @@ class PdfExportExtension implements ExportExtensionInterface {
      * {@inheritdoc}
      */
     public function export(TableView $view, $template = null, array $options = array()) {
+        $input = $this->tempnam('html');
+        $output = $this->tempnam('pdf');
         try {
-            $input = $this->tempnam('html');
-            $output = $this->tempnam('pdf');
-
             $data = $view->getData();
 
             $this->buildHtml($input, $view, $template, $options);
             $this->buildPdf($input, $output, $data);
 
             $filename = $this->formatName($this->options['filename'], new \DateTime(), $data['caption']);
-            return new Export(new \SplFileInfo($output), $this->getContentType(), $filename, $this->getFileExtension());
-        } finally {
+            $export = new Export(new \SplFileInfo($output), $this->getContentType(), $filename, $this->getFileExtension());
+            
             unlink($input);
+            return $export;
+        } catch (\Exception $exception) {
+            unlink($input);
+            throw $exception;
         }
-        return null;
     }
 
     private function formatName($name, \DateTime $datetime, $caption) {
