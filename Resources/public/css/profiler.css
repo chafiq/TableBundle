@@ -1,0 +1,151 @@
+.window {
+    /*background: #F6F6F6;*/
+    margin: -30px -40px -40px;
+}
+.toggle-icon {
+    display: inline-block;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgBAMAAADpp+X/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QweDgwx4LcKwAAAABVQTFRFAAAA////////////////ZmZm////bvjBwAAAAAV0Uk5TABZwsuCVEUjgAAAAAWJLR0QF+G/pxwAAAE1JREFUGNNjSHMSYGBgUEljSGYAAzMGBwiDhUEBwmBiEIAwGBmwgTQgQGWgA7h2uIFwK+CWwp1BpHvYEqDuATEYkBlY3IOmBq6dCPcAAIT5Eg2IksjQAAAAAElFTkSuQmCC") no-repeat top left #5eb5e0;
+}
+.closed .toggle-icon, .closed.toggle-icon {
+    background-position: bottom left;
+}
+.toggle-icon.empty {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAZgBmAGYHukptAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QweDhIf6CA40AAAAFRJREFUOMvtk7ENACEMA61vfx767MROWfO+AdGBHlNyTZrYUZRYDBII4NWE1pNdpFarfgLUbpDaBEgBYRiEVjsvDLa1l6O4Z3wkFWN+OfLKdpisOH/TlICzukmUJwAAAABJRU5ErkJggg==");
+}
+.tree {
+    width: 230px;
+    padding: 10px;
+    font-size: 12px;
+    float: left;
+}
+#content .tree h2 {
+    font-size: 13px;
+    padding: 5px 7px;
+    margin: 0;
+}
+.tree li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.tree .tree-inner {
+    width: 100%;
+    padding: 5px 7px 5px 22px;
+    border-radius: 6px;
+    color: #313131;
+    cursor: pointer;
+    position: relative;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.tree a {
+    text-decoration: none;
+}
+.tree .toggle-button {
+    /* provide a bigger clickable area than just 10x10px */
+    width: 16px;
+    height: 16px;
+    /* vertically center the button */
+    position: absolute;
+    top: 50%;
+    margin-top: -8px;
+    margin-left: -18px;
+}
+.tree .toggle-icon {
+    width: 10px;
+    height: 10px;
+    /* position the icon in the center of the clickable area */
+    margin-left: 3px;
+    margin-top: 3px;
+    background-size: 10px 20px;
+    background-color: #ccc;
+}
+.tree .toggle-icon.empty {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 50%;
+    margin-top: -5px;
+    margin-left: -15px;
+    background-size: 10px 10px;
+}
+.tree ul ul .tree-inner {
+    padding-left: 37px;
+}
+.tree ul ul ul .tree-inner {
+    padding-left: 52px;
+}
+.tree ul ul ul ul .tree-inner {
+    padding-left: 67px;
+}
+.tree ul ul ul ul ul .tree-inner {
+    padding-left: 82px;
+}
+.tree .tree-inner:hover {
+    background: #dfdfdf;
+}
+.tree .tree-inner.active, .tree .tree-inner.active:hover {
+    background: #dfdfdf;
+    font-weight: bold;
+    color: #313131;
+}
+.tree .tree-inner.active .toggle-icon, .tree .tree-inner:hover .toggle-icon, .tree .tree-inner.active:hover .toggle-icon {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgBAMAAADpp+X/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QweDhEYXWn+sAAAABhQTFRFAAAA39/f39/f39/f39/fZmZm39/f////gc3YPwAAAAV0Uk5TAAtAc6ZeVyCYAAAAAWJLR0QF+G/pxwAAAE1JREFUGNNjSHMSYGBgUEljSGYAAzMGBwiDhUEBwmBiEIAwGBmwgXIgQGWgA7h2uIFwK+CWwp1BpHvYC6DuATEYkBlY3IOmBq6dCPcAADqLE4MnBi/fAAAAAElFTkSuQmCC");
+    background-color: #aaa;
+}
+.tree .tree-inner.active .toggle-icon.empty, .tree .tree-inner:hover .toggle-icon.empty, .tree .tree-inner.active:hover .toggle-icon.empty {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QweDhoucSey4gAAABVQTFRFAAAA39/f39/f39/f39/fZmZm39/fD5Dx2AAAAAV0Uk5TAAtAc6ZeVyCYAAAAAWJLR0QF+G/pxwAAADJJREFUCNdjSHMSYGBgUEljSGYAAzMGBwiDhUEBwmBiEIAwGBnIA3DtcAPhVsAthTkDAFOfBKW9C1iqAAAAAElFTkSuQmCC");
+}
+.tree-details {
+    border-left: 1px solid #dfdfdf;
+    background: white;
+    margin-left: 250px;
+    padding: 30px 40px 40px;
+}
+.tree-details h3 {
+    position: relative;
+}
+.tree-details .toggle-icon {
+    width: 16px;
+    height: 16px;
+    /* vertically center the button */
+    position: absolute;
+    top: 50%;
+    margin-top: -9px;
+    margin-left: 6px;
+}
+.table-type {
+    color: #999999;
+}
+.hidden {
+    display: none;
+}
+.badge-error {
+    float: right;
+    background: #a33;
+    color: #fff;
+    padding: 1px 4px;
+    font-size: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+    border-radius: 6px;
+}
+.errors h3 {
+    color: #800;
+}
+.errors th, .errors td {
+    border-color: #800;
+}
+.errors th {
+    background: #a33;
+    color: #fff;
+}
+.errors .toggle-icon {
+    background-color: #a33;
+}
+h3 a, h3 a:hover, h3 a:focus {
+    color: inherit;
+    text-decoration: inherit;
+}

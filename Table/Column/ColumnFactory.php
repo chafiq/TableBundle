@@ -2,7 +2,6 @@
 
 namespace EMC\TableBundle\Table\Column;
 
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMC\TableBundle\Table\Column\ColumnRegistryInterface;
 
 use EMC\TableBundle\Table\Column\Type\ColumnTypeInterface;

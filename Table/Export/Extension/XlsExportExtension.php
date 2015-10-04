@@ -3,7 +3,6 @@
 namespace EMC\TableBundle\Table\Export\Extension;
 
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Process\Process;
 use EMC\TableBundle\Table\TableView;
 use EMC\TableBundle\Table\Export\Export;
 

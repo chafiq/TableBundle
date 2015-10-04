@@ -117,7 +117,8 @@ class TableDataCollector extends DataCollector {
         );
         
         $rows = $table->getData()->getRows();
-        for( $idx=0; $idx<count($rows); $idx++){
+        $count = count($rows);
+        for( $idx=0; $idx<$count; $idx++){
             $row = $rows[$idx]; 
             $data['query_result']['rows ' . $idx] = $this->valueExporter->exportValue($row);
             if ( $idx === 10 ) {
