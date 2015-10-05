@@ -36,7 +36,7 @@ class TablePass implements CompilerPassInterface {
             $services[$alias] = $id;
         }
 
-        $definition->replaceArgument(1, $services);
+        $definition->replaceArgument(0, $services);
     }
 
 }

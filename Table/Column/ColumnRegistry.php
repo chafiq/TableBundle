@@ -2,27 +2,21 @@
 
 namespace EMC\TableBundle\Table\Column;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  * ColumnRegistry
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ColumnRegistry implements ColumnRegistryInterface {
+class ColumnRegistry extends ContainerAware implements ColumnRegistryInterface {
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-    
     /**
      * @var array
      */
     private $types;
 
-    function __construct(ContainerInterface $container, $types) {
-        $this->container = $container;
+    function __construct(array $types) {
         $this->types = $types;
     }
     

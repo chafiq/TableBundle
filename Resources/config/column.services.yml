@@ -1,7 +1,9 @@
 services:
     table.column.registry:
         class: EMC\TableBundle\Table\Column\ColumnRegistry
-        arguments: [@service_container, {}]
+        arguments: [{}]
+        calls:
+            - [setContainer, [@service_container]]
 
     table.column.factory:
         class: EMC\TableBundle\Table\Column\ColumnFactory

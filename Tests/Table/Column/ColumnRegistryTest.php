@@ -45,7 +45,8 @@ class ColumnRegistryTest extends \PHPUnit_Framework_TestCase {
                 ->will($this->returnCallback(function($name) use ($types) {
                             return $types[$name];
                         }));
-        $this->registry = new ColumnRegistry($container, array('x' => 'service.x', 'y' => 'service.y', 'z' => 'service.z'));
+        $this->registry = new ColumnRegistry(array('x' => 'service.x', 'y' => 'service.y', 'z' => 'service.z'));
+        $this->registry->setContainer($container);
     }
     
     public function testGetType() {

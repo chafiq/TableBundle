@@ -21,4 +21,6 @@ services:
             
     table.export.registry:
         class: EMC\TableBundle\Table\Export\ExportRegistry
-        arguments: [@service_container, {}]
+        arguments: [{}]
+        calls:
+            - [setContainer, [@service_container]]

@@ -2,27 +2,21 @@
 
 namespace EMC\TableBundle\Table\Export;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  * ExportRegistry
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ExportRegistry implements ExportRegistryInterface {
+class ExportRegistry extends ContainerAware implements ExportRegistryInterface {
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-    
     /**
      * @var array
      */
     private $exports;
 
-    function __construct(ContainerInterface $container, $exports) {
-        $this->container = $container;
+    function __construct(array $exports) {
         $this->exports = $exports;
     }
     
@@ -31,7 +25,7 @@ class ExportRegistry implements ExportRegistryInterface {
      */
     public function get($name) {
         if (!isset($this->exports[$name])) {
-            throw new \InvalidArgumentException(sprintf('The field export "%s" is not registered with the service container.', $name));
+            throw new \InvalidArgumentException(sprintf('The field export "%s" is not defined in config.yml (default) and not registered as service export extension. @see Documentation "Export" section', $name));
         }
 
         $export = $this->container->get($this->exports[$name]);
