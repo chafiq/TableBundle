@@ -3,7 +3,6 @@
 namespace EMC\TableBundle\Tests\Table\Export\Extension;
 
 use EMC\TableBundle\Table\TableView;
-use EMC\TableBundle\Table\Export\ExportInterface;
 use EMC\TableBundle\Table\Export\Extension\CsvExportExtension;
 
 /**

@@ -1,6 +1,11 @@
 # TableBundle
 
 [![Build Status](https://travis-ci.org/chafiq/TableBundle.svg?branch=master)](https://travis-ci.org/chafiq/TableBundle)
+[![Latest Stable Version](https://poser.pugx.org/emc/table-bundle/v/stable)](https://packagist.org/packages/emc/table-bundle)
+[![Total Downloads](https://poser.pugx.org/emc/table-bundle/downloads)](https://packagist.org/packages/emc/table-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/emc/table-bundle/v/unstable)](https://packagist.org/packages/emc/table-bundle)
+[![License](https://poser.pugx.org/emc/table-bundle/license)](https://packagist.org/packages/emc/table-bundle)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/2a591c78-028d-4204-b027-e4203928329e/mini.png)](https://insight.sensiolabs.com/projects/2a591c78-028d-4204-b027-e4203928329e)
 
 ### Documentation & Demo Homepage : http://www.table-bundle.com/
 

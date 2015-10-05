@@ -57,28 +57,40 @@ class CsvExportExtension implements ExportExtensionInterface {
         $out = tempnam('/tmp', 'export-out-');
 
         $data = $view->getData();
-        $fp = fopen($out, 'w');
+        $file = new \SplFileObject($out, 'w');
 
         $row = array();
         foreach ($data['thead'] as $th) {
             $row[] = $th['title'];
         }
-        fputcsv($fp, $row, $this->delimiter, $this->enclosure, $this->escape);
+
+        try {
+            /* PHP >= 5.5*/
+            $file->fputcsv($row, $this->delimiter, $this->enclosure, $this->escape);
+        } catch (\Exception $e) {
+            /* PHP 5.4 */
+            $file->fputcsv($row, $this->delimiter, $this->enclosure);
+        }
 
         foreach ($data['tbody'] as $tr) {
             $row = array();
             foreach ($tr['data'] as $td) {
                 $row[] = $td['value'];
             }
-            fputcsv($fp, $row, $this->delimiter, $this->enclosure, $this->escape);
+            try {
+                /* PHP >= 5.5*/
+                $file->fputcsv($row, $this->delimiter, $this->enclosure, $this->escape);
+            } catch (\Exception $e) {
+                /* PHP 5.4 */
+                $file->fputcsv($row, $this->delimiter, $this->enclosure);
+            }
         }
-        fclose($fp);
 
         $now = new \DateTime();
 
         $filename = preg_replace(array('/\[now\]/', '/\[caption\]/'), array($now->format('Y-m-d H\hi'), $data['caption']), 'Export');
 
-        return new Export(new \SplFileInfo($out), $this->getContentType(), $filename, $this->getFileExtension());
+        return new Export($file->getFileInfo(), $this->getContentType(), $filename, $this->getFileExtension());
     }
 
 }
