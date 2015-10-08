@@ -91,7 +91,7 @@ EMCTable.prototype.init = function() {
 
         this.$dom.find('> thead > tr > td > div.left > .selection > button:first').on('click', function(event) {
                     var state = this.firstChild.className.indexOf(this.firstChild.getAttribute('icon-checked')) === -1;
-                    that.selectAll(state, true);
+                    that.selectPage(state);
                 });
 
         this.$dom.find('> thead > tr > td > div.left > .selection > ul > li > a').on('click', function(event) {
