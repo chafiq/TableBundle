@@ -43,6 +43,11 @@ class TableFactoryTest extends AbstractUnitTest {
      */
     private $fooType;
 
+    /**
+     * @var array
+     */
+    protected $defaultOptions;
+
     protected function setUp() {
         $this->entityManagerMock = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
         $this->eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
@@ -50,7 +55,16 @@ class TableFactoryTest extends AbstractUnitTest {
         $this->columnFactoryMock = $this->getMock('EMC\TableBundle\Table\Column\ColumnFactoryInterface');
         $this->exportRegistryMock = $this->getMock('EMC\TableBundle\Table\Export\ExportRegistryInterface');
 
-        $this->factory = new TableFactory($this->entityManagerMock, $this->eventDispatcherMock, $this->tableSessionMock, $this->columnFactoryMock, $this->exportRegistryMock);
+        $this->defaultOptions = array(
+            'route' => '_table',
+            'select_route' => '_table_select',
+            'export_route' => '_table_export',
+            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
+            'limit' => 10,
+            'rows_pad' => true
+        );
+
+        $this->factory = new TableFactory($this->entityManagerMock, $this->eventDispatcherMock, $this->tableSessionMock, $this->columnFactoryMock, $this->exportRegistryMock, $this->defaultOptions);
 
         $this->fooType = new Type\FooType;
         $this->tableSessionMock->expects($this->any())
@@ -130,7 +144,7 @@ class TableFactoryTest extends AbstractUnitTest {
         $expected = $this->factory->create(new Type\FooType());
         $this->assertEquals($expected, $builder);
     }
-    
+
     public function testGetResolvedType() {
         $type = $this->invokeMethod($this->factory, 'getResolvedType', array($this->fooType, TableFactory::MODE_NORMAL));
         $this->assertEquals($this->fooType, $type);
@@ -146,14 +160,14 @@ class TableFactoryTest extends AbstractUnitTest {
     public function testGetResolvedTypeInvalidArgumentException() {
         $this->invokeMethod($this->factory, 'getResolvedType', array($this->fooType, 'a'));
     }
-    
+
     /**
      * @expectedException \UnexpectedValueException
      */
     public function testGetResolvedTypeUnexpectedValueException() {
         $this->invokeMethod($this->factory, 'getResolvedType', array($this->fooType, 123));
     }
-    
+
     public function testNewInstance() {
         $class = 'EMC\TableBundle\Tests\Table\Type\FooType';
         $type = $this->invokeMethod($this->factory, 'newInstance', array($class));
@@ -166,7 +180,7 @@ class TableFactoryTest extends AbstractUnitTest {
     public function testNewInstanceInvalidArgumentException() {
         $this->invokeMethod($this->factory, 'newInstance', array('\stdClass'));
     }
-    
+
     public function getTypeMock(array $options) {
 
         $optionsResolverMock = $this->getOptionsResolverMock($options);
@@ -212,7 +226,7 @@ class TableFactoryTest extends AbstractUnitTest {
 
         $optionsResolver = new OptionsResolver();
         $type = new Type\FooType();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultOptions);
 
         $resolvedOptions = $optionsResolver->resolve($options);
 

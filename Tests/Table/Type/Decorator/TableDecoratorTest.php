@@ -25,6 +25,11 @@ class TableDecoratorTest extends AbstractTableDecoratorTest {
      */
     private $fooType;
 
+    /**
+     * @var array
+     */
+    protected $defaultOptions;
+
     public function setUp() {
         parent::setUp();
 
@@ -32,13 +37,22 @@ class TableDecoratorTest extends AbstractTableDecoratorTest {
                 ->method('getColumns')
                 ->will($this->returnValue(array()));
         
+        $this->defaultOptions = array(
+            'route' => '_table',
+            'select_route' => '_table_select',
+            'export_route' => '_table_export',
+            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
+            'limit' => 10,
+            'rows_pad' => true
+        );
+        
         $queryBuilderMock = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
                                 ->disableOriginalConstructor()
                                     ->getMock();
         
         $this->fooType = new FooType($queryBuilderMock);
         $resolver = new OptionsResolver();
-        $this->fooType->setDefaultOptions($resolver);
+        $this->fooType->setDefaultOptions($resolver, $this->defaultOptions);
         $resolvedOptions = $resolver->resolve(array());
         $resolvedOptions['_tid'] = 'xxx';
         $resolvedOptions['_query'] = array('page' => 1, 'limit' => 11, 'sort' => 0, 'filter' => 'abc');
@@ -161,10 +175,10 @@ class TableDecoratorTest extends AbstractTableDecoratorTest {
         
         $options = array();
         $resolver = new OptionsResolver();
-        $this->decorator->setDefaultOptions($resolver);
+        $this->decorator->setDefaultOptions($resolver, $this->defaultOptions);
         $resolvedOptions = $resolver->resolve($options);
         
-        $this->fooType->setDefaultOptions($resolver);
+        $this->fooType->setDefaultOptions($resolver, $this->defaultOptions);
         $expectedResolvedOptions = $resolver->resolve($options);
         $this->assertEquals($expectedResolvedOptions, $resolvedOptions);
     }

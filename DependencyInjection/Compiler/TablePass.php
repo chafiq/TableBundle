@@ -13,16 +13,12 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 class TablePass implements CompilerPassInterface {
 
     public function process(ContainerBuilder $container) {
-        if (!$container->hasDefinition('table.extension')) {
-            return;
-        }
-
         $this->load($container, 'table.column.registry', 'column.type');
         $this->load($container, 'table.export.registry', 'export.extension');
     }
     
     private function load(ContainerBuilder $container, $service, $tag) {
-        if (!$container->hasDefinition('table.extension')) {
+        if (!$container->hasDefinition($service)) {
             return;
         }
 

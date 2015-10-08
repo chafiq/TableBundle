@@ -47,6 +47,11 @@ abstract class TableAbstractTest extends AbstractUnitTest {
     /**
      * @var array
      */
+    protected $defaultOptions;
+
+    /**
+     * @var array
+     */
     protected $resolvedOptions;
 
     /**
@@ -64,6 +69,15 @@ abstract class TableAbstractTest extends AbstractUnitTest {
         $this->eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->columnFactoryMock = $this->getMock('EMC\TableBundle\Table\Column\ColumnFactoryInterface');
 
+        $this->defaultOptions = array (
+            'route' => '_table',
+            'select_route' => '_table_select',
+            'export_route' => '_table_export',
+            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
+            'limit' => 10,
+            'rows_pad' => true
+        );
+        
         $columnTypeIdMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
         $columnTypeNameMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
         $columnTypeTestMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
@@ -113,7 +127,7 @@ abstract class TableAbstractTest extends AbstractUnitTest {
         $this->fooType = new Type\FooType($queryBuilder);
 
         $optionsResolver = new OptionsResolver();
-        $this->fooType->setDefaultOptions($optionsResolver);
+        $this->fooType->setDefaultOptions($optionsResolver, $this->defaultOptions);
 
         $this->resolvedOptions = $optionsResolver->resolve($options);
         $this->resolvedOptions['_tid'] = 'test';

@@ -85,8 +85,9 @@ interface TableTypeInterface {
      * </ul>
      * 
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
+     * @param array $defaultOptions Default options defined in emc_table config
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions);
 
     /**
      * This method return the query builder.<br/>

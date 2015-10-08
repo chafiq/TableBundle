@@ -5,7 +5,7 @@ namespace EMC\TableBundle\Table\Type;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use EMC\TableBundle\Table\Column\ColumnInterface;
-use EMC\TableBundle\Provider\DataProvider;
+use EMC\TableBundle\Provider\DataProviderInterface;
 use EMC\TableBundle\Provider\QueryConfigInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use EMC\TableBundle\Table\TableBuilderInterface;
@@ -29,27 +29,35 @@ abstract class TableType implements TableTypeInterface {
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        
+        if (!class_exists($defaultOptions['data_provider'])) {
+            throw new \UnexpectedValueException('data_provider must a valid class name');
+        }
+        $dataProvider = new $defaultOptions['data_provider'];
+        if (!$dataProvider instanceof DataProviderInterface) {
+            throw new \InvalidArgumentException('data_provider must a string class name that implements \EMC\TableBundle\Provider\DataProviderInterface');
+        }
+        
         $resolver->setDefaults(array(
             'name' => $this->getName(),
-            'route' => '_table',
+            'route' => $defaultOptions['route'],
             'data' => null,
             'params' => array(),
             'attrs' => array(),
-            'data_provider' => new DataProvider(),
+            'data_provider' => $dataProvider,
             'default_sorts' => array(),
-            'limit' => 10,
+            'limit' => $defaultOptions['limit'],
             'caption' => '',
             'subtable' => null,
             'subtable_options' => array(),
             'subtable_params' => array(),
-            'rows_pad' => true,
+            'rows_pad' => $defaultOptions['rows_pad'],
             'rows_params' => array(),
             'allow_select' => false,
-            'select_route' => '_table_select',
+            'select_route' => $defaultOptions['select_route'],
             'export' => array(),
-            'export_route' => '_table_export',
+            'export_route' => $defaultOptions['export_route'],
         ));
 
         $resolver->setAllowedTypes(array(

@@ -75,8 +75,8 @@ abstract class TableDecorator implements TableTypeInterface, TableDecoratorInter
         return $this->type->getQueryBuilder($entityManager, $params);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        return $this->type->setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        return $this->type->setDefaultOptions($resolver, $defaultOptions);
     }
     
     public function resolveParams(array $params, array $data, $preserveKeys = false, $default = array()) {

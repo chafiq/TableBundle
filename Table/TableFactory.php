@@ -48,12 +48,18 @@ class TableFactory implements TableFactoryInterface {
      */
     private $exportRegistry;
 
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory, ExportRegistryInterface $exportRegistry) {
+    /**
+     * @var array
+     */
+    private $defaultOptions;
+
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory, ExportRegistryInterface $exportRegistry, array $defaultOptions) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->tableSession = $tableSession;
         $this->columnFactory = $columnFactory;
         $this->exportRegistry = $exportRegistry;
+        $this->defaultOptions = $defaultOptions;
     }
 
     /**
@@ -67,9 +73,9 @@ class TableFactory implements TableFactoryInterface {
             $subtable = $this->create($options['subtable'], null, $options['subtable_options'])->create();
             $options['_subtid'] = $subtable->getOption('_tid');
         }
-        
+
         $resolvedType = $this->getResolvedType($type, $mode);
-        
+
         $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $resolvedType, $data, $options);
 
         $resolvedType->buildTable($builder, $builder->getOptions());
@@ -135,7 +141,7 @@ class TableFactory implements TableFactoryInterface {
             case self::MODE_SELECTION :
                 return new TableSelectionDecorator($type);
         }
-        
+
         throw new \UnexpectedValueException('Unknown mode "' . $mode . '"');
     }
 
@@ -158,7 +164,7 @@ class TableFactory implements TableFactoryInterface {
         }
 
         $resolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($resolver);
+        $type->setDefaultOptions($resolver, $this->defaultOptions);
 
         $options = $resolver->resolve($options);
 
