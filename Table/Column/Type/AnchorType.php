@@ -18,17 +18,18 @@ class AnchorType extends ColumnType {
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
-        
+
         $view = array_merge($view, array(
             'route' => $options['route'],
             'params' => $this->resolveParams($options['params'], $options['static_params'], $data),
             'value' => isset($options['text']) ? $options['text'] : $view['value'],
             'title' => $options['desc'],
-            'icon' => $options['icon']
+            'icon' => $options['icon'],
+            'icon_family' => $options['icon_family']
         ));
-        
+
     }
-    
+
     /**
      * {@inheritdoc}
      * <ul>
@@ -36,30 +37,33 @@ class AnchorType extends ColumnType {
      * <li><b>static_params</b> : string <i>Static params the add to the route params.</i></li>
      * <li><b>text</b>          : string|null <i>Anchor text. If null $view['value'] replace it.</i></li>
      * <li><b>attrs</b>         : array <i>Table Dom element attributes</i></li>
-     * <li><b>icon</b>          : string|null <i>icon name.</i></li>
+     * <li><b>icon</b>          : string|null <i>icon name. NOTE: If `icon` is set, `text` will be ignored.</i></li>
+     * <li><b>icon_family</b>   : string|null <i>Icon family (fa|icon|glyphicon|...).</i></li>
      * <li><b>desc</b>          : string|null <i>Anchor title</i></li>
      * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
 
-        
+
         $resolver->setDefaults(array(
             'route'          => null,
             'static_params' => array(),
             'text'          => null,
             'icon'          => null,
+            'icon_family'   => 'fa',
             'desc'          => null
         ));
-        
+
         $resolver->setAllowedTypes(array(
             'route'          => 'string',
             'static_params' => 'array',
             'text'          => array('null', 'string'),
             'icon'          => array('null', 'string'),
+            'icon_family'   => array('null', 'string'),
             'desc'          => array('null', 'string')
         ));
-        
+
         $resolver->setNormalizers(array(
             'params'    => function(Options $options, $params) {
                 assert(is_array($params));
@@ -69,7 +73,7 @@ class AnchorType extends ColumnType {
                 return $params;
             }
         ));
-        
+
     }
 
     /**
