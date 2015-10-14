@@ -159,7 +159,7 @@
         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-download"></i> Export <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu dropdown-menu-right">
             {% for name, exportView in export %}
                 <li class="export-{{ name }}"><a data-export="{{ name }}"><i class="{{ exportView.icon }}"></i><span>{{ exportView.text }}</span></a></li>
             {% endfor %}
