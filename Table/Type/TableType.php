@@ -102,14 +102,13 @@ abstract class TableType implements TableTypeInterface {
             throw new \RuntimeException;
         }
 
-        if (!isset($options['attrs']['id'])) {
-            $options['attrs']['id'] = 'table_'
-                    . $table->getType()->getName()
-                    . (count($options['params']) > 0 ? '_' . implode('_', $options['params']) : '' );
-        }
+        $id = 'table_'
+                . $table->getType()->getName()
+                . (count($options['params']) > 0 ? '_' . implode('_', $options['params']) : '' );
 
         $data = array(
-            'id' => $options['_tid'],
+            'id' => $id,
+            'tid' => $options['_tid'],
             'subtid' => isset($options['_subtid']) ? $options['_subtid'] : null,
             'params' => $options['params'],
             'attrs' => $options['attrs'],

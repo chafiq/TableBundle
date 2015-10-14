@@ -14,7 +14,6 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             
             /* vendors */
-            new EMC\XmlHttpRequestBundle\EMCXmlHttpRequestBundle(),
             new EMC\TableBundle\EMCTableBundle(),
         );
     }

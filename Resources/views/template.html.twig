@@ -1,11 +1,12 @@
 {% block table %}
     {% spaceless %}
         {% set attrs = attrs|merge({
+            'id': id,
             'class': attrs.class|default('') ~ ' emc-table table table-hover table-condensed table-striped table-responsive',
-            'data-route': path(route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw,
+            'data-route': path(route, params ? {'tid':tid, 'params' : params} : {'tid':tid})|raw,
             'data-subtable-route' : subtid ? path(route, {'tid':subtid})|raw : "null",
-            'data-export-route' : export|length > 0 ? path(export_route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw : "null",
-            'data-select-route' : allow_select ? path(select_route, params ? {'tid':id, 'params' : params} : {'tid':id})|raw : "null",
+            'data-export-route' : export|length > 0 ? path(export_route, params ? {'tid':tid, 'params' : params} : {'tid':tid})|raw : "null",
+            'data-select-route' : allow_select ? path(select_route, params ? {'tid':tid, 'params' : params} : {'tid':tid})|raw : "null",
             'data-limit' : limit,
         }) %}
         {% import _self as table %}
@@ -168,7 +169,7 @@
 
 {% block limit_select %}
     {% if total > limit %}
-        <select id="{{ attrs.id }}_limit" class="selectpicker btn-xs" data-width="70px">
+        <select id="{{ id }}_limit" class="selectpicker btn-xs" data-width="70px">
             <option value="10">10</option>
             <option value="20">20</option>
             <option value="50">50</option>
@@ -182,7 +183,7 @@
     <script type="text/javascript">
         $(function() {
             EMCTable.EMPTY = '{{ 'No matching entries found'|trans({}, 'EMCTableBundle') }}';
-            EMCTable.handle(document.getElementById('{{ attrs.id }}'));
+            EMCTable.handle(document.getElementById('{{ id }}'));
         });
     </script>
 {% endblock %}

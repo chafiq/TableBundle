@@ -31,6 +31,18 @@ EMCTable.prototype.constructor = EMCTable;
 
 EMCTable.instances = {};
 
+EMCTable.getInstance = function(table) {
+    if (!table instanceof Element || table === null || table.nodeName !== "TABLE") {
+        throw new Error('EMCTable.getInstance : Element TABLE node required');
+    }
+
+    if (!table.id in this.instances) {
+        throw new Error('table #' + table.id + ' not handled');
+    }
+
+    return this.instances[table.id];
+};
+
 EMCTable.handle = function(dom) {
     if (!(dom instanceof HTMLElement)) {
         throw new Error('EMCTable.handle : dom HTMLElement is required');
@@ -90,9 +102,9 @@ EMCTable.prototype.init = function() {
         this.selectAll(false);
 
         this.$dom.find('> thead > tr > td > div.left > .selection > button:first').on('click', function(event) {
-                    var state = this.firstChild.className.indexOf(this.firstChild.getAttribute('icon-checked')) === -1;
-                    that.selectPage(state);
-                });
+            var state = this.firstChild.className.indexOf(this.firstChild.getAttribute('icon-checked')) === -1;
+            that.selectPage(state);
+        });
 
         this.$dom.find('> thead > tr > td > div.left > .selection > ul > li > a').on('click', function(event) {
             switch ($(this.parentNode).index()) {
@@ -170,7 +182,7 @@ EMCTable.prototype.find = function(page) {
 
     var height = this.$dom.height();
 
-    var html = EMCXmlHttpRequest.getInstance().get(this.route, {query: this.getQuery(page)}, null, null, 'X-EMC-Table');
+    var html = this.request.get(this.route, {query: this.getQuery(page)}, 'HTML');
 
     var $html = $(html);
 
@@ -229,7 +241,7 @@ EMCTable.prototype.openSubtable = function(tr) {
 
     var data = $tr.data();
 
-    var html = EMCXmlHttpRequest.getInstance().get(this.subtableRoute, {params: data.subtable, subtable: true}, null, null, 'X-EMC-Table');
+    var html = this.request.get(this.subtableRoute, {params: data.subtable, subtable: true}, 'HTML');
 
     $td.append(html);
 
@@ -238,7 +250,7 @@ EMCTable.prototype.openSubtable = function(tr) {
 };
 
 EMCTable.prototype.getRows = function() {
-    return EMCXmlHttpRequest.getInstance().get(this.selectRoute, {query: this.getQuery()}, null, null, 'X-EMC-Table');
+    return this.request.get(this.selectRoute, {query: this.getQuery()}, 'JSON');
 };
 
 EMCTable.prototype.export = function(type) {
@@ -354,4 +366,29 @@ EMCTable.prototype.getRowData = function(tr) {
     delete(data.subtable);
     delete(data.selectable);
     return data;
+};
+
+EMCTable.prototype.request = {};
+
+EMCTable.prototype.request.get = function(route, data, dataType) {
+    if (typeof (EMCXmlHttpRequest) === "function") {
+        return EMCXmlHttpRequest.getInstance().get(route, data);
+    }
+
+    var result;
+    $.ajax({
+        type: 'GET',
+        url: route,
+        data: data,
+        async: false,
+        dataType: dataType,
+        success: function(response, status, xhr) {
+            result = response;
+        },
+        error: function(xhr) {
+            alert('Request Execution Error');
+        }
+    });
+
+    return result;
 };

@@ -1,8 +1,8 @@
 {
     "name": "emc/table-bundle",
     "type": "symfony-bundle",
-    "description": "For more informations see http://www.table-bundle.com and https://github.com/chafiq/TableBundle/blob/master/README.md",
-    "keywords": ["table", "grid", "data grid"],
+    "description": "TableBundle makes dealing with tables easier. This bundle manage the most common needs for tables. It works and flexible as Symfony Forms. For more documentations see http://www.table-bundle.com",
+    "keywords": ["table", "table bundle", "grid", "grid bundle", "data grid", "data grid bundle"],
     "license": "MIT",
     "homepage": "http://www.table-bundle.com",
     "support": {
@@ -16,8 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.2",
-        "emc/xmlhttprequest-bundle": "3.0"
+        "php": ">=5.3.2"
     },
     "require-dev": {
         "symfony/monolog-bundle": "2.3.*",
