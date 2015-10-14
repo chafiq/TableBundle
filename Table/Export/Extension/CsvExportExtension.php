@@ -58,32 +58,20 @@ class CsvExportExtension implements ExportExtensionInterface {
 
         $data = $view->getData();
         $file = new \SplFileObject($out, 'w');
-
+        $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+        
         $row = array();
         foreach ($data['thead'] as $th) {
             $row[] = $th['title'];
         }
-
-        try {
-            /* PHP >= 5.5*/
-            $file->fputcsv($row, $this->delimiter, $this->enclosure, $this->escape);
-        } catch (\Exception $e) {
-            /* PHP 5.4 */
-            $file->fputcsv($row, $this->delimiter, $this->enclosure);
-        }
+        $file->fputcsv($row);
 
         foreach ($data['tbody'] as $tr) {
             $row = array();
             foreach ($tr['data'] as $td) {
                 $row[] = $td['value'];
             }
-            try {
-                /* PHP >= 5.5*/
-                $file->fputcsv($row, $this->delimiter, $this->enclosure, $this->escape);
-            } catch (\Exception $e) {
-                /* PHP 5.4 */
-                $file->fputcsv($row, $this->delimiter, $this->enclosure);
-            }
+            $file->fputcsv($row);
         }
 
         $now = new \DateTime();
