@@ -10,7 +10,12 @@
 
 {% block anchor_widget %}
     {% import _self as table %}
-    <a{{ table.attributes(attrs) }} href="{{ path(route, params) }}" title="{{ title }}">{{ value|raw }}</a>
+    <a{{ table.attributes(attrs) }} href="{{ path(route, params) }}" title="{{ title }}">{% if icon %}
+            {% set attrs = attrs|merge({'class':''}) %}
+            {{ block('icon_widget') }}
+        {% else %}
+            {{ value|raw }}
+        {% endif %}</a>
 {% endblock %}
 
 {% block button_widget %}
