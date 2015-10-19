@@ -23,9 +23,8 @@ class AnchorTypeTest extends AbstractUnitTest {
             'params'=> array('k' => 'i', 'l' => 'j'),
             'format'=> '%d:%d',
             'attrs' => array('a' => 1, 'b' => 2),
-            'static_params' => array('x' => 'y', 'z' => 1),
-            'route' => 'route',
-            'icon' => 'icon',
+            'anchor_args' => array('x' => 'y', 'z' => 1),
+            'anchor_route' => 'route',
         );
         $resolvedOptions = $optionsResolver->resolve($options);
         $view = array();
@@ -40,8 +39,8 @@ class AnchorTypeTest extends AbstractUnitTest {
             'attrs',
             'value',
             'route',
-            'title',
-            'icon'
+            'params',
+            'title'
         );
 
         foreach ($expectedViewKeys as $key) {
@@ -51,9 +50,9 @@ class AnchorTypeTest extends AbstractUnitTest {
         $this->assertEquals('foo', $view['name']);
         $this->assertEquals($view['type'], $type->getName());
         $this->assertEquals($view['value'], '1:2');
-        $this->assertEquals($view['route'], $resolvedOptions['route']);
-        $this->assertEquals($view['title'], $resolvedOptions['title']);
-        $this->assertEquals($view['icon'], $resolvedOptions['icon']);
+        $this->assertEquals($view['route'], $resolvedOptions['anchor_route']);
+        $this->assertEquals($view['params'], array('k' => 1, 'l' => 2, 'x' => 'y', 'z' => 1));
+        $this->assertEquals($view['title'], $resolvedOptions['anchor_title']);
         $this->assertEquals(trim('column-' . $type->getName() . ' column-foo'), $view['attrs']['class']);
         $this->assertArrayHasKey('a', $view['attrs']);
         $this->assertArrayHasKey('b', $view['attrs']);

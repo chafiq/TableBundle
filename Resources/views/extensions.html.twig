@@ -1,6 +1,12 @@
 {% block text_widget %}
     {% import _self as table %}
-    <span{{ table.attributes(attrs) }}>{{ value|raw }}</span>
+    {% if route is defined %}
+        <a href="{{ path(route, params) }}" title="{{ title }}">
+            <span{{ table.attributes(attrs) }}>{{ value|raw }}</span>
+        </a>
+    {% else %}
+        <span{{ table.attributes(attrs) }}>{{ value|raw }}</span>
+    {% endif %}
 {% endblock %}
 
 {% block datetime_widget %}
@@ -17,7 +23,7 @@
     {% import _self as table %}
     {% set attrs = attrs|merge({'class': attrs.class|default('') ~ ' btn btn-default', 'title':title}) %}
     <button{{ table.attributes(attrs) }}>
-        {% if icon %}
+        {% if icon_class %}
             {% set attrs = attrs|merge({'class':''}) %}
             {{ block('icon_widget') }}
         {% endif %}
@@ -27,14 +33,26 @@
 
 {% block icon_widget %}
     {% import _self as table %}
-    {% set class = attrs.class|default(icon_family ~ ' ' ~ icon_family ~ '-' ~ icon) %}
-    {% set attrs = attrs|merge({'class': class}) %}
-    <i{{ table.attributes(attrs) }}></i>
+    {% set attrs = attrs|merge({'class': attrs.class|default('') ~ ' ' ~ icon_class }) %}
+    {% if route is defined %}
+        <a href="{{ path(route, params) }}" title="{{ title }}">
+            <i{{ table.attributes(attrs) }}></i>
+        </a>
+    {% else %}
+        <i{{ table.attributes(attrs) }}></i>
+    {% endif %}
 {% endblock %}
 
 {% block image_widget %}
     {% import _self as table %}
-    <img{{ table.attributes(attrs) }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
+    {% if route is defined %}
+        <a href="{{ path(route, params) }}" title="{{ title }}">
+            <img{{ table.attributes(attrs) }} src="{{ asset(asset_url, absolute=true) }}" alt="{{ alt }}" />
+        </a>
+    {% else %}
+        <img{{ table.attributes(attrs) }} src="{{ asset(asset_url, absolute=true) }}" alt="{{ alt }}" />
+    {% endif %}
+
 {% endblock %}
 
 {% macro attributes(attrs) %}{% for key, val in attrs %} {{ key }}="{{ val }}"{% endfor %}{% endmacro %}

@@ -156,7 +156,7 @@ class TableBuilder implements TableBuilderInterface {
             return new QueryResult($this->data, 0);
         } else {
             $queryBuilder = $this->type->getQueryBuilder($this->entityManager, $this->options['params']);
-
+            
             /* @var $dataProvider \EMC\TableBundle\Provider\DataProviderInterface */
             $dataProvider = $this->options['data_provider'];
             

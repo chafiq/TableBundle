@@ -10,7 +10,7 @@ use EMC\TableBundle\Table\Column\ColumnInterface;
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ImageType extends ColumnType {
+class ImageType extends AnchorType {
     
     /**
      * {@inheritdoc}
@@ -18,37 +18,34 @@ class ImageType extends ColumnType {
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         
-        $view['asset_url'] = $options['asset_url'];
+        $view['asset_url'] = self::toString('asset', $options['asset'], $data);
         $view['alt'] = $options['alt'];
-        $view['output'] = $options['output'];
     }
     
     /**
      * {@inheritdoc}
+     * <br/>
+     * <br/>
+     * Available Options :
      * <ul>
-     * <li><b>asset_url</b>     : string <i>Asset url of the image.</i></li>
-     * <li><b>alt</b>   : string <i>Alternative text if image does not exists.</i></li>
-     * <li><b>output</b>   : string <i>Asset output url.</i></li>
+     * <li><b>anchor_route</b>  : string|null <i>Anchor route, default null.</i></li>
+     * <li><b>asset</b>         : string|callable <i>Asset url of the image.</i></li>
+     * <li><b>alt</b>           : string <i>Alternative text if image does not exists.</i></li>
      * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
         
         $resolver->setDefaults(array(
-            'asset_url'   => null,
-            'alt'   => '',
-            'output'=> ''
+            'asset'   => null,
+            'alt'   => ''
         ));
         
         $resolver->addAllowedTypes(array(
-            'asset_url' => 'string',
-            'alt'       => 'string',
-            'output'    => 'string'
+            'anchor_route' => array('null', 'string'),
+            'asset'     => array('string', 'callable'),
+            'alt'       => 'string'
         ));
-    }
-    
-    public function isExportable() {
-        return false;
     }
     
     /**

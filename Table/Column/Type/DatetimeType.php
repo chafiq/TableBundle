@@ -22,6 +22,9 @@ class DatetimeType extends ColumnType {
     
     /**
      * {@inheritdoc}
+     * <br/>
+     * <br/>
+     * Available Options :
      * <ul>
      * <li><b>date_format</b>          : string <i>Date format : "Y-m-d H:i:s"</i></li>
      * </ul>

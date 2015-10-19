@@ -20,7 +20,7 @@ class ImageTypeTest extends AbstractUnitTest {
         $type->setDefaultOptions($optionsResolver);
         $options = array(
             'name'  => 'foo',
-            'asset_url' => 'img.png'
+            'asset' => 'img.png'
         );
         
         $resolvedOptions = $optionsResolver->resolve($options);
@@ -36,8 +36,7 @@ class ImageTypeTest extends AbstractUnitTest {
             'attrs',
             'value',
             'asset_url',
-            'alt',
-            'output'
+            'alt'
         );
 
         foreach ($expectedViewKeys as $key) {
@@ -46,8 +45,7 @@ class ImageTypeTest extends AbstractUnitTest {
         $this->assertArrayHasKey('class', $view['attrs']);
         $this->assertEquals('foo', $view['name']);
         $this->assertEquals($view['type'], $type->getName());
-        $this->assertEquals($view['asset_url'], $resolvedOptions['asset_url']);
+        $this->assertEquals($view['asset_url'], $resolvedOptions['asset']);
         $this->assertEquals($view['alt'], $resolvedOptions['alt']);
-        $this->assertEquals($view['output'], $resolvedOptions['output']);
     }
 }

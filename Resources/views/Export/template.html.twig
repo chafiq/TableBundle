@@ -53,13 +53,7 @@
         {% for idx, tr in tbody %}
             <tr>
                 {% for idx, td in tr.data %}
-                    <td>
-                        {% if td.type == 'anchor' %}
-                            <a href="{{ url(td.route, td.params) }}">{{ td.value|raw }}</a>
-                        {% else %}
-                            {{ td.value|default(' - ')|raw }}
-                        {% endif  %}
-                    </td>
+                    <td>{{ table_cell(td) }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

@@ -230,20 +230,21 @@ EMCTable.prototype.openSubtable = function(tr) {
     $(tr.parentNode).find('> tr.subtable').hide();
 
     var $td = $(document.createElement('td'))
-            .attr('colspan', tr.childElementCount);
+                .attr('colspan', tr.childElementCount)
+                .append('<center><i class="fa fa-spinner fa-pulse"></i></center>');
 
     var $tr = $(tr);
     $tr.after(
-            $(document.createElement('tr'))
+        $(document.createElement('tr'))
             .addClass('subtable')
             .append($td)
-            );
+    );
 
     var data = $tr.data();
 
     var html = this.request.get(this.subtableRoute, {params: data.subtable, subtable: true}, 'HTML');
 
-    $td.append(html);
+    $td.html(html);
 
     this.$dom.trigger(EMCTable.EVENT_CHANGE);
     this.$dom.trigger(EMCTable.EVENT_SUBTABLE, [$td.find('> table').get(0)]);

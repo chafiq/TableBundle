@@ -14,10 +14,6 @@ class ButtonType extends IconType {
 
     /**
      * {@inheritdoc}
-     * <ul>
-     * <li><b>text</b>          : string|null <i>Button text. If null $view['value'] replace it.</i></li>
-     * <li><b>desc</b>          : string|null <i>Button title</i></li>
-     * </ul>
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
@@ -27,6 +23,13 @@ class ButtonType extends IconType {
 
     /**
      * {@inheritdoc}
+     * <br/>
+     * <br/>
+     * Available Options :
+     * <ul>
+     * <li><b>text</b>          : string|null <i>Button text. If null $view['value'] replace it.</i></li>
+     * <li><b>desc</b>          : string|null <i>Button title</i></li>
+     * </ul>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver) {
         parent::setDefaultOptions($resolver);
@@ -38,6 +41,8 @@ class ButtonType extends IconType {
 
         $resolver->setAllowedTypes(array(
             'text' => array('null', 'string'),
+            'anchor_route' => array('null'), /* Button is not an anchor */
+            'icon' => array('null', 'string', 'callable'),
             'desc' => array('null', 'string')
         ));
     }

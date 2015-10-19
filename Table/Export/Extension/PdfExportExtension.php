@@ -125,7 +125,7 @@ class PdfExportExtension implements ExportExtensionInterface {
         $title = $this->formatName($this->options['title'], new \DateTime(), $data['caption']);
 
         $cmd = sprintf(
-                '%s --lowquality --page-size %s --orientation %s --title "%s" %s %s',
+                '%s --lowquality --images --page-size %s --orientation %s --title "%s" %s %s',
                 $this->bin,
                 $this->options['page-size'],
                 $this->options['orientation'],

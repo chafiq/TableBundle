@@ -81,7 +81,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'title'         => 'string',
             'params'        => array('string', 'array'),
             'attrs'         => 'array',
-            'format'        => array('null', 'string', 'callable'),
+            'format'        => array('null', 'string', 'int', 'callable'),
             'data'          => array('null', 'array'),
             'default'       => array('null', 'string'),
             'width'         => array('null', 'string'),
@@ -102,7 +102,7 @@ abstract class ColumnType implements ColumnTypeInterface {
     public function getOptionsResolver() {
         return new OptionsResolver();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -125,11 +125,29 @@ abstract class ColumnType implements ColumnTypeInterface {
             return call_user_func_array('sprintf', $args);
         }
         
+        if (is_int($format)) {
+            if ($format >= count($data)) {
+                throw new \UnexpectedValueException('Format invalid index : if format is int index, the value must be in 0 ... n-1');
+            }
+            $data = array_values($data);
+            return $data[$format];
+        }
+        
         if ( count($data) === 1 ) {
             return reset($data);
         }
         
         throw new \UnexpectedValueException;
+    }
+    
+    static protected function toString($name, $value, array $data){
+        if (is_callable($value)) {
+            $value = call_user_func_array($value, $data);
+            if (!is_string($value)) {
+                throw new \UnexpectedValueException('option ' . $name . ' callback must return a string');
+            }
+        }
+        return $value;
     }
     
     /**

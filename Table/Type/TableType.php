@@ -240,7 +240,7 @@ abstract class TableType implements TableTypeInterface {
             if (count($params) > 0) {
                 $select = array_merge($select, $params);
             }
-
+            
             $allowFilter = $column->resolveAllowedParams('allow_filter');
             if ($allowFilter !== null) {
                 $filters = array_merge($filters, $allowFilter);

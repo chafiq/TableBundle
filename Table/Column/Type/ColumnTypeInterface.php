@@ -52,7 +52,13 @@ interface ColumnTypeInterface {
      * <li><b>title</b>         : string <i>Column title -> TH Dom element content</i></li>
      * <li><b>params</b>        : string|array <i>Columns parameters.</i></li>
      * <li><b>attrs</b>         : array <i>Table Dom element attributes</i></li>
-     * <li><b>format</b>        : null|string|callable <i>Value formatter. If string @see sprintf. If function il must return scalar value.</i></li>
+     * <li><b>format</b>        : null|int|string|callable <i>Value formatter.</i>
+     * <ol>
+     *      <li><b>int</b> : <i>index (0 ... n-1) in params</i></li>
+     *      <li><b>string</b> : <i>return sprintf($format, $param0, $param1, ..., $paramN) @see sprintf</i></li>
+     *      <li><b>callable</b> : <i>call function with args ($param0, $param1, ..., $paramN). Must return scalar</i></li>
+     *      <li><b>null</b> : <i>No format, params must contains at most one param</i></li>
+     * </ol>
      * <li><b>data</b>          : null|array <i>Data column (static)</i></li>
      * <li><b>default</b>       : null|string <i>@todo implement default value</i></li>
      * <li><b>allow_sort</b>    : bool|array <i>Allow sorting on the column. Array of parameters for orderBy or if true, the orderBy is "params". Otherwize (false) sort is disabled</i></li>

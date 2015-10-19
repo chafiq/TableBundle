@@ -77,7 +77,12 @@ class TableDataCollectorTest extends TableAbstractTest {
                             'format' => 'null',
                             'allow_sort' => 'false',
                             'allow_filter' => 'false',
-                            'width' => 'null'
+                            'width' => 'null',
+                            'anchor_route' => 'null',
+                            'anchor_params' => '[]',
+                            'anchor_args' => '[]',
+                            'anchor_text' => '',
+                            'anchor_title' => ''
                         ),
                     ),
                     'name' => array(
@@ -103,7 +108,12 @@ class TableDataCollectorTest extends TableAbstractTest {
                             'format' => '#%s!',
                             'allow_sort' => '[0 => name, 1 => id]',
                             'allow_filter' => 'true',
-                            'width' => 'null'
+                            'width' => 'null',
+                            'anchor_route' => 'null',
+                            'anchor_params' => '[]',
+                            'anchor_args' => '[]',
+                            'anchor_text' => '',
+                            'anchor_title' => ''
                         ),
                     ),
                 ),

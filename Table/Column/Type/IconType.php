@@ -10,22 +10,25 @@ use EMC\TableBundle\Table\Column\ColumnInterface;
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class IconType extends ColumnType {
+class IconType extends AnchorType {
     
     /**
      * {@inheritdoc}
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
-        
-        $view['icon'] = isset($options['icon']) && $options['icon'] ? $options['icon'] : $view['value'];
-        $view['icon_family'] = $options['icon_family'];
+        $icon = self::toString('icon', $options['icon'], $data);
+        $view['icon_class'] = sprintf('%s %s-%s', $options['icon_family'], $options['icon_family'], $icon);
     }
     
     /**
      * {@inheritdoc}
+     * <br/>
+     * <br/>
+     * Available Options :
      * <ul>
-     * <li><b>icon</b>          : string <i>Icon name without prefix icon_family : fa-table => table</i></li>
+     * <li><b>anchor_route</b>  : string|null <i>Anchor route, default null.</i></li>
+     * <li><b>icon</b>          : string|callable <i>Icon name without prefix icon_family : fa-table => table</i></li>
      * <li><b>icon_family</b>   : string <i>Icon family (fa|icon|glyphicon|...).</i></li>
      * </ul>
      */
@@ -33,13 +36,14 @@ class IconType extends ColumnType {
         parent::setDefaultOptions($resolver);
         
         $resolver->setDefaults(array(
-            'icon'          => '',
-            'icon_family'   => 'fa'
+            'icon' => null,
+            'icon_family' => 'fa'
         ));
         
         $resolver->addAllowedTypes(array(
-            'icon'          => 'string',
-            'icon_family'   => 'string'
+            'anchor_route' => array('null', 'string'),
+            'icon' => array('string', 'callable'),
+            'icon_family' => 'string'
         ));
         
     }
