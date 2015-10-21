@@ -41,5 +41,14 @@
             {% block footer %}
             {% endblock %}
         </footer>
+        <script type="text/javascript">
+            var images = document.getElementsByTagName('IMG');
+            for (var i=0; i<images.length; i++) {
+                var image = images.item(i);
+                if (image.getAttribute('src').indexOf('/',0) === 0) {
+                    image.setAttribute('src', '{{ app.request.getSchemeAndHttpHost() }}' + image.getAttribute('src'));
+                }
+            }
+        </script>
     </body>
 </html>

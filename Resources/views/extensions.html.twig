@@ -47,10 +47,10 @@
     {% import _self as table %}
     {% if route is defined %}
         <a href="{{ path(route, params) }}" title="{{ title }}">
-            <img{{ table.attributes(attrs) }} src="{{ asset(asset_url, absolute=true) }}" alt="{{ alt }}" />
+            <img{{ table.attributes(attrs) }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
         </a>
     {% else %}
-        <img{{ table.attributes(attrs) }} src="{{ asset(asset_url, absolute=true) }}" alt="{{ alt }}" />
+        <img{{ table.attributes(attrs) }} src="{{ asset(asset_url) }}" alt="{{ alt }}" />
     {% endif %}
 
 {% endblock %}

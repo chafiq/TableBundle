@@ -36,7 +36,8 @@ class TableExportExtension extends \Twig_Extension {
      * @return string
      */
     public function render(\Twig_Environment $twig, TableView $view, $template=null) {
-        return $twig->loadTemplate($template ?: $this->template)->renderBlock('table', $view->getData());
+        $context = array_merge($twig->getGlobals(), $view->getData());
+        return $twig->loadTemplate($template ?: $this->template)->renderBlock('table', $context);
     }
 
     public function getName() {
