@@ -28,6 +28,7 @@ class EMCTableExtension extends Extension {
         $container->setParameter('emc_table.extensions', $config['extensions']);
         $container->setParameter('emc_table.template', $config['template']);
         $container->setParameter('emc_table.default_options', $config['options']);
+        $container->setParameter('emc_table.default_column_options', $config['column']['options']);
 
         $loader->load('table.services.yml');
         $loader->load('column.services.yml');

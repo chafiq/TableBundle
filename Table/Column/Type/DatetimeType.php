@@ -4,6 +4,7 @@ namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use EMC\TableBundle\Table\Column\ColumnInterface;
+use Symfony\Component\Intl\Locale;
 
 /**
  * Date Column
@@ -12,33 +13,108 @@ use EMC\TableBundle\Table\Column\ColumnInterface;
  */
 class DatetimeType extends ColumnType {
 
+    const FORMAT_NONE = 'NONE';
+    const FORMAT_FULL = 'FULL';
+    const FORMAT_LONG = 'LONG';
+    const FORMAT_MEDIUM = 'MEDIUM';
+    const FORMAT_SHORT = 'SHORT';
+
+    public static $formats = array(
+        self::FORMAT_NONE => \IntlDateFormatter::NONE,
+        self::FORMAT_FULL => \IntlDateFormatter::FULL,
+        self::FORMAT_LONG => \IntlDateFormatter::LONG,
+        self::FORMAT_MEDIUM => \IntlDateFormatter::MEDIUM,
+        self::FORMAT_SHORT => \IntlDateFormatter::SHORT,
+    );
+
     /**
      * {@inheritdoc}
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
-        $view['value'] = $view['value']->format($options['date_format']);
     }
-    
+
     /**
      * {@inheritdoc}
      * <br/>
      * <br/>
      * Available Options :
      * <ul>
-     * <li><b>date_format</b>          : string <i>Date format : "Y-m-d H:i:s"</i></li>
+     * <li><b>format</b>          : string <i>Date format, default Y/m/d H:i is defined in bundle config</i></li>
+     * <li><b>date_format</b>     : string <i>@see IntlDateformatter. Available values NONE, FULL, LONG, MEDIUM, SHORT</i></li>
+     * <li><b>time_format</b>     : string <i>@see IntlDateformatter. Available values NONE, FULL, LONG, MEDIUM, SHORT</i></li>
+     * <li><b>locale</b>          : string <i>Locale language for intl, default current locale @see Symfony\Component\Intl\Locale::getDefault()</i></li>
      * </ul>
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        parent::setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        parent::setDefaultOptions($resolver, $defaultOptions);
 
         $resolver->setDefaults(array(
-            'date_format' => 'd/m/Y H:i'
+            'format' => null,
+            'date_format' => $defaultOptions['date_format'],
+            'time_format' => $defaultOptions['time_format'],
+            'locale' => Locale::getDefault()
         ));
 
         $resolver->addAllowedTypes(array(
-            'date_format' => 'string'
+            'format' => array('null', 'string'),
+            'date_format' => 'string',
+            'time_format' => 'string',
+            'locale' => 'string'
         ));
+
+        $resolver->addAllowedValues(array(
+            'date_format' => array_keys(self::$formats),
+            'time_format' => array_keys(self::$formats),
+        ));
+        
+        $resolver->setNormalizers(array(
+            'params' => function($options, array $params) {
+        if (count($params) !== 1) {
+            throw new \InvalidArgumentException('params must contains one param');
+        }
+        return $params;
+    }
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function format($format, array $data, array $types = null) {
+        $datetime = parent::format(null, $data);
+        
+        if (!$datetime instanceof \DateTime && $datetime !== null) {
+            throw new \RuntimeException('$data must contains one element as a \Datetime');
+        }
+
+        return $datetime;
+    }
+
+    protected static function normalize($datetime, array $options) {
+        assert($datetime instanceof \DateTime || $datetime === null);
+        
+        if ($datetime === null) {
+            return null;
+        }
+
+        if (is_string($options['format'])) {
+            return $datetime->format($options['format']);
+        }
+        
+        $dateFormatter = new \IntlDateFormatter(
+            $options['locale'],
+            self::getIntlDateFormat($options['date_format']),
+            self::getIntlDateFormat($options['time_format'])
+        );
+        return $dateFormatter->format($datetime);
+    }
+    
+    private static function getIntlDateFormat($format) {
+        if ( !isset(self::$formats[$format]) ) {
+            throw new \InvalidArgumentException(sprintf('$format "%s" unkown. Available formats are (%s)',$format, implode(',', array_keys(self::$formats))));
+        }
+        return self::$formats[$format];
     }
 
     /**

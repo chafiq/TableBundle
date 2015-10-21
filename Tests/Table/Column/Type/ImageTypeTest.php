@@ -17,7 +17,7 @@ class ImageTypeTest extends AbstractUnitTest {
 
         $type = new ImageType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options = array(
             'name'  => 'foo',
             'asset' => 'img.png'

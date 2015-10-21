@@ -47,11 +47,6 @@ abstract class TableAbstractTest extends AbstractUnitTest {
     /**
      * @var array
      */
-    protected $defaultOptions;
-
-    /**
-     * @var array
-     */
     protected $resolvedOptions;
 
     /**
@@ -68,15 +63,6 @@ abstract class TableAbstractTest extends AbstractUnitTest {
         $this->entityManagerMock = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
         $this->eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->columnFactoryMock = $this->getMock('EMC\TableBundle\Table\Column\ColumnFactoryInterface');
-
-        $this->defaultOptions = array (
-            'route' => '_table',
-            'select_route' => '_table_select',
-            'export_route' => '_table_export',
-            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
-            'limit' => 10,
-            'rows_pad' => true
-        );
         
         $columnTypeIdMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
         $columnTypeNameMock = $this->getMock('EMC\TableBundle\Table\Column\Type\ColumnTypeInterface');
@@ -134,7 +120,7 @@ abstract class TableAbstractTest extends AbstractUnitTest {
         $this->resolvedOptions['_passed_options'] = array();
         $this->resolvedOptions['_query'] = array('page' => 1, 'sort' => 0, 'limit' => 10, 'filter' => null);
 
-        $this->builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, null, $this->resolvedOptions);
+        $this->builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, $this->defaultColumnOptions, null, $this->resolvedOptions);
     }
 
     public function getResolvedOptions(array $options) {
@@ -152,7 +138,7 @@ abstract class TableAbstractTest extends AbstractUnitTest {
 
         $textType = new \EMC\TableBundle\Table\Column\Type\TextType;
         $resolver = new OptionsResolver();
-        $textType->setDefaultOptions($resolver);
+        $textType->setDefaultOptions($resolver, $this->defaultColumnOptions);
 
         $resolvedOptions = $resolver->resolve($options);
 

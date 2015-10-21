@@ -16,7 +16,12 @@ class ButtonType extends IconType {
      * {@inheritdoc}
      */
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
-        parent::buildView($view, $column, $data, $options);
+        if ( $options['icon'] !== null ) {
+            parent::buildView($view, $column, $data, $options);
+        } else {
+            ColumnType::buildView($view, $column, $data, $options);
+        }
+        
         $view['text'] = isset($options['text']) ? $options['text'] : $view['value'];
         $view['title'] = $options['desc'];
     }
@@ -31,8 +36,8 @@ class ButtonType extends IconType {
      * <li><b>desc</b>          : string|null <i>Button title</i></li>
      * </ul>
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        parent::setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        parent::setDefaultOptions($resolver, $defaultOptions);
 
         $resolver->setDefaults(array(
             'text' => null,

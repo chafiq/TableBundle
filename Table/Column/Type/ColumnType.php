@@ -36,7 +36,7 @@ abstract class ColumnType implements ColumnTypeInterface {
             'type'          => $type,
             'name'          => $options['name'],
             'attrs'         => $options['attrs'],
-            'value'         => static::getValue($options['format'], $data)
+            'value'         => static::normalize(static::format($options['format'], $data), $options)
         );
     }
 
@@ -61,7 +61,7 @@ abstract class ColumnType implements ColumnTypeInterface {
     /**
      * {@inheritdoc}
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
         
         $resolver->setDefaults(array(
             'name'      => '',
@@ -110,22 +110,22 @@ abstract class ColumnType implements ColumnTypeInterface {
         return true;
     }
     
-    static protected function getValue($format, array $data) {
+    static protected function format($format, array $data, array $types = null) {
         if (is_null($data) || count($data) === 0) {
             return null;
         }
         
-        if (is_callable($format)) {
+        if (is_callable($format) && ($types===null || in_array('callable', $types))) {
             return call_user_func_array($format, $data);
         }
         
-        if (is_string($format)) {
+        if (is_string($format) && ($types===null || in_array('string', $types))) {
             $args = $data;
             array_unshift($args, $format);
             return call_user_func_array('sprintf', $args);
         }
         
-        if (is_int($format)) {
+        if (is_int($format) && ($types===null || in_array('int', $types))) {
             if ($format >= count($data)) {
                 throw new \UnexpectedValueException('Format invalid index : if format is int index, the value must be in 0 ... n-1');
             }
@@ -140,13 +140,7 @@ abstract class ColumnType implements ColumnTypeInterface {
         throw new \UnexpectedValueException;
     }
     
-    static protected function toString($name, $value, array $data){
-        if (is_callable($value)) {
-            $value = call_user_func_array($value, $data);
-            if (!is_string($value)) {
-                throw new \UnexpectedValueException('option ' . $name . ' callback must return a string');
-            }
-        }
+    static protected function normalize($value, array $options){
         return $value;
     }
     

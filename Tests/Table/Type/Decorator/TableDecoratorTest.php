@@ -25,26 +25,12 @@ class TableDecoratorTest extends AbstractTableDecoratorTest {
      */
     private $fooType;
 
-    /**
-     * @var array
-     */
-    protected $defaultOptions;
-
     public function setUp() {
         parent::setUp();
 
         $this->tableMock->expects($this->any())
                 ->method('getColumns')
                 ->will($this->returnValue(array()));
-        
-        $this->defaultOptions = array(
-            'route' => '_table',
-            'select_route' => '_table_select',
-            'export_route' => '_table_export',
-            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
-            'limit' => 10,
-            'rows_pad' => true
-        );
         
         $queryBuilderMock = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
                                 ->disableOriginalConstructor()
@@ -89,8 +75,8 @@ class TableDecoratorTest extends AbstractTableDecoratorTest {
         $entityManagerMock = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
         $eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $columnFactoryMock = $this->getMock('EMC\TableBundle\Table\Column\ColumnFactoryInterface');
-
-        $builder = new TableBuilder($entityManagerMock, $eventDispatcherMock, $columnFactoryMock, $this->fooType, null, array());
+        
+        $builder = new TableBuilder($entityManagerMock, $eventDispatcherMock, $columnFactoryMock, $this->fooType, $this->defaultColumnOptions, null, array());
         
         $options = array('a' => 1, 'b' => '2');
         

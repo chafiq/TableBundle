@@ -43,11 +43,6 @@ class TableFactoryTest extends AbstractUnitTest {
      */
     private $fooType;
 
-    /**
-     * @var array
-     */
-    protected $defaultOptions;
-
     protected function setUp() {
         $this->entityManagerMock = $this->getMock('Doctrine\Common\Persistence\ObjectManager');
         $this->eventDispatcherMock = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
@@ -55,16 +50,7 @@ class TableFactoryTest extends AbstractUnitTest {
         $this->columnFactoryMock = $this->getMock('EMC\TableBundle\Table\Column\ColumnFactoryInterface');
         $this->exportRegistryMock = $this->getMock('EMC\TableBundle\Table\Export\ExportRegistryInterface');
 
-        $this->defaultOptions = array(
-            'route' => '_table',
-            'select_route' => '_table_select',
-            'export_route' => '_table_export',
-            'data_provider' => 'EMC\TableBundle\Provider\DataProvider',
-            'limit' => 10,
-            'rows_pad' => true
-        );
-
-        $this->factory = new TableFactory($this->entityManagerMock, $this->eventDispatcherMock, $this->tableSessionMock, $this->columnFactoryMock, $this->exportRegistryMock, $this->defaultOptions);
+        $this->factory = new TableFactory($this->entityManagerMock, $this->eventDispatcherMock, $this->tableSessionMock, $this->columnFactoryMock, $this->exportRegistryMock, $this->defaultOptions, $this->defaultColumnOptions);
 
         $this->fooType = new Type\FooType;
         $this->tableSessionMock->expects($this->any())

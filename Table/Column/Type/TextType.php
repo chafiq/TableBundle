@@ -20,8 +20,8 @@ class TextType extends AnchorType {
      * <li><b>anchor_route</b>  : string|null <i>Anchor route, default null.</i></li>
      * </ul>
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        parent::setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        parent::setDefaultOptions($resolver, $defaultOptions);
         
         $resolver->setAllowedTypes(array(
             'anchor_route' => array('null', 'string')

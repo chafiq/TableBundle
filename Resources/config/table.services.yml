@@ -1,7 +1,7 @@
 services:
     table.factory:
         class: EMC\TableBundle\Table\TableFactory
-        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session, @table.column.factory, @table.export.registry, %emc_table.default_options%]
+        arguments: [@doctrine.orm.entity_manager, @event_dispatcher, @table.session, @table.column.factory, @table.export.registry, %emc_table.default_options%, %emc_table.default_column_options%]
     
     table.session:
         class: EMC\TableBundle\Session\TableSession

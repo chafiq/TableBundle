@@ -14,5 +14,5 @@ interface ColumnFactoryInterface {
      * @param string $type Column type
      * @param array $options Column options
      */
-    public function create($name, $type, array $options = array());
+    public function create($name, $type, array $options, array $defaultColumnOptions);
 }

@@ -25,14 +25,14 @@ class ColumnFactory implements ColumnFactoryInterface {
     /**
      * {@inheritdoc}
      */
-    public function create($name, $type, array $options = array()) {
-
+    public function create($name, $type, array $options, array $defaultOptions) {
+        
         $type = $this->resolve($type);
 
         $_options = $options;
         
         $resolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($resolver);
+        $type->setDefaultOptions($resolver, $defaultOptions);
 
         $options['name'] = $name;
         $options = $resolver->resolve($options);

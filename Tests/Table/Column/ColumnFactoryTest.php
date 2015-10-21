@@ -33,7 +33,7 @@ class ColumnFactoryTest extends AbstractUnitTest {
      * @var \EMC\TableBundle\Table\Column\Type\ColumnTypeInterface
      */
     private $typeMock;
-
+    
     public function setUp() {
         
         $options = array();
@@ -54,7 +54,7 @@ class ColumnFactoryTest extends AbstractUnitTest {
     }
     
     public function testCreate() {
-        $column = $this->factory->create('foo', 'bar', array());
+        $column = $this->factory->create('foo', 'bar', array(), $this->defaultColumnOptions);
         $options = $column->getColumn()->getOptions();
         $this->assertArrayHasKey('_passed_options', $options);
     }
@@ -89,7 +89,7 @@ class ColumnFactoryTest extends AbstractUnitTest {
         
         $type = new Type\BarType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options['name'] = $name;
         $resolvedOptions = $optionsResolver->resolve($options);
         

@@ -53,12 +53,18 @@ class TableBuilder implements TableBuilderInterface {
      * @var array
      */
     private $columns;
+    
+    /**
+     * @var array
+     */
+    private $defaultColumnOptions;
 
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, ColumnFactoryInterface $factory, TableTypeInterface $type, array $data = null, array $options = array()) {
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, ColumnFactoryInterface $factory, TableTypeInterface $type, array $defaultColumnOptions, array $data = null, array $options = array()) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->factory = $factory;
         $this->type = $type;
+        $this->defaultColumnOptions = $defaultColumnOptions;
         $this->data = $data;
         $this->options = $options;
         $this->columns = array();
@@ -113,7 +119,7 @@ class TableBuilder implements TableBuilderInterface {
             throw new \InvalidArgumentException('Column name "' . $name . '" already exists.');
         }
         
-        $this->columns[$name] = $this->factory->create($name, $type, $options)->getColumn();
+        $this->columns[$name] = $this->factory->create($name, $type, $options, $this->defaultColumnOptions)->getColumn();
         return $this;
     }
 

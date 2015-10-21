@@ -49,7 +49,7 @@ class TableTypeTest extends TableAbstractTest {
     }
 
     public function testBuildBodyViewEmptyData() {
-        $builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, array(), $this->resolvedOptions);
+        $builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, $this->defaultColumnOptions, array(), $this->resolvedOptions);
         $table = $builder->getTable();
         $view = array();
         $this->assertEquals(array(), $table->getType()->buildBodyView($view, $table));

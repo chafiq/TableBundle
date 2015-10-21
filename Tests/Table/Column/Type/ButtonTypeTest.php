@@ -16,7 +16,7 @@ class ButtonTypeTest extends AbstractUnitTest {
 
         $type = new ButtonType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options = array(
             'name' => 'foo',
             'text'=> "btn magic"

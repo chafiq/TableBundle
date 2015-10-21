@@ -3,19 +3,20 @@
 namespace EMC\TableBundle\Tests\Table\Column\Type;
 
 use EMC\TableBundle\Table\Column\Column;
+use EMC\TableBundle\Tests\AbstractUnitTest;
 
 /**
  * ColumnTypeTest
  *
  * @author Chafiq El Mechrafi <chafiq.elmechrafi@gmail.com>
  */
-class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
+class ColumnTypeTest extends AbstractUnitTest {
 
     public function testBuildView() {
 
         $type = new BarType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options = array(
             'name' => 'foo',
             'attrs' => array('a' => 1, 'b' => 2)
@@ -47,7 +48,7 @@ class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey( 'b', $view['attrs'] );
     }
 
-    public function testGetValue() {
+    public function testFormat() {
         $barType = new BarType();
 
         $start = new \DateTime();
@@ -65,7 +66,7 @@ class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
         );
 
         foreach ($tests as $extected => $data) {
-            $this->assertEquals($extected, $this->invokeMethod($barType, 'getValue', $data));
+            $this->assertEquals($extected, $this->invokeMethod($barType, 'format', $data));
         }
     }
 
@@ -74,7 +75,7 @@ class ColumnTypeTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetValueException() {
         $barType = new BarType();
-        $this->invokeMethod($barType, 'getValue', array(null, array('test', 123)));
+        $this->invokeMethod($barType, 'format', array(null, array('test', 123)));
     }
 
     /**

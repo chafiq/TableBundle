@@ -18,7 +18,15 @@ class ImageType extends AnchorType {
     public function buildView(array &$view, ColumnInterface $column, array $data, array $options) {
         parent::buildView($view, $column, $data, $options);
         
-        $view['asset_url'] = self::toString('asset', $options['asset'], $data);
+        $assetUrl = $options['asset'];
+        if (is_callable($options['asset']) ) {
+            $assetUrl = self::format($options['asset'], $data, array('callable'));
+        }
+        if ( !is_string($assetUrl) ) {
+            throw new \UnexpectedValueException('$assetUrl must be a string');
+        }
+        
+        $view['asset_url'] = $assetUrl;
         $view['alt'] = $options['alt'];
     }
     
@@ -33,8 +41,8 @@ class ImageType extends AnchorType {
      * <li><b>alt</b>           : string <i>Alternative text if image does not exists.</i></li>
      * </ul>
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        parent::setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        parent::setDefaultOptions($resolver, $defaultOptions);
         
         $resolver->setDefaults(array(
             'asset'   => null,

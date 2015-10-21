@@ -44,8 +44,8 @@ class AnchorType extends ColumnType {
      * <li><b>anchor_title</b>  : string|null <i>Anchor title</i></li>
      * </ul>
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver) {
-        parent::setDefaultOptions($resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
+        parent::setDefaultOptions($resolver, $defaultOptions);
 
         $resolver->setDefaults(array(
             'anchor_route' => null,

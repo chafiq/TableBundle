@@ -65,8 +65,9 @@ interface ColumnTypeInterface {
      * <li><b>allow_filter</b>  : bool|array <i>Allow filtering on the column. Array of parameters for building the where clause filter or if true, the parameters are "params". Otherwize (false) filtering is disabled</i></li>
      * </ul>
      * @param \Symfony\Component\OptionsResolver\OptionsResolverInterface $resolver
+     * @param array $defaultOptions Default options defined in emc_table config
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver);
+    public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions);
 
     /**
      * @return OptionsResolverInterface

@@ -16,10 +16,11 @@ class DatetimeTypeTest extends AbstractUnitTest {
 
         $type = new DatetimeType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options = array(
             'name'  => 'foo',
-            'date_format' => 'Y:m_d\TH-s'
+            'params'=> array('t.date'),
+            'format' => 'Y:m_d\TH-s'
         );
         
         $resolvedOptions = $optionsResolver->resolve($options);

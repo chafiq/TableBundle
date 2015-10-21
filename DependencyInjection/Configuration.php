@@ -4,6 +4,7 @@ namespace EMC\TableBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use EMC\TableBundle\Table\Column\Type\DatetimeType;
 
 /**
  * This is the class that validates and merges configuration from your app/config files
@@ -51,6 +52,27 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->booleanNode('rows_pad')
                             ->defaultValue(true)
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('column')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('options')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('icon_family')
+                                    ->defaultValue('fa')
+                                ->end()
+                                ->enumNode('date_format')
+                                    ->values(array_keys(DatetimeType::$formats))
+                                    ->defaultValue(DatetimeType::FORMAT_SHORT)
+                                ->end()
+                                ->enumNode('time_format')
+                                    ->values(array_keys(DatetimeType::$formats))
+                                    ->defaultValue(DatetimeType::FORMAT_SHORT)
+                                ->end()
+                            ->end()
                         ->end()
                     ->end()
                 ->end()

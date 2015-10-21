@@ -17,7 +17,7 @@ class AnchorTypeTest extends AbstractUnitTest {
 
         $type = new AnchorType();
         $optionsResolver = $type->getOptionsResolver();
-        $type->setDefaultOptions($optionsResolver);
+        $type->setDefaultOptions($optionsResolver, $this->defaultColumnOptions);
         $options = array(
             'name' => 'foo',
             'params'=> array('k' => 'i', 'l' => 'j'),

@@ -65,7 +65,7 @@ class TableBuilderTest extends TableAbstractTest {
 
     public function testGetQueryResultStaticData() {
 
-        $builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, self::$rows, $this->resolvedOptions);
+        $builder = new TableBuilder($this->entityManagerMock, $this->eventDispatcherMock, $this->columnFactoryMock, $this->fooType, $this->defaultColumnOptions, self::$rows, $this->resolvedOptions);
 
         $builder->add('id', 'text');
         $builder->add('name', 'text');

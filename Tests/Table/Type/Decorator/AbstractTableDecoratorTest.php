@@ -48,11 +48,6 @@ abstract class AbstractTableDecoratorTest extends AbstractUnitTest {
      */
     protected $queryConfig;
 
-    /**
-     * @var array
-     */
-    protected $options;
-
     public function setUp() {
         $this->decoratorMock = $this->getMock('EMC\TableBundle\Table\Type\Decorator\TableDecoratorInterface');
         $this->tableTypeMock = $this->getMock('EMC\TableBundle\Table\Type\TableTypeInterface');

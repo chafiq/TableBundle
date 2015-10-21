@@ -53,13 +53,19 @@ class TableFactory implements TableFactoryInterface {
      */
     private $defaultOptions;
 
-    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory, ExportRegistryInterface $exportRegistry, array $defaultOptions) {
+    /**
+     * @var array
+     */
+    private $defaultColumnOptions;
+    
+    function __construct(ObjectManager $entityManager, EventDispatcherInterface $eventDispatcher, TableSessionInterface $tableSession, ColumnFactoryInterface $columnFactory, ExportRegistryInterface $exportRegistry, array $defaultOptions, array $defaultColumnOptions) {
         $this->entityManager = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->tableSession = $tableSession;
         $this->columnFactory = $columnFactory;
         $this->exportRegistry = $exportRegistry;
         $this->defaultOptions = $defaultOptions;
+        $this->defaultColumnOptions = $defaultColumnOptions;
     }
 
     /**
@@ -76,7 +82,7 @@ class TableFactory implements TableFactoryInterface {
 
         $resolvedType = $this->getResolvedType($type, $mode);
 
-        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $resolvedType, $data, $options);
+        $builder = new TableBuilder($this->entityManager, $this->eventDispatcher, $this->columnFactory, $resolvedType, $this->defaultColumnOptions, $data, $options);
 
         $resolvedType->buildTable($builder, $builder->getOptions());
 
