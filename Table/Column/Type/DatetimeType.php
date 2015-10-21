@@ -4,7 +4,6 @@ namespace EMC\TableBundle\Table\Column\Type;
 
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use EMC\TableBundle\Table\Column\ColumnInterface;
-use Symfony\Component\Intl\Locale;
 
 /**
  * Date Column
@@ -43,8 +42,9 @@ class DatetimeType extends ColumnType {
      * <li><b>format</b>          : string <i>Date format, default Y/m/d H:i is defined in bundle config</i></li>
      * <li><b>date_format</b>     : string <i>@see IntlDateformatter. Available values NONE, FULL, LONG, MEDIUM, SHORT</i></li>
      * <li><b>time_format</b>     : string <i>@see IntlDateformatter. Available values NONE, FULL, LONG, MEDIUM, SHORT</i></li>
-     * <li><b>locale</b>          : string <i>Locale language for intl, default current locale @see Symfony\Component\Intl\Locale::getDefault()</i></li>
+     * <li><b>locale</b>          : string <i>Locale language for intl, default current locale @see \Locale::getDefault()</i></li>
      * </ul>
+     * <p>Note: If format is set, intl (date_format, time_format) will be ignored</p>
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver, array $defaultOptions) {
         parent::setDefaultOptions($resolver, $defaultOptions);
@@ -53,7 +53,7 @@ class DatetimeType extends ColumnType {
             'format' => null,
             'date_format' => $defaultOptions['date_format'],
             'time_format' => $defaultOptions['time_format'],
-            'locale' => Locale::getDefault()
+            'locale' => \Locale::getDefault()
         ));
 
         $resolver->addAllowedTypes(array(
