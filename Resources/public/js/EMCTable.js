@@ -88,7 +88,7 @@ EMCTable.prototype.init = function() {
         that.find(1);
     });
 
-    this.$dom.on('change', '> tfoot > tr > td > select', function(event) {
+    this.$dom.on('change', '> tfoot > tr > td select.limit', function(event) {
         that.limit = $(this).val();
         that.find(1);
     });
