@@ -71,6 +71,7 @@ class DataProvider implements DataProviderInterface {
     private function getQueryRows(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig, array &$mapping) {
         $queryBuilder->resetDQLPart('select');
 
+
         $limit = $queryConfig->getLimit();
         $page = $queryConfig->getPage();
         $select = $queryConfig->getSelect();
@@ -109,6 +110,7 @@ class DataProvider implements DataProviderInterface {
     private function getQueryCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         return $queryBuilder->resetDQLPart('select')
                         ->resetDQLPart('orderBy')
+                        ->resetDQLPart('groupBy')
                         ->select('count(distinct ' . $queryBuilder->getRootAlias() . '.id)')
                         ->setMaxResults(1)
                         ->setFirstResult(0)
