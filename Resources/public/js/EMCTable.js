@@ -219,7 +219,7 @@ EMCTable.prototype.find = function(page) {
 
 EMCTable.prototype.openSubtable = function(tr) {
 
-    if (tr.nextSibling.className === "subtable") {
+    if (tr.nextSibling !== null && tr.nextSibling.className.indexOf("subtable") > -1 ) {
         if (!$(tr.nextSibling).is(':visible')) {
             $(tr.parentNode).find('> tr.subtable').not(tr.nextSibling).hide();
         }
