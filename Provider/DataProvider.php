@@ -109,6 +109,7 @@ class DataProvider implements DataProviderInterface {
     private function getQueryCount(QueryBuilder $queryBuilder, QueryConfigInterface $queryConfig) {
         return $queryBuilder->resetDQLPart('select')
                         ->resetDQLPart('orderBy')
+                        ->resetDQLPart('groupBy')
                         ->select('count(distinct ' . $queryBuilder->getRootAlias() . '.id)')
                         ->setMaxResults(1)
                         ->setFirstResult(0)
